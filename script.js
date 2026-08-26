@@ -69,6 +69,12 @@ function selectDoughType(type) {
             fatSection.style.display = 'none';
             break;
             
+        case 'italian':
+            // Italian bread - typically basic with possible enrichment
+            enrichingSection.style.display = 'block';
+            fatSection.style.display = 'none';
+            break;
+            
         case 'custom':
             // Custom - show all options
             enrichingSection.style.display = 'block';
