@@ -11,22 +11,58 @@
     <div id="wizard-container">
         <!-- Step 1: Select Dough Type -->
         <div id="step-dough-type">
-            <h2>Select Your Dough Type</h2>
-            <p>Choose the type of bread you want to make:</p>
+            <h2>Select Your Bread Type</h2>
+            <p>Choose the type of bread you want to make. Each selection will show recommended ingredients and guidance.</p>
             
-            <div class="dough-options">
-                <button class="dough-type-btn" data-type="basic">Basic Bread (flour, water, salt, yeast)</button>
-                <button class="dough-type-btn" data-type="enriched">Enriched Dough (Brioche - butter)</button>
-                <button class="dough-type-btn" data-type="sweet">Sweet Dough (Challah - oil)</button>
-                <button class="dough-type-btn" data-type="whole-wheat">Whole Wheat Bread</button>
-                <button class="dough-type-btn" data-type="rye">Rye Bread</button>
-                <button class="dough-type-btn" data-type="sourdough">Sourdough</button>
-                <button class="dough-type-btn" data-type="italian">Italian Loaf (oil)</button>
-                <button class="dough-type-btn" data-type="custom">Custom Recipe</button>
+            <div class="bread-description">
+                <div class="bread-option">
+                    <h3>Basic Bread</h3>
+                    <p>Simple flour, water, salt, and yeast. Perfect for everyday loaves.</p>
+                    <button class="dough-type-btn" data-type="basic">Select Basic Bread</button>
+                </div>
+                
+                <div class="bread-option">
+                    <h3>Brioche</h3>
+                    <p>Rich, tender dough with butter for exceptional softness and flavor.</p>
+                    <button class="dough-type-btn" data-type="enriched">Select Brioche</button>
+                </div>
+                
+                <div class="bread-option">
+                    <h3>Challah</h3>
+                    <p>Traditional Jewish braided bread using oil for its distinctive flavor.</p>
+                    <button class="dough-type-btn" data-type="sweet">Select Challah</button>
+                </div>
+                
+                <div class="bread-option">
+                    <h3>Whole Wheat</h3>
+                    <p>Nutritious dough using whole wheat flour with optional enrichments.</p>
+                    <button class="dough-type-btn" data-type="whole-wheat">Select Whole Wheat</button>
+                </div>
+                
+                <div class="bread-option">
+                    <h3>Rye Bread</h3>
+                    <p>Distinctive tangy flavor using rye flour with possible enrichments.</p>
+                    <button class="dough-type-btn" data-type="rye">Select Rye Bread</button>
+                </div>
+                
+                <div class="bread-option">
+                    <h3>Sourdough</h3>
+                    <p>Fermented dough using a starter for complex flavor and texture.</p>
+                    <button class="dough-type-btn" data-type="sourdough">Select Sourdough</button>
+                </div>
+                
+                <div class="bread-option">
+                    <h3>Italian Loaf</h3>
+                    <p>Classic crusty exterior with tender interior using olive oil.</p>
+                    <button class="dough-type-btn" data-type="italian">Select Italian Loaf</button>
+                </div>
+                
+                <div class="bread-option">
+                    <h3>Custom Recipe</h3>
+                    <p>Full control over all ingredients for unique combinations.</p>
+                    <button class="dough-type-btn" data-type="custom">Select Custom</button>
+                </div>
             </div>
-            
-            <p>Or enter custom values below:</p>
-            <button id="custom-btn">Custom Recipe</button>
         </div>
 
         <!-- Step 2: Input Fields (Hidden initially) -->
@@ -50,8 +86,16 @@
 
             <!-- Enriching Ingredients -->
             <div id="enriching-ingredients" style="display:none;">
-                <h3>Enriching Ingredients</h3>
-                <p>These ingredients add water and fat to your dough:</p>
+                <h3>Ingredients</h3>
+                <p>Enter amounts of ingredients based on your selected bread type:</p>
+                
+                <div class="ingredient-explanation">
+                    <p><strong>Eggs (75% water)</strong> - Add protein, water content, and richness to dough</p>
+                    <p><strong>Milk (87% water)</strong> - Adds sugar, protein, fat, creates softer texture</p>
+                    <p><strong>Butter (16% water)</strong> - Adds fat and flavor, creates tender crumb structure</p>
+                    <p><strong>Cream (57.5% water)</strong> - High fat content for ultra-rich texture</p>
+                    <p><strong>Oil (0% water)</strong> - Added fat without water, creates tender texture</p>
+                </div>
                 
                 <div class="form-group">
                     <label for="eggs">Eggs (grams)</label>
@@ -77,12 +121,6 @@
                     <label for="oil">Oil (grams)</label>
                     <input type="number" id="oil" min="0" step="1">
                 </div>
-                
-                <p><strong>Guidance:</strong> 
-                <span id="ingredient-guidance">Select ingredients based on your bread type. 
-                Basic bread needs only flour, water, salt, and yeast.
-                Enriched doughs like brioche use butter. Challah uses oil. 
-                Milk bread uses milk. Italian loaf uses oil.</span></p>
             </div>
 
             <!-- Yeast Section -->
@@ -107,13 +145,13 @@
 
             <button id="calculate-btn">Calculate Recipe</button>
 
-            <button id="back-btn" style="display:none;">Back</button>
+            <button id="back-btn" style="display:none;">Back to Selection</button>
         </div>
     </div>
 
     <div id="results">
         <h2>Results</h2>
-        <p>Choose a dough type and enter your ingredients to see results here.</p>
+        <p>Choose a bread type and enter your ingredients to see results here.</p>
     </div>
 
     <script src="script.js"></script>

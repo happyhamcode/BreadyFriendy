@@ -2,7 +2,6 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     const doughTypeButtons = document.querySelectorAll('.dough-type-btn');
-    const customBtn = document.getElementById('custom-btn');
     const calculateBtn = document.getElementById('calculate-btn');
     const backBtn = document.getElementById('back-btn');
     
@@ -11,10 +10,6 @@ document.addEventListener('DOMContentLoaded', function() {
         button.addEventListener('click', function() {
             selectDoughType(this.dataset.type);
         });
-    });
-    
-    customBtn.addEventListener('click', function() {
-        selectDoughType('custom');
     });
     
     calculateBtn.addEventListener('click', calculateRecipe);
@@ -36,72 +31,48 @@ function selectDoughType(type) {
     
     // Show/hide relevant ingredient sections based on dough type
     const enrichingSection = document.getElementById('enriching-ingredients');
-    const fatSection = document.getElementById('fat-ingredients');
-    
-    // Set specific guidance text based on bread type
-    const guidanceText = document.getElementById('ingredient-guidance');
     
     switch(type) {
         case 'basic':
             // Basic bread - only flour, water, salt, yeast
             enrichingSection.style.display = 'block';
-            fatSection.style.display = 'none';
-            guidanceText.textContent = "Basic bread needs only flour, water, salt, and yeast. No enriching ingredients needed.";
             break;
             
         case 'enriched':
-            // Enriched dough - includes eggs, milk, butter, cream
+            // Enriched dough - includes butter for brioche
             enrichingSection.style.display = 'block';
-            fatSection.style.display = 'none';
-            guidanceText.textContent = "Enriched breads like brioche and challah typically use butter, eggs, and milk. For Challah: use oil instead of butter for the traditional recipe.";
             break;
             
         case 'sweet':
-            // Sweet dough - includes eggs, milk, butter, cream, oil
+            // Sweet dough - includes oil for challah
             enrichingSection.style.display = 'block';
-            fatSection.style.display = 'block';
-            guidanceText.textContent = "Sweet doughs like cinnamon rolls use eggs, milk, butter, and oil for a rich, tender texture. Add sugar as needed for sweetness.";
             break;
             
         case 'whole-wheat':
-            // Whole wheat - includes flour, water, salt, yeast and maybe some enrichments
+            // Whole wheat - may include enrichments
             enrichingSection.style.display = 'block';
-            fatSection.style.display = 'none';
-            guidanceText.textContent = "Whole wheat breads may include eggs, milk, or butter for better texture. Consider adding a little extra water due to whole wheat's absorption properties.";
             break;
             
         case 'rye':
-            // Rye bread - may include some enrichments but with special considerations
+            // Rye bread - may include enrichments
             enrichingSection.style.display = 'block';
-            fatSection.style.display = 'none';
-            guidanceText.textContent = "Rye breads often include eggs or butter for better structure. Rye absorbs more water, so you may need to adjust hydration accordingly.";
             break;
             
         case 'sourdough':
-            // Sourdough - basic ingredients plus possible enrichments
+            // Sourdough - may include enrichments
             enrichingSection.style.display = 'block';
-            fatSection.style.display = 'none';
-            guidanceText.textContent = "Sourdough breads can include typical enriching ingredients like eggs and butter. The fermentation process creates the distinctive tangy flavor and open crumb structure.";
             break;
             
         case 'italian':
-            // Italian bread - typically basic with possible enrichment
+            // Italian bread - may include enrichments
             enrichingSection.style.display = 'block';
-            fatSection.style.display = 'none';
-            guidanceText.textContent = "Italian breads like ciabatta or rustic loaves often use olive oil for the traditional flavor and texture. Some recipes include eggs or butter.";
             break;
             
         case 'custom':
             // Custom - show all options
             enrichingSection.style.display = 'block';
-            fatSection.style.display = 'block';
-            guidanceText.textContent = "Use all available ingredients for custom combinations. Consider how the different enrichments affect texture and flavor.";
             break;
     }
-    
-    // Show back button
-    document.getElementById('back-btn').style.display = 'block';
-}
     
     // Show back button
     document.getElementById('back-btn').style.display = 'block';
