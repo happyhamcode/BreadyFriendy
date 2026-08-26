@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bread Dough Calculator</title>
-    <link rel="stylesheet" href="style.css">
+    <!-- Removed all CSS styling as requested -->
 </head>
 <body>
     <div class="container">
@@ -111,35 +111,9 @@
             </div>
         </div>
 
-        <!-- Hydration Education Section -->
-        <div id="hydration-education" class="hydration-education-section">
-            <h2>Understanding Hydration in Bread Making</h2>
-            <p>Hydration refers to the amount of water in a dough, expressed as a percentage of the flour weight. It's a crucial factor that determines the texture, structure, and handling characteristics of your bread.</p>
-            
-            <h3>How Hydration Affects Bread</h3>
-            <ul>
-                <li><strong>Low Hydration (50-60%):</strong> Dense, tight crumb; easier to handle, good for structured breads</li>
-                <li><strong>Medium Hydration (60-70%):</strong> Balanced texture with good structure and slight openness</li>
-                <li><strong>High Hydration (70%+):</strong> Open crumb with air pockets; requires more technique for handling</li>
-            </ul>
-            
-            <h3>Different Hydration Ranges and Their Results</h3>
-            <div class="hydration-terms">
-                <p><strong>50-60%:</strong> Dense loaf, tight crumb - often used in sandwich breads and structured loaves</p>
-                <p><strong>60-65%:</strong> Standard bread texture - good all-purpose hydration level</p>
-                <p><strong>65-70%:</strong> Light, airy crumb with a more open structure - great for rustic breads</p>
-                <p><strong>70-75%:</strong> Very open crumb, soft and tender - typical for certain artisan breads</p>
-                <p><strong>75%+:</strong> Extremely airy crumb with large holes - often used in pizza dough or very wet doughs</p>
-            </div>
-            
-            <h3>Why Understanding Hydration Matters</h3>
-            <p>The hydration level you choose will affect how your bread behaves during mixing, proofing, and baking. Higher hydration doughs are more challenging to handle but produce more open crumb structures that many bakers love. Lower hydration is easier to work with but results in denser textures.</p>
-            <p>When using enriched doughs (containing eggs, milk, butter, etc.), the water content from these ingredients should be accounted for in your effective hydration calculation to achieve the desired final texture.</p>
-        </div>
-
-        <!-- Calculator Sections -->
+        <!-- Calculator Sections (displayed at top when a bread type is selected) -->
         <main id="calculator-content">
-            <!-- Step 1: Calculator Input Form -->
+            <!-- Step 1: Calculator Input Form (will be shown at top when recipe selected) -->
             <section id="calculator-form" class="calculator-form">
                 <div class="form-header">
                     <h2>Recipe Inputs</h2>
@@ -216,10 +190,11 @@
                                 <label for="butter">Butter (grams)</label>
                                 <input type="number" id="butter" min="0" step="1">
                             </div>
+
                         </div>
                         
                         <div id="rye-section" class="specific-inputs" style="display:none;">
-                            <p><strong>Rye Bread:</strong> Distinctive tangy flavor with possible enrichments.</p>
+                            <p><strong>Rye Bread:</strong> Uses rye flour with possible enrichments.</p>
                             <div class="input-group">
                                 <label for="eggs">Eggs (grams)</label>
                                 <input type="number" id="eggs" min="0" step="1">
@@ -237,8 +212,16 @@
                         <div id="italian-section" class="specific-inputs" style="display:none;">
                             <p><strong>Italian Bread:</strong> Light, airy crumb with crispy exterior.</p>
                             <div class="input-group">
-                                <label for="oil">Oil (grams)</label>
-                                <input type="number" id="oil" min="0" step="1">
+                                <label for="eggs">Eggs (grams)</label>
+                                <input type="number" id="eggs" min="0" step="1">
+                            </div>
+                            <div class="input-group">
+                                <label for="milk">Milk (grams)</label>
+                                <input type="number" id="milk" min="0" step="1">
+                            </div>
+                            <div class="input-group">
+                                <label for="butter">Butter (grams)</label>
+                                <input type="number" id="butter" min="0" step="1">
                             </div>
                         </div>
                         
@@ -255,84 +238,56 @@
                         </div>
                         
                         <div id="sourdough-section" class="specific-inputs" style="display:none;">
-                            <p><strong>Sourdough Bread:</strong> Fermented using a sourdough starter - no commercial yeast added.</p>
+                            <p><strong>Sourdough Bread:</strong> Fermented dough with starter for complex flavors.</p>
                             <div class="input-group">
-                                <label for="starter">Sourdough Starter (grams)</label>
-                                <input type="number" id="starter" min="0" step="1">
+                                <label for="starter-amount">Sourdough Starter (grams)</label>
+                                <input type="number" id="starter-amount" min="0" step="1">
                             </div>
                         </div>
                         
                         <div id="custom-section" class="specific-inputs" style="display:none;">
-                            <p><strong>Custom Recipe:</strong> Full control over all ingredients</p>
-                            <div class="input-group">
-                                <label for="eggs">Eggs (grams)</label>
-                                <input type="number" id="eggs" min="0" step="1">
-                            </div>
-                            <div class="input-group">
-                                <label for="milk">Milk (grams)</label>
-                                <input type="number" id="milk" min="0" step="1">
-                            </div>
-                            <div class="input-group">
-                                <label for="butter">Butter (grams)</label>
-                                <input type="number" id="butter" min="0" step="1">
-                            </div>
-                            <div class="input-group">
-                                <label for="cream">Cream (grams)</label>
-                                <input type="number" id="cream" min="0" step="1">
-                            </div>
-                            <div class="input-group">
-                                <label for="oil">Oil (grams)</label>
-                                <input type="number" id="oil" min="0" step="1">
-                            </div>
-                            <div class="input-group">
-                                <label for="starter">Sourdough Starter (grams)</label>
-                                <input type="number" id="starter" min="0" step="1">
-                            </div>
+                            <p><strong>Custom Recipe:</strong> Full control over all ingredients.</p>
                         </div>
                     </div>
 
-                    <!-- Yeast Section -->
-                    <div class="input-group">
-                        <label for="yeast-type">Yeast Type</label>
-                        <select id="yeast-type">
-                            <option value="instant">Instant Yeast</option>
-                            <option value="active-dry">Active Dry Yeast</option>
-                            <option value="fresh">Fresh/Cake Yeast</option>
-                        </select>
-                    </div>
-
-                    <div class="input-group">
-                        <label for="yeast-percent">Yeast (%)</label>
-                        <input type="number" id="yeast-percent" min="0" step="0.1" value="2">
-                    </div>
-
-                    <div class="input-group">
-                        <label for="batch-scale">Batch Scale</label>
-                        <input type="number" id="batch-scale" min="1" step="1" value="1">
-                    </div>
-
-                    <div class="button-group">
-                        <button id="calculate-btn">Calculate Recipe</button>
-                    </div>
+                    <button id="calculate-btn">Calculate Recipe</button>
+                    <button id="reset-btn">Reset Calculator</button>
                 </div>
             </section>
 
-            <!-- Results Section -->
+            <!-- Hydration Education Section (shown below calculator inputs when recipe selected) -->
+            <section id="hydration-education" class="hydration-education-section">
+                <h2>Understanding Hydration in Bread Making</h2>
+                <p>Hydration refers to the amount of water in a dough, expressed as a percentage of the flour weight. It's a crucial factor that determines the texture, structure, and handling characteristics of your bread.</p>
+                
+                <h3>How Hydration Affects Bread</h3>
+                <ul>
+                    <li><strong>Low Hydration (50-60%):</strong> Dense, tight crumb; easier to handle, good for structured breads</li>
+                    <li><strong>Medium Hydration (60-70%):</strong> Balanced texture with good structure and slight openness</li>
+                    <li><strong>High Hydration (70%+):</strong> Open crumb with air pockets; requires more technique for handling</li>
+                </ul>
+                
+                <h3>Different Hydration Ranges and Their Results</h3>
+                <div class="hydration-terms">
+                    <p><strong>50-60%:</strong> Dense loaf, tight crumb - often used in sandwich breads and structured loaves</p>
+                    <p><strong>60-65%:</strong> Standard bread texture - good all-purpose hydration level</p>
+                    <p><strong>65-70%:</strong> Light, airy crumb with a more open structure - great for rustic breads</p>
+                    <p><strong>70-75%:</strong> Very open crumb, soft and tender - typical for certain artisan breads</p>
+                    <p><strong>75%+:</strong> Extremely airy crumb with large holes - often used in pizza dough or very wet doughs</p>
+                </div>
+                
+                <h3>Why Understanding Hydration Matters</h3>
+                <p>The hydration level you choose will affect how your bread behaves during mixing, proofing, and baking. Higher hydration doughs are more challenging to handle but produce more open crumb structures that many bakers love. Lower hydration is easier to work with but results in denser textures.</p>
+                <p>When using enriched doughs (containing eggs, milk, butter, etc.), the water content from these ingredients should be accounted for in your effective hydration calculation to achieve the desired final texture.</p>
+            </section>
+
+            <!-- Step 2: Results Section -->
             <section id="results-section" class="results-section" style="display:none;">
-                <div class="result-header">
-                    <h2>Recipe Results</h2>
-                    <p>Adjust your inputs or return to select a different bread type.</p>
-                    <button id="back-to-calculator-btn">← Back to Calculator</button>
-                </div>
-                <div id="results-content">
-                    <p>Select a bread type and enter your ingredients to see results here.</p>
-                </div>
+                <h2>Recipe Results</h2>
+                <div id="results-container"></div>
+                <button id="back-to-calculator-btn">← Back to Calculator</button>
             </section>
         </main>
-
-        <footer>
-            <p>Bread Dough Calculator &copy; 2026</p>
-        </footer>
     </div>
 
     <script src="script.js"></script>
