@@ -71,10 +71,6 @@ function selectBreadType(type) {
             document.getElementById('milk-section').style.display = 'block';
             break;
             
-        case 'sourdough':
-            document.getElementById('sourdough-section').style.display = 'block';
-            break;
-            
         case 'custom':
             document.getElementById('custom-section').style.display = 'block';
             break;
