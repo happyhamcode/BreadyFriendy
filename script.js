@@ -24,65 +24,89 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function selectDoughType(type) {
     // Hide the dough selection screen
-    document.getElementById('step-dough-type').classList.remove('active');
+    const stepDoughType = document.getElementById('step-dough-type');
+    if (stepDoughType) {
+        stepDoughType.style.display = 'none';
+    }
     
     // Show the input fields
-    document.getElementById('step-inputs').style.display = 'block';
+    const stepInputs = document.getElementById('step-inputs');
+    if (stepInputs) {
+        stepInputs.style.display = 'block';
+    }
     
     // Show/hide relevant ingredient sections based on dough type
     const enrichingSection = document.getElementById('enriching-ingredients');
     
-    switch(type) {
-        case 'basic':
-            // Basic bread - only flour, water, salt, yeast
-            enrichingSection.style.display = 'block';
-            break;
-            
-        case 'enriched':
-            // Enriched dough - includes butter for brioche
-            enrichingSection.style.display = 'block';
-            break;
-            
-        case 'sweet':
-            // Sweet dough - includes oil for challah
-            enrichingSection.style.display = 'block';
-            break;
-            
-        case 'whole-wheat':
-            // Whole wheat - may include enrichments
-            enrichingSection.style.display = 'block';
-            break;
-            
-        case 'rye':
-            // Rye bread - may include enrichments
-            enrichingSection.style.display = 'block';
-            break;
-            
-        case 'italian':
-            // Italian bread - may include enrichments
-            enrichingSection.style.display = 'block';
-            break;
-            
-        case 'custom':
-            // Custom - show all options
-            enrichingSection.style.display = 'block';
-            break;
+    if (enrichingSection) {
+        switch(type) {
+            case 'basic':
+                // Basic bread - only flour, water, salt, yeast
+                enrichingSection.style.display = 'block';
+                break;
+                
+            case 'enriched':
+                // Enriched dough - includes butter for brioche
+                enrichingSection.style.display = 'block';
+                break;
+                
+            case 'sweet':
+                // Sweet dough - includes oil for challah
+                enrichingSection.style.display = 'block';
+                break;
+                
+            case 'whole-wheat':
+                // Whole wheat - may include enrichments
+                enrichingSection.style.display = 'block';
+                break;
+                
+            case 'rye':
+                // Rye bread - may include enrichments
+                enrichingSection.style.display = 'block';
+                break;
+                
+            case 'italian':
+                // Italian bread - may include enrichments
+                enrichingSection.style.display = 'block';
+                break;
+                
+            case 'custom':
+                // Custom - show all options
+                enrichingSection.style.display = 'block';
+                break;
+        }
     }
     
     // Show back button and hide results section
-    document.getElementById('back-btn').style.display = 'inline-block';
-    document.getElementById('results-content').innerHTML = '<p>Enter your ingredients and click "Calculate Recipe" to see results here.</p>';
+    const backButton = document.getElementById('back-btn');
+    if (backButton) {
+        backButton.style.display = 'inline-block';
+    }
+    
+    const resultsContent = document.getElementById('results-content');
+    if (resultsContent) {
+        resultsContent.innerHTML = '<p>Enter your ingredients and click "Calculate Recipe" to see results here.</p>';
+    }
 }
 
 function showDoughSelection() {
     // Hide the input fields
-    document.getElementById('step-inputs').style.display = 'none';
+    const stepInputs = document.getElementById('step-inputs');
+    if (stepInputs) {
+        stepInputs.style.display = 'none';
+    }
     
     // Show the dough selection screen
-    document.getElementById('step-dough-type').classList.add('active');
+    const stepDoughType = document.getElementById('step-dough-type');
+    if (stepDoughType) {
+        stepDoughType.style.display = 'block';
+    }
     
     // Hide back button
-    document.getElementById('back-btn').style.display = 'none';
+    const backButton = document.getElementById('back-btn');
+    if (backButton) {
+        backButton.style.display = 'none';
+    }
 }
 
 function calculateRecipe() {
