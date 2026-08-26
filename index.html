@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bread Dough Calculator</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
@@ -12,80 +13,138 @@
             <p>Calculate precise ingredient amounts for your bread recipes</p>
         </header>
 
-        <main>
-            <!-- Step 1: Select Dough Type -->
-            <section id="step-dough-type" class="wizard-step" style="display:block;">
-                <div class="step-header">
-                    <h2>Select Your Bread Type</h2>
-                    <p>Choose the type of bread you want to make. Each selection will show recommended ingredients and guidance.</p>
-                </div>
-                
-                <div class="bread-options-grid">
-                    <div class="bread-option-card">
-                        <h3>Basic Bread</h3>
-                        <p>Simple flour, water, salt, and yeast. Perfect for everyday loaves.</p>
-                        <button class="dough-type-btn" data-type="basic">Select Basic Bread</button>
-                    </div>
-                    
-                    <div class="bread-option-card">
-                        <h3>Brioche</h3>
-                        <p>Rich, tender dough with butter for exceptional softness and flavor.</p>
-                        <button class="dough-type-btn" data-type="enriched">Select Brioche</button>
-                    </div>
-                    
-                    <div class="bread-option-card">
-                        <h3>Challah</h3>
-                        <p>Traditional Jewish braided bread using oil for its distinctive flavor.</p>
-                        <button class="dough-type-btn" data-type="sweet">Select Challah</button>
-                    </div>
-                    
-                    <div class="bread-option-card">
-                        <h3>Whole Wheat</h3>
-                        <p>Nutritious dough using whole wheat flour with optional enrichments.</p>
-                        <button class="dough-type-btn" data-type="whole-wheat">Select Whole Wheat</button>
-                    </div>
-                    
-                    <div class="bread-option-card">
-                        <h3>Rye Bread</h3>
-                        <p>Distinctive tangy flavor using rye flour with possible enrichments.</p>
-                        <button class="dough-type-btn" data-type="rye">Select Rye Bread</button>
-                    </div>
-                    
-                    <div class="bread-option-card">
-                        <h3>Italian Loaf</h3>
-                        <p>Classic crusty exterior with tender interior using olive oil.</p>
-                        <button class="dough-type-btn" data-type="italian">Select Italian Loaf</button>
-                    </div>
-                    
-                    <div class="bread-option-card">
-                        <h3>Custom Recipe</h3>
-                        <p>Full control over all ingredients for unique combinations.</p>
-                        <button class="dough-type-btn" data-type="custom">Select Custom</button>
-                    </div>
-                </div>
-            </section>
+        <!-- Main Navigation Buttons -->
+        <div id="bread-type-buttons" class="bread-type-navigation">
+            <button class="bread-type-btn" data-type="basic">Basic White Bread</button>
+            <button class="bread-type-btn" data-type="enriched">Enriched Dough (Brioche)</button>
+            <button class="bread-type-btn" data-type="sweet">Sweet Dough (Challah)</button>
+            <button class="bread-type-btn" data-type="whole-wheat">Whole Wheat Bread</button>
+            <button class="bread-type-btn" data-type="rye">Rye Bread</button>
+            <button class="bread-type-btn" data-type="italian">Italian Bread</button>
+            <button class="bread-type-btn" data-type="milk">Milk Bread</button>
+            <button class="bread-type-btn" data-type="sourdough">Sourdough Bread</button>
+            <button class="bread-type-btn" data-type="custom">Custom Recipe</button>
+        </div>
 
-            <!-- Step 2: Input Fields -->
-            <section id="step-inputs" class="wizard-step" style="display:none;">
-                <div class="step-header">
+        <!-- Bread Description Section -->
+        <div id="bread-description-section" class="bread-description-section">
+            <div id="basic-description" class="bread-description active">
+                <h2>Basic White Bread</h2>
+                <p>A simple yet perfect recipe using just flour, water, salt, and yeast. Ideal for everyday loaves with a light texture.</p>
+                <ul>
+                    <li>Hydration: 60-65%</li>
+                    <li>Ingredients: Flour, water, salt, yeast</li>
+                    <li>Characteristics: Simple, straightforward recipe</li>
+                </ul>
+            </div>
+            
+            <div id="enriched-description" class="bread-description">
+                <h2>Enriched Dough (Brioche)</h2>
+                <p>Rich, tender dough with eggs and butter for exceptional softness and flavor. Perfect for enriched breads.</p>
+                <ul>
+                    <li>Hydration: 55-65% (effective hydration includes water from enriching ingredients)</li>
+                    <li>Ingredients: Flour, water, salt, yeast, eggs, milk, butter</li>
+                    <li>Characteristics: Rich, tender crumb, higher fat content</li>
+                </ul>
+            </div>
+            
+            <div id="sweet-description" class="bread-description">
+                <h2>Sweet Dough (Challah)</h2>
+                <p>Traditional braided bread using eggs and oil for distinctive flavor and texture. Sweet but not overly so.</p>
+                <ul>
+                    <li>Hydration: 55-65%</li>
+                    <li>Ingredients: Flour, water, salt, yeast, eggs, oil</li>
+                    <li>Characteristics: Sweet, tender, rich texture with braided appearance</li>
+                </ul>
+            </div>
+            
+            <div id="whole-wheat-description" class="bread-description">
+                <h2>Whole Wheat Bread</h2>
+                <p>Nutritious dough using whole wheat flour with optional enrichments. Higher fiber content and robust flavor.</p>
+                <ul>
+                    <li>Hydration: 70-75% (higher due to whole wheat absorption)</li>
+                    <li>Ingredients: Whole wheat flour, water, salt, yeast, optional enrichments</li>
+                    <li>Characteristics: Nutrient-dense, denser crumb than white flour bread</li>
+                </ul>
+            </div>
+            
+            <div id="rye-description" class="bread-description">
+                <h2>Rye Bread</h2>
+                <p>Distinctive tangy flavor using rye flour with possible enrichments. Higher hydration due to rye's absorption properties.</p>
+                <ul>
+                    <li>Hydration: 75-80% (higher due to rye's absorption)</li>
+                    <li>Ingredients: Rye flour, water, salt, yeast, optional enrichments</li>
+                    <li>Characteristics: Distinctive tangy flavor, dense texture</li>
+                </ul>
+            </div>
+            
+            <div id="italian-description" class="bread-description">
+                <h2>Italian Bread (Ciabatta, Pullman)</h2>
+                <p>Light, airy crumb with crispy exterior. Great for sandwiches and traditional Italian breads.</p>
+                <ul>
+                    <li>Hydration: 60-70%</li>
+                    <li>Ingredients: Flour, water, salt, yeast, optional enrichments</li>
+                    <li>Characteristics: Light, airy crumb with a crispy exterior</li>
+                </ul>
+            </div>
+            
+            <div id="milk-description" class="bread-description">
+                <h2>Milk Bread</h2>
+                <p>Soft, sweet, tender crumb with golden color from milk. Classic enriched bread.</p>
+                <ul>
+                    <li>Hydration: 65-70%</li>
+                    <li>Ingredients: Flour, water, salt, yeast, milk, butter</li>
+                    <li>Characteristics: Soft, sweet, tender crumb with golden color</li>
+                </ul>
+            </div>
+            
+            <div id="sourdough-description" class="bread-description">
+                <h2>Sourdough Bread</h2>
+                <p>Fermented dough using a starter for complex flavor and texture. Develops unique taste over time.</p>
+                <ul>
+                    <li>Hydration: 65-75%</li>
+                    <li>Ingredients: Flour, water, salt, sourdough starter</li>
+                    <li>Characteristics: Tangy flavor, chewy texture, complex taste development</li>
+                </ul>
+            </div>
+            
+            <div id="custom-description" class="bread-description">
+                <h2>Custom Recipe</h2>
+                <p>Full control over all ingredients for unique combinations and experiments.</p>
+                <ul>
+                    <li>All ingredients available for custom combinations</li>
+                    <li>Fully adjustable hydration levels</li>
+                    <li>No restrictions on ingredient amounts</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Calculator Sections -->
+        <main id="calculator-content">
+            <!-- Step 1: Calculator Input Form -->
+            <section id="calculator-form" class="calculator-form">
+                <div class="form-header">
                     <h2>Recipe Inputs</h2>
-                    <p>Enter your recipe details below</p>
+                    <p>Enter your recipe details below for the selected bread type.</p>
+                    <button id="back-to-types-btn">← Return to Bread Types</button>
+                    <input type="hidden" id="current-bread-type" value="">
                 </div>
                 
+                <!-- Hidden fields for calculation -->
                 <div class="input-grid">
                     <div class="input-group">
                         <label for="flour-weight">Total Flour Weight (grams)</label>
-                        <input type="number" id="flour-weight" min="0" step="1">
+                        <input type="number" id="flour-weight" min="0" step="1" value="1000">
                     </div>
 
                     <div class="input-group">
                         <label for="hydration">Target Hydration (%)</label>
-                        <input type="number" id="hydration" min="0" step="0.1">
+                        <input type="number" id="hydration" min="0" step="0.1" value="65">
                     </div>
 
                     <div class="input-group">
                         <label for="salt">Salt (%)</label>
-                        <input type="number" id="salt" min="0" step="0.1">
+                        <input type="number" id="salt" min="0" step="0.1" value="2">
                     </div>
 
                     <!-- Bread-Specific Inputs -->
@@ -94,11 +153,19 @@
                         <p>Enter ingredients appropriate for your selected bread type:</p>
                         
                         <div id="basic-bread-section" class="specific-inputs" style="display:none;">
-                            <p><strong>Basic Bread:</strong> Just flour, water, salt, and yeast - no enrichments.</p>
+                            <p><strong>Basic White Bread:</strong> Simple flour, water, salt, and yeast - no enrichments.</p>
                         </div>
                         
                         <div id="enriched-bread-section" class="specific-inputs" style="display:none;">
-                            <p><strong>Brioche:</strong> Includes butter for rich texture and flavor.</p>
+                            <p><strong>Enriched Dough (Brioche):</strong> Includes eggs and butter for rich texture.</p>
+                            <div class="input-group">
+                                <label for="eggs">Eggs (grams)</label>
+                                <input type="number" id="eggs" min="0" step="1">
+                            </div>
+                            <div class="input-group">
+                                <label for="milk">Milk (grams)</label>
+                                <input type="number" id="milk" min="0" step="1">
+                            </div>
                             <div class="input-group">
                                 <label for="butter">Butter (grams)</label>
                                 <input type="number" id="butter" min="0" step="1">
@@ -106,7 +173,7 @@
                         </div>
                         
                         <div id="sweet-bread-section" class="specific-inputs" style="display:none;">
-                            <p><strong>Challah:</strong> Traditional braided bread using eggs and oil for flavor and texture.</p>
+                            <p><strong>Sweet Dough (Challah):</strong> Uses eggs and oil for flavor.</p>
                             <div class="input-group">
                                 <label for="eggs">Eggs (grams)</label>
                                 <input type="number" id="eggs" min="0" step="1">
@@ -118,34 +185,62 @@
                         </div>
                         
                         <div id="whole-wheat-section" class="specific-inputs" style="display:none;">
-                            <p><strong>Whole Wheat:</strong> Nutritious dough with optional enrichments.</p>
+                            <p><strong>Whole Wheat Bread:</strong> Nutritious dough with optional enrichments.</p>
+                            <div class="input-group">
+                                <label for="eggs">Eggs (grams)</label>
+                                <input type="number" id="eggs" min="0" step="1">
+                            </div>
+                            <div class="input-group">
+                                <label for="milk">Milk (grams)</label>
+                                <input type="number" id="milk" min="0" step="1">
+                            </div>
                             <div class="input-group">
                                 <label for="butter">Butter (grams)</label>
                                 <input type="number" id="butter" min="0" step="1">
-                            </div>
-                            <div class="input-group">
-                                <label for="oil">Oil (grams)</label>
-                                <input type="number" id="oil" min="0" step="1">
                             </div>
                         </div>
                         
                         <div id="rye-section" class="specific-inputs" style="display:none;">
                             <p><strong>Rye Bread:</strong> Distinctive tangy flavor with possible enrichments.</p>
                             <div class="input-group">
+                                <label for="eggs">Eggs (grams)</label>
+                                <input type="number" id="eggs" min="0" step="1">
+                            </div>
+                            <div class="input-group">
+                                <label for="milk">Milk (grams)</label>
+                                <input type="number" id="milk" min="0" step="1">
+                            </div>
+                            <div class="input-group">
                                 <label for="butter">Butter (grams)</label>
                                 <input type="number" id="butter" min="0" step="1">
                             </div>
+                        </div>
+                        
+                        <div id="italian-section" class="specific-inputs" style="display:none;">
+                            <p><strong>Italian Bread:</strong> Light, airy crumb with crispy exterior.</p>
                             <div class="input-group">
                                 <label for="oil">Oil (grams)</label>
                                 <input type="number" id="oil" min="0" step="1">
                             </div>
                         </div>
                         
-                        <div id="italian-section" class="specific-inputs" style="display:none;">
-                            <p><strong>Italian Loaf:</strong> Classic crusty exterior with tender interior using olive oil.</p>
+                        <div id="milk-section" class="specific-inputs" style="display:none;">
+                            <p><strong>Milk Bread:</strong> Soft, sweet, tender crumb with golden color.</p>
                             <div class="input-group">
-                                <label for="oil">Oil (grams)</label>
-                                <input type="number" id="oil" min="0" step="1">
+                                <label for="milk">Milk (grams)</label>
+                                <input type="number" id="milk" min="0" step="1">
+                            </div>
+                            <div class="input-group">
+                                <label for="butter">Butter (grams)</label>
+                                <input type="number" id="butter" min="0" step="1">
+                            </div>
+                        </div>
+                        
+                        <div id="sourdough-section" class="specific-inputs" style="display:none;">
+                            <p><strong>Sourdough Bread:</strong> Fermented using a sourdough starter - no commercial yeast added.</p>
+                            <div class="input-group">
+                                <label for="starter">Sourdough Starter (grams)</label>
+                                <input type="number" id="starter" min="0" step="1">
                             </div>
                         </div>
                         
@@ -171,6 +266,10 @@
                                 <label for="oil">Oil (grams)</label>
                                 <input type="number" id="oil" min="0" step="1">
                             </div>
+                            <div class="input-group">
+                                <label for="starter">Sourdough Starter (grams)</label>
+                                <input type="number" id="starter" min="0" step="1">
+                            </div>
                         </div>
                     </div>
 
@@ -186,7 +285,7 @@
 
                     <div class="input-group">
                         <label for="yeast-percent">Yeast (%)</label>
-                        <input type type="number" id="yeast-percent" min="0" step="0.1">
+                        <input type="number" id="yeast-percent" min="0" step="0.1" value="2">
                     </div>
 
                     <div class="input-group">
@@ -196,18 +295,19 @@
 
                     <div class="button-group">
                         <button id="calculate-btn">Calculate Recipe</button>
-                        <button id="back-btn" style="display:none;">Back to Selection</button>
                     </div>
                 </div>
             </section>
 
             <!-- Results Section -->
-            <section id="results" class="results-section">
-                <div class="step-header">
+            <section id="results-section" class="results-section" style="display:none;">
+                <div class="result-header">
                     <h2>Recipe Results</h2>
+                    <p>Adjust your inputs or return to select a different bread type.</p>
+                    <button id="back-to-calculator-btn">← Back to Calculator</button>
                 </div>
                 <div id="results-content">
-                    <p>Choose a bread type and enter your ingredients to see results here.</p>
+                    <p>Select a bread type and enter your ingredients to see results here.</p>
                 </div>
             </section>
         </main>

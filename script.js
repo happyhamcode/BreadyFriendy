@@ -1,19 +1,21 @@
 // Bread Dough Calculator - JavaScript Implementation
 
 document.addEventListener('DOMContentLoaded', function() {
-    const doughTypeButtons = document.querySelectorAll('.dough-type-btn');
+    const breadTypeButtons = document.querySelectorAll('.bread-type-btn');
     const calculateBtn = document.getElementById('calculate-btn');
-    const backBtn = document.getElementById('back-btn');
+    const backToTypesBtn = document.getElementById('back-to-types-btn');
+    const backToCalculatorBtn = document.getElementById('back-to-calculator-btn');
     
-    // Set up event listeners for dough type selection
-    doughTypeButtons.forEach(button => {
+    // Set up event listeners for bread type selection
+    breadTypeButtons.forEach(button => {
         button.addEventListener('click', function() {
-            selectDoughType(this.dataset.type);
+            selectBreadType(this.dataset.type);
         });
     });
     
     calculateBtn.addEventListener('click', calculateRecipe);
-    backBtn.addEventListener('click', showDoughSelection);
+    backToTypesBtn.addEventListener('click', showBreadTypes);
+    backToCalculatorBtn.addEventListener('click', showCalculator);
     
     // Initialize with sample values for testing
     document.getElementById('flour-weight').value = '1000';
@@ -22,101 +24,130 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('yeast-percent').value = '2';
 });
 
-function selectDoughType(type) {
-    // Hide the dough selection screen
-    const stepDoughType = document.getElementById('step-dough-type');
-    if (stepDoughType) {
-        stepDoughType.style.display = 'none';
-    }
+function selectBreadType(type) {
+    // Hide the bread type selection and descriptions
+    document.getElementById('bread-type-buttons').style.display = 'none';
+    document.getElementById('bread-description-section').style.display = 'none';
     
-    // Show the input fields
-    const stepInputs = document.getElementById('step-inputs');
-    if (stepInputs) {
-        stepInputs.style.display = 'block';
-    }
+    // Show the calculator form
+    document.getElementById('calculator-form').style.display = 'block';
     
-    // Show/hide bread-specific ingredient sections based on dough type
+    // Show/hide bread-specific input fields based on selection
     const breadSpecificIngredients = document.getElementById('bread-specific-ingredients');
     
-    if (breadSpecificIngredients) {
-        // Hide all sections first
-        const specificSections = breadSpecificIngredients.querySelectorAll('.specific-inputs');
-        specificSections.forEach(section => {
-            section.style.display = 'none';
-        });
-        
-        // Show the appropriate section
-        switch(type) {
-            case 'basic':
-                // Basic bread - only flour, water, salt, yeast
-                document.getElementById('basic-bread-section').style.display = 'block';
-                break;
-                
-            case 'enriched':
-                // Enriched dough - includes butter for brioche
-                document.getElementById('enriched-bread-section').style.display = 'block';
-                break;
-                
-            case 'sweet':
-                // Sweet dough - includes oil for challah
-                document.getElementById('sweet-bread-section').style.display = 'block';
-                break;
-                
-            case 'whole-wheat':
-                // Whole wheat - may include enrichments
-                document.getElementById('whole-wheat-section').style.display = 'block';
-                break;
-                
-            case 'rye':
-                // Rye bread - may include enrichments
-                document.getElementById('rye-section').style.display = 'block';
-                break;
-                
-            case 'italian':
-                // Italian bread - may include enrichments
-                document.getElementById('italian-section').style.display = 'block';
-                break;
-                
-            case 'custom':
-                // Custom - show all enriching ingredients
-                document.getElementById('custom-section').style.display = 'block';
-                break;
-        }
+    // Hide all sections first
+    const specificSections = breadSpecificIngredients.querySelectorAll('.specific-inputs');
+    specificSections.forEach(section => {
+        section.style.display = 'none';
+    });
+    
+    // Show the appropriate section
+    switch(type) {
+        case 'basic':
+            document.getElementById('basic-bread-section').style.display = 'block';
+            break;
+            
+        case 'enriched':
+            document.getElementById('enriched-bread-section').style.display = 'block';
+            break;
+            
+        case 'sweet':
+            document.getElementById('sweet-bread-section').style.display = 'block';
+            break;
+            
+        case 'whole-wheat':
+            document.getElementById('whole-wheat-section').style.display = 'block';
+            break;
+            
+        case 'rye':
+            document.getElementById('rye-section').style.display = 'block';
+            break;
+            
+        case 'italian':
+            document.getElementById('italian-section').style.display = 'block';
+            break;
+            
+        case 'milk':
+            document.getElementById('milk-section').style.display = 'block';
+            break;
+            
+        case 'sourdough':
+            document.getElementById('sourdough-section').style.display = 'block';
+            break;
+            
+        case 'custom':
+            document.getElementById('custom-section').style.display = 'block';
+            break;
     }
     
-    // Show back button and hide results section
-    const backButton = document.getElementById('back-btn');
-    if (backButton) {
-        backButton.style.display = 'inline-block';
-    }
-    
-    const resultsContent = document.getElementById('results-content');
-    if (resultsContent) {
-        resultsContent.innerHTML = '<p>Enter your ingredients and click "Calculate Recipe" to see results here.</p>';
-    }
+    // Update current bread type in the hidden field
+    document.getElementById('current-bread-type').value = type;
 }
 
-function showDoughSelection() {
-    // Hide the input fields
-    const stepInputs = document.getElementById('step-inputs');
-    if (stepInputs) {
-        stepInputs.style.display = 'none';
+function showBreadTypes() {
+    // Hide the calculator form and results
+    document.getElementById('calculator-form').style.display = 'none';
+    document.getElementById('results-section').style.display = 'none';
+    
+    // Show the bread type selection and descriptions
+    document.getElementById('bread-type-buttons').style.display = 'block';
+    document.getElementById('bread-description-section').style.display = 'block';
+}
+
+function showCalculator() {
+    // Hide results section
+    document.getElementById('results-section').style.display = 'none';
+    
+    // Show calculator form again
+    document.getElementById('calculator-form').style.display = 'block';
+}
+
+// Validation functions to check for excessive ingredients
+function validateIngredientInputs() {
+    const flourWeight = parseFloat(document.getElementById('flour-weight').value) || 0;
+    const eggs = parseFloat(document.getElementById('eggs').value) || 0;
+    const milk = parseFloat(document.getElementById('milk').value) || 0;
+    const butter = parseFloat(document.getElementById('butter').value) || 0;
+    const cream = parseFloat(document.getElementById('cream').value) || 0;
+    const oil = parseFloat(document.getElementById('oil').value) || 0;
+    const starter = parseFloat(document.getElementById('starter').value) || 0;
+    
+    // Check if any ingredient significantly exceeds flour weight (shouldn't be more than 3x flour weight)
+    if (eggs > flourWeight * 3) {
+        return {valid: false, message: "Eggs amount seems excessive. Please adjust."};
+    }
+    if (milk > flourWeight * 3) {
+        return {valid: false, message: "Milk amount seems excessive. Please adjust."};
+    }
+    if (butter > flourWeight * 3) {
+        return {valid: false, message: "Butter amount seems excessive. Please adjust."};
+    }
+    if (cream > flourWeight * 3) {
+        return {valid: false, message: "Cream amount seems excessive. Please adjust."};
+    }
+    if (oil > flourWeight * 3) {
+        return {valid: false, message: "Oil amount seems excessive. Please adjust."};
+    }
+    if (starter > flourWeight * 3) {
+        return {valid: false, message: "Sourdough starter amount seems excessive. Please adjust."};
     }
     
-    // Show the dough selection screen
-    const stepDoughType = document.getElementById('step-dough-type');
-    if (stepDoughType) {
-        stepDoughType.style.display = 'block';
+    // Check for negative values
+    if (eggs < 0 || milk < 0 || butter < 0 || cream < 0 || oil < 0 || starter < 0) {
+        return {valid: false, message: "Ingredient amounts cannot be negative."};
     }
     
-    // Hide back button
-    const backButton = document.getElementById('back-btn');
-    if (backButton) {
-        backButton.style.display = 'none';
-    }
+    return {valid: true, message: "Valid inputs"};
 }
 
 function calculateRecipe() {
+    // Validate inputs
+    const validation = validateIngredientInputs();
+    if (!validation.valid) {
+        showResults(validation.message);
+        return;
+    }
+
     // Get input values
     const flourWeight = parseFloat(document.getElementById('flour-weight').value) || 0;
     const hydration = parseFloat(document.getElementById('hydration').value) || 0;
@@ -126,24 +157,30 @@ function calculateRecipe() {
     const butter = parseFloat(document.getElementById('butter').value) || 0;
     const cream = parseFloat(document.getElementById('cream').value) || 0;
     const oil = parseFloat(document.getElementById('oil').value) || 0;
+    const starter = parseFloat(document.getElementById('starter').value) || 0;
     const yeastType = document.getElementById('yeast-type').value;
     const yeastPercent = parseFloat(document.getElementById('yeast-percent').value) || 0;
     const batchScale = parseFloat(document.getElementById('batch-scale').value) || 1;
     
-    // Validate inputs
+    // Validate basic parameters
     if (flourWeight <= 0) {
         showResults('Please enter a valid flour weight');
         return;
     }
     
+    if (hydration < 0) {
+        showResults('Hydration level cannot be negative');
+        return;
+    }
+    
     // Perform calculations
-    const results = calculateDough(flourWeight, hydration, saltPercent, eggs, milk, butter, cream, oil, yeastType, yeastPercent, batchScale);
+    const results = calculateDough(flourWeight, hydration, saltPercent, eggs, milk, butter, cream, oil, starter, yeastType, yeastPercent, batchScale);
     
     // Display results
     displayResults(results);
 }
 
-function calculateDough(flourWeight, hydration, saltPercent, eggs, milk, butter, cream, oil, yeastType, yeastPercent, batchScale) {
+function calculateDough(flourWeight, hydration, saltPercent, eggs, milk, butter, cream, oil, starter, yeastType, yeastPercent, batchScale) {
     // Calculate effective water from enriching ingredients
     const eggWater = eggs * 0.75;  // 75% water content in whole eggs
     const milkWater = milk * 0.87;  // 87% water content in whole milk
@@ -183,6 +220,7 @@ function calculateDough(flourWeight, hydration, saltPercent, eggs, milk, butter,
     const scaledButter = butter * batchScale;
     const scaledCream = cream * batchScale;
     const scaledOil = oil * batchScale;
+    const scaledStarter = starter * batchScale;
     const scaledInstantYeast = instantYeast * batchScale;
     const scaledActiveDryYeast = activeDryYeast * batchScale;
     const scaledFreshYeast = freshYeast * batchScale;
@@ -199,6 +237,7 @@ function calculateDough(flourWeight, hydration, saltPercent, eggs, milk, butter,
         butter: scaledButter,
         cream: scaledCream,
         oil: scaledOil,
+        starter: scaledStarter,
         instantYeast: scaledInstantYeast,
         activeDryYeast: scaledActiveDryYeast,
         freshYeast: scaledFreshYeast,
@@ -228,6 +267,7 @@ function displayResults(results) {
             <p>Butter: ${results.butter.toFixed(0)}g</p>
             <p>Cream: ${results.cream.toFixed(0)}g</p>
             <p>Oil: ${results.oil.toFixed(0)}g</p>
+            <p>Sourdough Starter: ${results.starter.toFixed(0)}g</p>
         </div>
         
         <div class="result-item">
