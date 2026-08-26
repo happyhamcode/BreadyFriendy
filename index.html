@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bread Dough Calculator</title>
+</head>
+<body>
+    <h1>Bread Dough Calculator</h1>
+    
+    <div>
+        <h2>Ingredients</h2>
+        
+        <p>Total Flour Weight (grams): <input type="number" id="flour-weight" min="0" step="1"></p>
+        <p>Target Hydration (%): <input type="number" id="hydration" min="0" step="0.1"></p>
+        <p>Salt (%): <input type="number" id="salt" min="0" step="0.1"></p>
+        
+        <p>Enriching Ingredients (grams):</p>
+        <div>
+            <p>Eggs: <input type="number" id="eggs" min="0" step="1"></p>
+            <p>Milk: <input type="number" id="milk" min="0" step="1"></p>
+            <p>Butter: <input type="number" id="butter" min="0" step="1"></p>
+        </div>
+        <div>
+            <p>Cream: <input type="number" id="cream" min="0" step="1"></p>
+            <p>Oil: <input type="number" id="oil" min="0" step="1"></p>
+        </div>
+        
+        <p>Yeast Type: 
+            <select id="yeast-type">
+                <option value="instant">Instant Yeast</option>
+                <option value="active-dry">Active Dry Yeast</option>
+                <option value="fresh">Fresh/Cake Yeast</option>
+            </select>
+        </p>
+        
+        <p>Yeast (%): <input type="number" id="yeast-percent" min="0" step="0.1"></p>
+        <p>Batch Scale: <input type="number" id="batch-scale" min="1" step="1" value="1"></p>
+        
+        <button id="calculate-btn">Calculate Recipe</button>
+    </div>
+
+    <div id="results">
+        <h2>Results</h2>
+        <p>Enter your ingredients and click "Calculate Recipe" to see results here.</p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
