@@ -58,11 +58,6 @@ function selectDoughType(type) {
             enrichingSection.style.display = 'block';
             break;
             
-        case 'sourdough':
-            // Sourdough - may include enrichments
-            enrichingSection.style.display = 'block';
-            break;
-            
         case 'italian':
             // Italian bread - may include enrichments
             enrichingSection.style.display = 'block';
