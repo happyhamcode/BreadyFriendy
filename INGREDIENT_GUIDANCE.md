@@ -1,76 +1,156 @@
-# Ingredient Guidance for Bread Types
+# INGREDIENT GUIDANCE FOR BREAD DOUGH CALCULATOR
 
-## Basic Ingredients (Required for All Recipes)
-- **Flour** - Provides structure and gluten formation
-- **Water** - Hydrates flour and activates yeast
-- **Salt** - Enhances flavor, controls yeast activity
-- **Yeast** - Causes fermentation and rising
+This document provides guidance on the proper way to use ingredients in various bread types to ensure accurate calculations.
 
-## Enriching Ingredients and Their Uses
+## Basic White Bread (Basic Bread)
 
-### Eggs
-- **Typical use**: Brioche, challah, Parker House rolls, sweet doughs
-- **Benefits**: Adds protein, water content, richness, tender crumb
-- **Amount**: 50-100g per 500g flour typically
+**Ingredients:**
+- Flour
+- Water  
+- Salt
+- Yeast
 
-### Milk
-- **Typical use**: Enriched doughs, milk breads, sweet doughs
-- **Benefits**: Adds sugar, protein, fat, creates softer texture
-- **Amount**: 50-100g per 500g flour typically
+**Guidance:**
+- Simple and straightforward recipe
+- No enriching ingredients beyond basic components
+- Ideal for everyday loaves with a light texture
+- Use all-purpose or bread flour for best results
+- Typical hydration: 60-65%
 
-### Butter
-- **Typical use**: Brioche, challah, croissants, enriched doughs
-- **Benefits**: Adds fat and flavor, creates tender crumb
-- **Amount**: 20-40g per 500g flour typically
+## Enriched Dough (Brioche)
 
-### Cream
-- **Typical use**: Rich brioche, specialty sweet doughs
-- **Benefits**: High fat content, rich texture
-- **Amount**: 20-50g per 500g flour typically
+**Ingredients:**
+- Flour
+- Water (from eggs, milk, butter)
+- Salt
+- Yeast
+- Eggs
+- Milk
+- Butter
 
-### Oil
-- **Typical use**: Sweet doughs, focaccia, flatbreads, cake-like breads
-- **Benefits**: Adds fat without water content, tender crumb
-- **Amount**: 10-30g per 500g flour typically
+**Guidance:**
+- Rich, tender dough with exceptional softness and flavor
+- Includes eggs and butter for rich texture and flavor
+- The water content from enriching ingredients is factored into hydration calculations
+- Use high-quality ingredients for best results
+- Typical hydration: 55-65%
 
-## Bread Type Recommendations
+## Sweet Dough (Challah)
 
-### Basic Bread (White, Whole Wheat)
-- **Required**: Flour, water, salt, yeast
-- **Optional**: None
+**Ingredients:**
+- Flour
+- Water (from eggs, oil)
+- Salt
+- Yeast
+- Eggs
+- Oil
 
-### Enriched Dough (Brioche, Challah)
-- **Recommended ingredients**: Eggs, milk, butter
-- **Uses**: Rich texture and flavor
+**Guidance:**
+- Traditional braided bread using eggs and oil for distinctive flavor and texture
+- Sweet but not overly so - the sweetness comes from natural ingredients
+- Oil can be any cooking oil (vegetable, canola, etc.)
+- The water content from eggs is factored into hydration calculations
+- Create a soft, tender crumb that's perfect for braiding
 
-### Sweet Dough (Cinnamon Rolls, Pullman)
-- **Recommended ingredients**: Eggs, milk, butter, oil/sugar
-- **Uses**: Sweet, tender texture
+## Whole Wheat Bread
 
-### Whole Wheat Bread
-- **Recommended ingredients**: May include eggs, milk, butter
-- **Uses**: Nutritious, denser crumb
+**Ingredients:**
+- Whole wheat flour (or blend with white flour)
+- Water
+- Salt
+- Yeast
+- Optional enrichments:
+  - Eggs
+  - Milk
+  - Butter
 
-### Rye Bread
-- **Recommended ingredients**: May include eggs, milk, butter
-- **Uses**: Distinctive tangy flavor
+**Guidance:**
+- Nutritious dough using whole wheat flour with optional enrichments
+- Higher hydration due to whole wheat flour's absorption properties
+- Whole wheat absorbs more water than white flour, so adjust accordingly
+- Use bread flour or high-protein flour for better structure
+- Typical hydration: 70-75%
 
-### Sourdough
-- **Recommended ingredients**: May include eggs, milk, butter (for enriched varieties)
-- **Uses**: Fermented texture and flavor
+## Rye Bread
 
-### Italian Bread
-- **Recommended ingredients**: May include eggs, milk, butter, olive oil
-- **Uses**: Crusty exterior, tender interior
+**Ingredients:**
+- Rye flour (or blend with wheat flour)
+- Water
+- Salt
+- Yeast
+- Optional enrichments:
+  - Eggs
+  - Milk
+  - Butter
 
-### Custom Recipe
-- **Use all available options**
-- **Best for unique combinations and experimental recipes**
+**Guidance:**
+- Distinctive tangy flavor using rye flour
+- Higher hydration due to rye's absorption properties
+- Rye flour is much more absorbent than wheat flour
+- Often uses a mix of rye and wheat flours
+- Consider adding vital wheat gluten to improve structure
+- Typical hydration: 75-80%
 
-## Water Content Approximations
-- **Egg**: ~75% water content  
-- **Milk**: ~87% water content
-- **Butter**: ~16% water content
-- **Cream**: ~57.5% water content
+## Italian Bread (Ciabatta, Pullman)
 
-The calculator automatically accounts for water content in enriching ingredients, so you don't need to calculate that manually.
+**Ingredients:**
+- Flour
+- Water
+- Salt
+- Yeast
+- Optional enrichments:
+  - Oil
+
+**Guidance:**
+- Light, airy crumb with crispy exterior  
+- Great for sandwiches and traditional Italian breads
+- Oil can be included to improve texture
+- Higher hydration levels give the characteristic airiness
+- Uses a long, slow fermentation process in most cases
+- Typical hydration: 60-70%
+
+## Milk Bread
+
+**Ingredients:**
+- Flour
+- Water (from milk)
+- Salt
+- Yeast
+- Milk
+- Butter
+
+**Guidance:**
+- Soft, sweet, tender crumb with golden color from milk
+- Classic enriched bread that's perfect for snacking
+- The water content from milk is factored into hydration calculations
+- Butter adds richness and tenderness to the texture
+- Ideal for dinner rolls or slicing for sandwiches
+- Typical hydration: 65-70%
+
+## Sourdough Bread
+
+**Ingredients:**
+- Flour
+- Water
+- Salt
+- Sourdough starter (no commercial yeast added)
+
+**Guidance:**
+- Fermented dough using a naturally cultivated sourdough starter
+- Develops complex, tangy flavors over time through fermentation
+- Requires regular feeding and maintenance of the starter
+- Fermentation times can vary significantly based on temperature
+- The hydration level will depend heavily on your starter's activity
+- Uses only the starter for leavening, no commercial yeast
+
+## Custom Recipe
+
+**Ingredients:**
+- Any combination of flour, water, salt, yeast, eggs, milk, butter, cream, oil, and/or sourdough starter
+
+**Guidance:**
+- Full control over all ingredients for unique combinations
+- No restrictions on ingredient amounts or ratios
+- All ingredient combinations are allowed
+- All hydration calculations are handled automatically
+- Ideal for experimentation with new bread types
