@@ -35,44 +35,51 @@ function selectDoughType(type) {
         stepInputs.style.display = 'block';
     }
     
-    // Show/hide relevant ingredient sections based on dough type
-    const enrichingSection = document.getElementById('enriching-ingredients');
+    // Show/hide bread-specific ingredient sections based on dough type
+    const breadSpecificIngredients = document.getElementById('bread-specific-ingredients');
     
-    if (enrichingSection) {
+    if (breadSpecificIngredients) {
+        // Hide all sections first
+        const specificSections = breadSpecificIngredients.querySelectorAll('.specific-inputs');
+        specificSections.forEach(section => {
+            section.style.display = 'none';
+        });
+        
+        // Show the appropriate section
         switch(type) {
             case 'basic':
                 // Basic bread - only flour, water, salt, yeast
-                enrichingSection.style.display = 'block';
+                document.getElementById('basic-bread-section').style.display = 'block';
                 break;
                 
             case 'enriched':
                 // Enriched dough - includes butter for brioche
-                enrichingSection.style.display = 'block';
+                document.getElementById('enriched-bread-section').style.display = 'block';
                 break;
                 
             case 'sweet':
                 // Sweet dough - includes oil for challah
-                enrichingSection.style.display = 'block';
+                document.getElementById('sweet-bread-section').style.display = 'block';
                 break;
                 
             case 'whole-wheat':
                 // Whole wheat - may include enrichments
-                enrichingSection.style.display = 'block';
+                document.getElementById('whole-wheat-section').style.display = 'block';
                 break;
                 
             case 'rye':
                 // Rye bread - may include enrichments
-                enrichingSection.style.display = 'block';
+                document.getElementById('rye-section').style.display = 'block';
                 break;
                 
             case 'italian':
                 // Italian bread - may include enrichments
-                enrichingSection.style.display = 'block';
+                document.getElementById('italian-section').style.display = 'block';
                 break;
                 
             case 'custom':
-                // Custom - show all options
-                enrichingSection.style.display = 'block';
+                // Custom - show all enriching ingredients
+                document.getElementById('custom-section').style.display = 'block';
                 break;
         }
     }
