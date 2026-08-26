@@ -24,13 +24,385 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('yeast-percent').value = '2';
 });
 
+// Educational content database
+// Educational content database
+const educationalContent = {
+    basic: {
+        title: "Basic White Bread",
+        ingredients: [
+            {name: "Flour", description: "Provides gluten structure for the bread"},
+            {name: "Water", description: "Hydrates flour and activates yeast"},
+            {name: "Salt", description: "Enhances flavor and controls fermentation"},
+            {name: "Yeast", description: "Makes the dough rise through fermentation"}
+        ],
+        tips: "Basic white bread benefits from a long, slow first rise for better gluten development. The light texture comes from proper kneading and gentle handling during proofing."
+    },
+    enriched: {
+        title: "Enriched Dough (Brioche)",
+        ingredients: [
+            {name: "Flour", description: "Provides structure"},
+            {name: "Water", description: "Hydrates flour and activates yeast (water from eggs and milk is already accounted for)"},
+            {name: "Eggs", description: "Add richness, tenderness, and a golden color"},
+            {name: "Milk", description: "Provides moisture and adds flavor"},
+            {name: "Butter", description: "Adds richness and creates a tender crumb"},
+            {name: "Salt", description: "Enhances the natural sweetness and controls fermentation"},
+            {name: "Yeast", description: "Makes the dough rise"}
+        ],
+        tips: "Brioche requires gentle handling as the high fat content makes it more delicate. A long, cool first rise helps develop flavor while maintaining tenderness."
+    },
+    sweet: {
+        title: "Sweet Dough (Challah)",
+        ingredients: [
+            {name: "Flour", description: "Provides the structure"},
+            {name: "Water", description: "Hydrates flour and activates yeast (water from eggs is already accounted for)"},
+            {name: "Eggs", description: "Add richness, tenderness, and a golden color"},
+            {name: "Oil", description: "Creates a soft, tender texture"},
+            {name: "Salt", description: "Enhances and balances the natural sweetness"},
+            {name: "Yeast", description: "Makes the dough rise"}
+        ],
+        tips: "Challah benefits from a warm, humid proofing environment for best braiding. The oil content gives the bread its characteristic soft texture."
+    },
+    wholeWheat: {
+        title: "Whole Wheat Bread",
+        ingredients: [
+            {name: "Whole Wheat Flour", description: "Provides nutrients, fiber, and nutty flavor"},
+            {name: "Water", description: "Hydrates the flour and activates yeast"},
+            {name: "Salt", description: "Enhances flavor and controls fermentation"},
+            {name: "Yeast", description: "Makes the dough rise"},
+            {name: "Optional enrichments (eggs, milk, butter)", description: "Add tenderness and moisture when included"}
+        ],
+        tips: "Whole wheat bread benefits from a longer fermentation time to develop flavor. The whole grains absorb more water, so increase hydration as needed."
+    },
+    rye: {
+        title: "Rye Bread",
+        ingredients: [
+            {name: "Rye Flour", description: "Provides the distinctive tangy flavor and dense texture"},
+            {name: "Water", description: "Hydrates the flour and activates yeast"},
+            {name: "Salt", description: "Enhances flavor and controls fermentation"},
+            {name: "Yeast", description: "Makes the dough rise (rye often requires a longer fermentation)"},
+            {name: "Optional enrichments (eggs, milk, butter)", description: "Add richness when included"}
+        ],
+        tips: "Rye bread benefits from a long fermentation time and often needs more water than wheat bread due to rye's high absorption properties. Consider adding vital wheat gluten for better structure."
+    },
+    italian: {
+        title: "Italian Bread (Ciabatta, Pullman)",
+        ingredients: [
+            {name: "Flour", description: "Provides the structure"},
+            {name: "Water", description: "Hydrates flour and activates yeast"},
+            {name: "Salt", description: "Enhances flavor and controls fermentation"},
+            {name: "Yeast", description: "Makes the dough rise"},
+            {name: "Optional oil", description: "Adds tenderness to the crumb"}
+        ],
+        tips: "Italian breads benefit from a high hydration recipe and proper fermentation. Techniques like stretch and folds can develop the characteristic airiness. A hot oven with steam creates the signature crispy crust."
+    },
+    milk: {
+        title: "Milk Bread",
+        ingredients: [
+            {name: "Flour", description: "Provides the structure"},
+            {name: "Water", description: "Hydrates flour and activates yeast (water from milk is already accounted for)"},
+            {name: "Milk", description: "Adds moisture, sugar, and creates a golden color"},
+            {name: "Butter", description: "Adds richness and creates tenderness"},
+            {name: "Salt", description: "Enhances flavor"},
+            {name: "Yeast", description: "Makes the dough rise"}
+        ],
+        tips: "Milk bread is best when baked in a preheated oven for a golden, slightly crispy crust. The milk content contributes to both the sweet flavor and tender crumb."
+    },
+    sourdough: {
+        title: "Sourdough Bread",
+        ingredients: [
+            {name: "Flour", description: "Provides structure"},
+            {name: "Water", description: "Hydrates flour and activates fermentation"},
+            {name: "Salt", description: "Enhances flavor and controls fermentation"},
+            {name: "Sourdough Starter", description: "Natural fermentation agent providing both leavening and complex flavors"}
+        ],
+        tips: "Sourdough requires maintaining a healthy starter with regular feeding. Proper timing of fermentation is crucial - over-proofing will result in sour flavor, under-proofing will give dense results."
+    },
+    custom: {
+        title: "Custom Recipe",
+        ingredients: [
+            {name: "Any combination of flour, water, salt, yeast, eggs, milk, butter, cream, oil, and/or sourdough starter", description: "All ingredient combinations are allowed"}
+        ],
+        tips: "When experimenting, monitor hydration levels closely. Remember that eggs, milk, and butter all contribute water to your dough."
+    }
+};
+
+// Educational content database
+// Educational content database
+const educationalContent = {
+    basic: {
+        title: "Basic White Bread",
+        description: "A simple yet perfect recipe using just flour, water, salt, and yeast. Ideal for everyday loaves with a light texture.",
+        characteristics: [
+            "Simple, straightforward recipe",
+            "No enriching ingredients beyond basic components",
+            "Ideal for everyday loaves with a light texture",
+            "Use all-purpose or bread flour for best results",
+            "Typical hydration: 60-65%"
+        ],
+        ingredientExplanations: {
+            flour: "All-purpose or bread flour provides the gluten structure needed for proper bread development.",
+            water: "Provides hydration necessary for gluten formation and yeast activity.",
+            salt: "Enhances flavor and controls yeast fermentation rate.",
+            yeast: "Leavens the dough by producing carbon dioxide gas."
+        },
+        tips: [
+            "Use good quality all-purpose or bread flour",
+            "Knead until smooth and elastic for proper gluten development",
+            "Allow proper proofing time for best results",
+            "Bake at 425°F (220°C) for excellent crust formation"
+        ]
+    },
+    
+    enriched: {
+        title: "Enriched Dough (Brioche)",
+        description: "Rich, tender dough with eggs and butter for exceptional softness and flavor. Perfect for enriched breads.",
+        characteristics: [
+            "Rich, tender dough with exceptional softness and flavor",
+            "Includes eggs and butter for rich texture and flavor",
+            "The water content from enriching ingredients is factored into hydration calculations",
+            "Use high-quality ingredients for best results",
+            "Typical hydration: 55-65%"
+        ],
+        ingredientExplanations: {
+            flour: "High-protein bread flour or all-purpose flour provides structure for the rich dough.",
+            water: "Includes water from eggs and butter in the effective hydration calculation.",
+            salt: "Enhances flavor while controlling fermentation.",
+            yeast: "Leavens the dough with the rich ingredients.",
+            eggs: "Contribute moisture, protein, and fat which improve texture and tenderness.",
+            milk: "Adds gentle sweetness and moisture with minimal extra water content.",
+            butter: "Provides richness and tenderness to the crumb (16% water content)."
+        },
+        tips: [
+            "Use high-quality ingredients for a superior product",
+            "Mix eggs and butter into the dough gently to maintain their richness",
+            "Brioche benefits from longer fermentation times",
+            "Allow adequate proofing time - it's a rich dough that needs time to develop structure"
+        ]
+    },
+    
+    sweet: {
+        title: "Sweet Dough (Challah)",
+        description: "Traditional braided bread using eggs and oil for distinctive flavor and texture. Sweet but not overly so.",
+        characteristics: [
+            "Traditional braided bread using eggs and oil for distinctive flavor",
+            "Sweet but not overly so - the sweetness comes from natural ingredients",
+            "Oil can be any cooking oil (vegetable, canola, etc.)",
+            "The water content from eggs is factored into hydration calculations",
+            "Create a soft, tender crumb that's perfect for braiding"
+        ],
+        ingredientExplanations: {
+            flour: "Bread flour for good gluten structure needed for proper braiding.",
+            water: "Includes water from eggs in the effective hydration calculation.",
+            salt: "Enhances flavor without overpowering the sweetness.",
+            yeast: "Leavens the dough with appropriate timing.",
+            eggs: "Provide moisture, protein, and fat for soft texture (75% water content).",
+            oil: "Adds richness and tenderness to maintain a soft crumb structure."
+        },
+        tips: [
+            "Keep gluten development moderate to avoid tough braided strands",
+            "Proper proofing is essential for good braiding",
+            "Oil helps maintain the desired soft, tender texture",
+            "Consider using a braid mold for more consistent results"
+        ]
+    },
+    
+    'whole-wheat': {
+        title: "Whole Wheat Bread",
+        description: "Nutritious dough using whole wheat flour with optional enrichments. Higher fiber content and robust flavor.",
+        characteristics: [
+            "Nutritious dough using whole wheat flour with optional enrichments",
+            "Higher hydration due to whole wheat flour's absorption properties",
+            "Whole wheat absorbs more water than white flour, so adjust accordingly",
+            "Use bread flour or high-protein flour for better structure",
+            "Typical hydration: 70-75%"
+        ],
+        ingredientExplanations: {
+            flour: "Whole wheat flour provides nutrients and fiber but absorbs more water.",
+            water: "Higher hydration needed due to whole wheat absorption properties.",
+            salt: "Enhances flavor of the whole grains.",
+            yeast: "Leavens the dough, though whole wheat requires longer development time.",
+            eggs: "Optional enrichments that add moisture and fat for better texture.",
+            milk: "Adds gentle sweetness and moisture with minimal extra water content.",
+            butter: "Provides richness and tends to the crumb (16% water content)."
+        },
+        tips: [
+            "Whole wheat flour requires more hydration than white flour",
+            "Consider mixing half whole wheat, half white flour for a good balance",
+            "Longer fermentation time helps with better texture development",
+            "Add vital wheat gluten if using mostly whole wheat flour for better structure"
+        ]
+    },
+    
+    rye: {
+        title: "Rye Bread",
+        description: "Distinctive tangy flavor using rye flour with possible enrichments. Higher hydration due to rye's absorption properties.",
+        characteristics: [
+            "Distinctive tangy flavor using rye flour",
+            "Higher hydration due to rye's absorption properties",
+            "Rye flour is much more absorbent than wheat flour",
+            "Often uses a mix of rye and wheat flours",
+            "Consider adding vital wheat gluten to improve structure",
+            "Typical hydration: 75-80%"
+        ],
+        ingredientExplanations: {
+            flour: "Rye flour, often mixed with wheat flour for better texture.",
+            water: "Higher hydration needed due to rye absorption properties.",
+            salt: "Enhances the distinctive rye flavor.",
+            yeast: "While traditional rye breads use starter, this calculator uses commercial yeast.",
+            eggs: "Optional enrichments that add moisture and fat.",
+            milk: "Adds gentle sweetness and moisture with minimal extra water content.",
+            butter: "Provides richness (16% water content)."
+        },
+        tips: [
+            "Rye flour requires much more hydration than wheat flour",
+            "Use a combination of rye and wheat flours for better structure",
+            "Consider adding vital wheat gluten for better rise",
+            "Be patient with fermentation - rye takes longer to develop full flavor"
+        ]
+    },
+    
+    italian: {
+        title: "Italian Bread (Ciabatta, Pullman)",
+        description: "Light, airy crumb with crispy exterior. Great for sandwiches and traditional Italian breads.",
+        characteristics: [
+            "Light, airy crumb with crispy exterior",
+            "Great for sandwiches and traditional Italian breads",
+            "Oil can be included to improve texture",
+            "Higher hydration levels give the characteristic airiness",
+            "Uses a long, slow fermentation process in most cases",
+            "Typical hydration: 60-70%"
+        ],
+        ingredientExplanations: {
+            flour: "High-protein flour for proper structure with high hydration.",
+            water: "Higher hydration level gives characteristic airiness to the crumb.",
+            salt: "Enhances flavor and controls fermentation rate.",
+            yeast: "Leavens the dough.",
+            oil: "Improves texture by making a more tender crumb."
+        },
+        tips: [
+            "Higher hydration levels require careful handling during shaping",
+            "Use proper fermentation time for proper air pocket development",
+            "Preheat oven thoroughly for crispy crust",
+            "Consider using a Dutch oven or steam for better crust formation"
+        ]
+    },
+    
+    milk: {
+        title: "Milk Bread",
+        description: "Soft, sweet, tender crumb with golden color from milk. Classic enriched bread.",
+        characteristics: [
+            "Soft, sweet, tender crumb with golden color from milk",
+            "Classic enriched bread that's perfect for snacking",
+            "The water content from milk is factored into hydration calculations",
+            "Butter adds richness and tenderness to the texture",
+            "Ideal for dinner rolls or slicing for sandwiches",
+            "Typical hydration: 65-70%"
+        ],
+        ingredientExplanations: {
+            flour: "Bread flour for good structure with enrichment.",
+            water: "Includes water from milk in effective hydration calculation.",
+            salt: "Enhances sweet flavor balance.",
+            yeast: "Leavens the dough appropriately.",
+            milk: "Creates sweet, tender crumb, 87% water content.",
+            butter: "Adds richness and tenderness (16% water content)."
+        },
+        tips: [
+            "Milk provides both moisture and gentle sweetness",
+            "Butter adds necessary richness for tender texture",
+            "Keep mixing time moderate to prevent tough gluten development",
+            "Ideal temperature for baking is 375°F (190°C) for golden color"
+        ]
+    },
+    
+    sourdough: {
+        title: "Sourdough Bread",
+        description: "Fermented dough using a starter for complex flavor and texture. Develops unique taste over time.",
+        characteristics: [
+            "Fermented dough using naturally cultivated sourdough starter",
+            "Develops complex, tangy flavors over time through fermentation",
+            "Requires regular feeding and maintenance of the starter",
+            "Fermentation times can vary significantly based on temperature",
+            "The hydration level will depend heavily on your starter's activity",
+            "Uses only the starter for leavening, no commercial yeast"
+        ],
+        ingredientExplanations: {
+            flour: "Provides gluten structure for traditional sourdough.",
+            water: "Used in both starter and dough preparation.",
+            salt: "Enhances the complex sourdough flavors.",
+            starter: "Natural fermentation source that produces acids and gases.",
+            "No commercial yeast": "Sourdough uses only natural fermentation properties."
+        },
+        tips: [
+            "Maintain your starter regularly with feeding",
+            "Temperature significantly affects fermentation time",
+            "Sourdough usually takes longer than commercial methods to rise",
+            "Keep consistent fermentation timing for best flavor development"
+        ]
+    },
+    
+    custom: {
+        title: "Custom Recipe",
+        description: "Full control over all ingredients for unique combinations and experiments.",
+        characteristics: [
+            "Full control over all ingredients for unique combinations",
+            "No restrictions on ingredient amounts or ratios",
+            "All ingredient combinations are allowed",
+            "All hydration calculations are handled automatically",
+            "Ideal for experimentation with new bread types"
+        ],
+        ingredientExplanations: {
+            flour: "Base ingredient for structure.",
+            water: "Provides necessary hydration for gluten formation.",
+            salt: "Enhances flavor across all bread types.",
+            yeast: "Leavens the dough as appropriate for your recipe.",
+            eggs: "Contribute moisture, protein, and fat.",
+            milk: "Adds gentle sweetness and moisture with low water content (87% water).",
+            butter: "Provides richness and tenderness (16% water content).",
+            cream: "High fat content contributes significantly to richness (57.5% water).",
+            oil: "Contributes texture and flavor.",
+            starter: "Natural fermentation source for sourdough breads."
+        },
+        tips: [
+            "Be mindful of ingredient combinations when creating unique recipes",
+            "Understand how enriching ingredients affect hydration levels",
+            "Remember to adjust fermentation times for rich doughs",
+            "Start with small batches when experimenting"
+        ]
+    }
+};
+
 function selectBreadType(type) {
     // Hide the bread type selection and descriptions
     document.getElementById('bread-type-buttons').style.display = 'none';
     document.getElementById('bread-description-section').style.display = 'none';
     
+    // Show educational content for this bread type before calculator
+    const educationalSection = document.createElement('div');
+    educationalSection.id = 'educational-content';
+    educationalSection.className = 'educational-section';
+    educationalSection.innerHTML = `
+        <div class="result-item">
+            <h3>About ${educationalContent[type].title}</h3>
+            <p>${educationalContent[type].description}</p>
+            
+            <h4>Characteristics</h4>
+            <ul>
+                ${educationalContent[type].characteristics.map(char => `<li>${char}</li>`).join('')}
+            </ul>
+            
+            <h4>Fermentation & Baking Tips</h4>
+            <ul>
+                ${educationalContent[type].tips.map(tip => `<li>${tip}</li>`).join('')}
+            </ul>
+        </div>
+    `;
+    
+    // Insert educational content before the calculator form
+    const calculatorForm = document.getElementById('calculator-form');
+    calculatorForm.parentNode.insertBefore(educationalSection, calculatorForm);
+    
     // Show the calculator form
-    document.getElementById('calculator-form').style.display = 'block';
+    calculatorForm.style.display = 'block';
     
     // Show/hide bread-specific input fields based on selection
     const breadSpecificIngredients = document.getElementById('bread-specific-ingredients');
@@ -249,6 +621,10 @@ function calculateDough(flourWeight, hydration, saltPercent, eggs, milk, butter,
 
 function displayResults(results) {
     const resultsDiv = document.getElementById('results-content');
+    const currentType = document.getElementById('current-bread-type').value;
+    
+    // Get the educational content for this bread type
+    const eduContent = educationalContent[currentType];
     
     let html = `
         <div class="result-item">
@@ -275,6 +651,33 @@ function displayResults(results) {
             <p>Instant Yeast: ${results.instantYeast.toFixed(2)}g</p>
             <p>Active Dry Yeast: ${results.activeDryYeast.toFixed(2)}g</p>
             <p>Fresh/Cake Yeast: ${results.freshYeast.toFixed(2)}g</p>
+        </div>
+        
+        <div class="result-item">
+            <h3>About Your Recipe</h3>
+            <p>This recipe is tailored for ${eduContent.title}. Here's what makes your specific creation special:</p>
+            
+            <ul>
+                <li><strong>Hydration Level:</strong> ${results.effectiveHydration.toFixed(1)}% - This 
+                    ${results.effectiveHydration > 70 ? 'high' : results.effectiveHydration < 60 ? 'low' : 'balanced'} 
+                    hydration level is appropriate for the ingredients in your dough.</li>
+                
+                <li><strong>Fat Content:</strong> ${results.effectiveFatPercent.toFixed(1)}% - This 
+                    ${results.effectiveFatPercent > 20 ? 'rich' : results.effectiveFatPercent < 10 ? 'light' : 'moderate'} 
+                    fat content contributes to the characteristic texture of your bread type.</li>
+                
+                <li><strong>Yeast Type:</strong> ${results.yeastType === 'instant' ? 'Instant yeast for quick rise' : results.yeastType === 'active-dry' ? 'Active dry yeast for steady fermentation' : 'Fresh yeast for delicate texture'}</li>
+            </ul>
+            
+            <h4>Ingredient Explanations</h4>
+            <ul>
+                ${Object.entries(eduContent.ingredientExplanations).map(([ingredient, explanation]) => `<li><strong>${ingredient.charAt(0).toUpperCase() + ingredient.slice(1)}:</strong> ${explanation}</li>`).join('')}
+            </ul>
+            
+            <h4>Baking & Fermentation Tips for Your Specific Recipe</h4>
+            <ul>
+                ${eduContent.tips.map(tip => `<li>${tip}</li>`).join('')}
+            </ul>
         </div>
     `;
     
