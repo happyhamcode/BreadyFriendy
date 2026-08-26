@@ -6,146 +6,168 @@
     <title>Bread Dough Calculator</title>
 </head>
 <body>
-    <h1>Bread Dough Calculator</h1>
-    
-    <div id="wizard-container">
-        <!-- Step 1: Select Dough Type -->
-        <div id="step-dough-type">
-            <h2>Select Your Bread Type</h2>
-            <p>Choose the type of bread you want to make. Each selection will show recommended ingredients and guidance.</p>
-            
-            <div class="bread-description">
-                <div class="bread-option">
-                    <h3>Basic Bread</h3>
-                    <p>Simple flour, water, salt, and yeast. Perfect for everyday loaves.</p>
-                    <button class="dough-type-btn" data-type="basic">Select Basic Bread</button>
-                </div>
-                
-                <div class="bread-option">
-                    <h3>Brioche</h3>
-                    <p>Rich, tender dough with butter for exceptional softness and flavor.</p>
-                    <button class="dough-type-btn" data-type="enriched">Select Brioche</button>
-                </div>
-                
-                <div class="bread-option">
-                    <h3>Challah</h3>
-                    <p>Traditional Jewish braided bread using oil for its distinctive flavor.</p>
-                    <button class="dough-type-btn" data-type="sweet">Select Challah</button>
-                </div>
-                
-                <div class="bread-option">
-                    <h3>Whole Wheat</h3>
-                    <p>Nutritious dough using whole wheat flour with optional enrichments.</p>
-                    <button class="dough-type-btn" data-type="whole-wheat">Select Whole Wheat</button>
-                </div>
-                
-                <div class="bread-option">
-                    <h3>Rye Bread</h3>
-                    <p>Distinctive tangy flavor using rye flour with possible enrichments.</p>
-                    <button class="dough-type-btn" data-type="rye">Select Rye Bread</button>
-                </div>
-                
-                <div class="bread-option">
-                    <h3>Italian Loaf</h3>
-                    <p>Classic crusty exterior with tender interior using olive oil.</p>
-                    <button class="dough-type-btn" data-type="italian">Select Italian Loaf</button>
-                </div>
-                
-                <div class="bread-option">
-                    <h3>Custom Recipe</h3>
-                    <p>Full control over all ingredients for unique combinations.</p>
-                    <button class="dough-type-btn" data-type="custom">Select Custom</button>
-                </div>
-            </div>
-        </div>
+    <div class="container">
+        <header>
+            <h1>Bread Dough Calculator</h1>
+            <p>Calculate precise ingredient amounts for your bread recipes</p>
+        </header>
 
-        <!-- Step 2: Input Fields (Hidden initially) -->
-        <div id="step-inputs" style="display:none;">
-            <h2>Recipe Inputs</h2>
-            
-            <div class="form-group">
-                <label for="flour-weight">Total Flour Weight (grams)</label>
-                <input type="number" id="flour-weight" min="0" step="1">
-            </div>
-
-            <div class="form-group">
-                <label for="hydration">Target Hydration (%)</label>
-                <input type="number" id="hydration" min="0" step="0.1">
-            </div>
-
-            <div class="form-group">
-                <label for="salt">Salt (%)</label>
-                <input type="number" id="salt" min="0" step="0.1">
-            </div>
-
-            <!-- Enriching Ingredients -->
-            <div id="enriching-ingredients" style="display:none;">
-                <h3>Ingredients</h3>
-                <p>Enter amounts of ingredients based on your selected bread type:</p>
-                
-                <div class="ingredient-explanation">
-                    <p><strong>Eggs (75% water)</strong> - Add protein, water content, and richness to dough</p>
-                    <p><strong>Milk (87% water)</strong> - Adds sugar, protein, fat, creates softer texture</p>
-                    <p><strong>Butter (16% water)</strong> - Adds fat and flavor, creates tender crumb structure</p>
-                    <p><strong>Cream (57.5% water)</strong> - High fat content for ultra-rich texture</p>
-                    <p><strong>Oil (0% water)</strong> - Added fat without water, creates tender texture</p>
+        <main>
+            <!-- Step 1: Select Dough Type -->
+            <section id="step-dough-type" class="wizard-step active">
+                <div class="step-header">
+                    <h2>Select Your Bread Type</h2>
+                    <p>Choose the type of bread you want to make. Each selection will show recommended ingredients and guidance.</p>
                 </div>
                 
-                <div class="form-group">
-                    <label for="eggs">Eggs (grams)</label>
-                    <input type="number" id="eggs" min="0" step="1">
+                <div class="bread-options-grid">
+                    <div class="bread-option-card">
+                        <h3>Basic Bread</h3>
+                        <p>Simple flour, water, salt, and yeast. Perfect for everyday loaves.</p>
+                        <button class="dough-type-btn" data-type="basic">Select Basic Bread</button>
+                    </div>
+                    
+                    <div class="bread-option-card">
+                        <h3>Brioche</h3>
+                        <p>Rich, tender dough with butter for exceptional softness and flavor.</p>
+                        <button class="dough-type-btn" data-type="enriched">Select Brioche</button>
+                    </div>
+                    
+                    <div class="bread-option-card">
+                        <h3>Challah</h3>
+                        <p>Traditional Jewish braided bread using oil for its distinctive flavor.</p>
+                        <button class="dough-type-btn" data-type="sweet">Select Challah</button>
+                    </div>
+                    
+                    <div class="bread-option-card">
+                        <h3>Whole Wheat</h3>
+                        <p>Nutritious dough using whole wheat flour with optional enrichments.</p>
+                        <button class="dough-type-btn" data-type="whole-wheat">Select Whole Wheat</button>
+                    </div>
+                    
+                    <div class="bread-option-card">
+                        <h3>Rye Bread</h3>
+                        <p>Distinctive tangy flavor using rye flour with possible enrichments.</p>
+                        <button class="dough-type-btn" data-type="rye">Select Rye Bread</button>
+                    </div>
+                    
+                    <div class="bread-option-card">
+                        <h3>Italian Loaf</h3>
+                        <p>Classic crusty exterior with tender interior using olive oil.</p>
+                        <button class="dough-type-btn" data-type="italian">Select Italian Loaf</button>
+                    </div>
+                    
+                    <div class="bread-option-card">
+                        <h3>Custom Recipe</h3>
+                        <p>Full control over all ingredients for unique combinations.</p>
+                        <button class="dough-type-btn" data-type="custom">Select Custom</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 2: Input Fields -->
+            <section id="step-inputs" class="wizard-step" style="display:none;">
+                <div class="step-header">
+                    <h2>Recipe Inputs</h2>
+                    <p>Enter your recipe details below</p>
                 </div>
                 
-                <div class="form-group">
-                    <label for="milk">Milk (grams)</label>
-                    <input type="number" id="milk" min="0" step="1">
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label for="flour-weight">Total Flour Weight (grams)</label>
+                        <input type="number" id="flour-weight" min="0" step="1">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="hydration">Target Hydration (%)</label>
+                        <input type="number" id="hydration" min="0" step="0.1">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="salt">Salt (%)</label>
+                        <input type="number" id="salt" min="0" step="0.1">
+                    </div>
+
+                    <!-- Enriching Ingredients -->
+                    <div id="enriching-ingredients" class="ingredient-section">
+                        <h3>Ingredients</h3>
+                        <p>Enter amounts of ingredients based on your selected bread type:</p>
+                        
+                        <div class="ingredient-explanation">
+                            <p><strong>Eggs (75% water)</strong> - Add protein, water content, and richness to dough</p>
+                            <p><strong>Milk (87% water)</strong> - Adds sugar, protein, fat, creates softer texture</p>
+                            <p><strong>Butter (16% water)</strong> - Adds fat and flavor, creates tender crumb structure</p>
+                            <p><strong>Cream (57.5% water)</strong> - High fat content for ultra-rich texture</p>
+                            <p><strong>Oil (0% water)</strong> - Added fat without water, creates tender texture</p>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="eggs">Eggs (grams)</label>
+                            <input type="number" id="eggs" min="0" step="1">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="milk">Milk (grams)</label>
+                            <input type="number" id="milk" min="0" step="1">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="butter">Butter (grams)</label>
+                            <input type="number" id="butter" min="0" step="1">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="cream">Cream (grams)</label>
+                            <input type="number" id="cream" min="0" step="1">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="oil">Oil (grams)</label>
+                            <input type="number" id="oil" min="0" step="1">
+                        </div>
+                    </div>
+
+                    <!-- Yeast Section -->
+                    <div class="input-group">
+                        <label for="yeast-type">Yeast Type</label>
+                        <select id="yeast-type">
+                            <option value="instant">Instant Yeast</option>
+                            <option value="active-dry">Active Dry Yeast</option>
+                            <option value="fresh">Fresh/Cake Yeast</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="yeast-percent">Yeast (%)</label>
+                        <input type="number" id="yeast-percent" min="0" step="0.1">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="batch-scale">Batch Scale</label>
+                        <input type="number" id="batch-scale" min="1" step="1" value="1">
+                    </div>
+
+                    <div class="button-group">
+                        <button id="calculate-btn">Calculate Recipe</button>
+                        <button id="back-btn">Back to Selection</button>
+                    </div>
                 </div>
-                
-                <div class="form-group">
-                    <label for="butter">Butter (grams)</label>
-                    <input type="number" id="butter" min="0" step="1">
+            </section>
+
+            <!-- Results Section -->
+            <section id="results" class="results-section">
+                <div class="step-header">
+                    <h2>Recipe Results</h2>
                 </div>
-                
-                <div class="form-group">
-                    <label for="cream">Cream (grams)</label>
-                    <input type="number" id="cream" min="0" step="1">
+                <div id="results-content">
+                    <p>Choose a bread type and enter your ingredients to see results here.</p>
                 </div>
-                
-                <div class="form-group">
-                    <label for="oil">Oil (grams)</label>
-                    <input type="number" id="oil" min="0" step="1">
-                </div>
-            </div>
+            </section>
+        </main>
 
-            <!-- Yeast Section -->
-            <div class="form-group">
-                <label for="yeast-type">Yeast Type</label>
-                <select id="yeast-type">
-                    <option value="instant">Instant Yeast</option>
-                    <option value="active-dry">Active Dry Yeast</option>
-                    <option value="fresh">Fresh/Cake Yeast</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="yeast-percent">Yeast (%)</label>
-                <input type="number" id="yeast-percent" min="0" step="0.1">
-            </div>
-
-            <div class="form-group">
-                <label for="batch-scale">Batch Scale</label>
-                <input type="number" id="batch-scale" min="1" step="1" value="1">
-            </div>
-
-            <button id="calculate-btn">Calculate Recipe</button>
-
-            <button id="back-btn" style="display:none;">Back to Selection</button>
-        </div>
-    </div>
-
-    <div id="results">
-        <h2>Results</h2>
-        <p>Choose a bread type and enter your ingredients to see results here.</p>
+        <footer>
+            <p>Bread Dough Calculator &copy; 2026</p>
+        </footer>
     </div>
 
     <script src="script.js"></script>

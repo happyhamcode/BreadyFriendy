@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function selectDoughType(type) {
     // Hide the dough selection screen
-    document.getElementById('step-dough-type').style.display = 'none';
+    document.getElementById('step-dough-type').classList.remove('active');
     
     // Show the input fields
     document.getElementById('step-inputs').style.display = 'block';
@@ -69,8 +69,9 @@ function selectDoughType(type) {
             break;
     }
     
-    // Show back button
-    document.getElementById('back-btn').style.display = 'block';
+    // Show back button and hide results section
+    document.getElementById('back-btn').style.display = 'inline-block';
+    document.getElementById('results-content').innerHTML = '<p>Enter your ingredients and click "Calculate Recipe" to see results here.</p>';
 }
 
 function showDoughSelection() {
@@ -78,7 +79,7 @@ function showDoughSelection() {
     document.getElementById('step-inputs').style.display = 'none';
     
     // Show the dough selection screen
-    document.getElementById('step-dough-type').style.display = 'block';
+    document.getElementById('step-dough-type').classList.add('active');
     
     // Hide back button
     document.getElementById('back-btn').style.display = 'none';
@@ -177,7 +178,7 @@ function calculateDough(flourWeight, hydration, saltPercent, eggs, milk, butter,
 }
 
 function displayResults(results) {
-    const resultsDiv = document.getElementById('results');
+    const resultsDiv = document.getElementById('results-content');
     
     let html = `
         <div class="result-item">
@@ -210,6 +211,6 @@ function displayResults(results) {
 }
 
 function showResults(message) {
-    const resultsDiv = document.getElementById('results');
+    const resultsDiv = document.getElementById('results-content');
     resultsDiv.innerHTML = `<div class="result-item"><p><strong>Error:</strong> ${message}</p></div>`;
 }
