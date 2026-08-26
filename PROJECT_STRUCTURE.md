@@ -7,6 +7,7 @@
 - `script.js` - JavaScript calculations and UI logic
 - `README.md` - Project documentation
 - `agents.md` - Agent definitions and project plan
+- `.github/workflows/opencode.yml` - OpenCode GitHub agent workflow
 
 ## Folder Structure
 
@@ -16,7 +17,10 @@ breadyfrendy/
 ├── style.css
 ├── script.js
 ├── README.md
-└── agents.md
+├── agents.md
+└── .github/
+    └── workflows/
+        └── opencode.yml
 ```
 
 ## Development Approach

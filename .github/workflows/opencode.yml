@@ -1,0 +1,15 @@
+name: OpenCode Agent
+on:
+  issues:
+    types: [opened, reopened]
+  pull_request:
+    types: [opened, reopened]
+
+jobs:
+  opencode:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: anomalyco/opencode-action@v0.1.5
+        with:
+          openapi-key: ${{ secrets.OPENCODE_API_KEY }}
