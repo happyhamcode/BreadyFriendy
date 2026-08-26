@@ -1,15 +1,95 @@
 // Bread Dough Calculator - JavaScript Implementation
 
 document.addEventListener('DOMContentLoaded', function() {
+    const doughTypeButtons = document.querySelectorAll('.dough-type-btn');
+    const customBtn = document.getElementById('custom-btn');
     const calculateBtn = document.getElementById('calculate-btn');
-    calculateBtn.addEventListener('click', calculateRecipe);
+    const backBtn = document.getElementById('back-btn');
     
-    // Initialize with some sample values for testing
+    // Set up event listeners for dough type selection
+    doughTypeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            selectDoughType(this.dataset.type);
+        });
+    });
+    
+    customBtn.addEventListener('click', function() {
+        selectDoughType('custom');
+    });
+    
+    calculateBtn.addEventListener('click', calculateRecipe);
+    backBtn.addEventListener('click', showDoughSelection);
+    
+    // Initialize with sample values for testing
     document.getElementById('flour-weight').value = '1000';
     document.getElementById('hydration').value = '65';
     document.getElementById('salt').value = '2';
     document.getElementById('yeast-percent').value = '2';
 });
+
+function selectDoughType(type) {
+    // Hide the dough selection screen
+    document.getElementById('step-dough-type').style.display = 'none';
+    
+    // Show the input fields
+    document.getElementById('step-inputs').style.display = 'block';
+    
+    // Show/hide relevant ingredient sections based on dough type
+    const enrichingSection = document.getElementById('enriching-ingredients');
+    const fatSection = document.getElementById('fat-ingredients');
+    
+    switch(type) {
+        case 'basic':
+            // Basic bread - only flour, water, salt, yeast
+            enrichingSection.style.display = 'none';
+            fatSection.style.display = 'none';
+            break;
+            
+        case 'enriched':
+            // Enriched dough - includes eggs, milk, butter, cream
+            enrichingSection.style.display = 'block';
+            fatSection.style.display = 'none';
+            break;
+            
+        case 'sweet':
+            // Sweet dough - includes eggs, milk, butter, cream, oil
+            enrichingSection.style.display = 'block';
+            fatSection.style.display = 'block';
+            break;
+            
+        case 'whole-wheat':
+            // Whole wheat - includes flour, water, salt, yeast and maybe some enrichments
+            enrichingSection.style.display = 'block';
+            fatSection.style.display = 'none';
+            break;
+            
+        case 'rye':
+            // Rye bread - may include some enrichments but with special considerations
+            enrichingSection.style.display = 'block';
+            fatSection.style.display = 'none';
+            break;
+            
+        case 'custom':
+            // Custom - show all options
+            enrichingSection.style.display = 'block';
+            fatSection.style.display = 'block';
+            break;
+    }
+    
+    // Show back button
+    document.getElementById('back-btn').style.display = 'block';
+}
+
+function showDoughSelection() {
+    // Hide the input fields
+    document.getElementById('step-inputs').style.display = 'none';
+    
+    // Show the dough selection screen
+    document.getElementById('step-dough-type').style.display = 'block';
+    
+    // Hide back button
+    document.getElementById('back-btn').style.display = 'none';
+}
 
 function calculateRecipe() {
     // Get input values
@@ -98,7 +178,8 @@ function calculateDough(flourWeight, hydration, saltPercent, eggs, milk, butter,
         activeDryYeast: scaledActiveDryYeast,
         freshYeast: scaledFreshYeast,
         effectiveHydration: effectiveHydration,
-        effectiveFatPercent: effectiveFatPercent
+        effectiveFatPercent: effectiveFatPercent,
+        yeastType: yeastType
     };
 }
 
