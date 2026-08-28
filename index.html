@@ -4,28 +4,383 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bread Dough Calculator - Scientific Approach</title>
-    <!-- Removed all CSS styling as requested -->
+    <style>
+        /* Calculator-style styling for the calculator */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 1px solid #e0e0e0;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #3498db;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.2em;
+        }
+
+        .intro-section {
+            background-color: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .intro-section h2 {
+            color: #2980b9;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .ingredient-science {
+            background-color: #e8f4f8;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border: 1px solid #b3e0f2;
+        }
+
+        .ingredient-explanation h3 {
+            color: #2980b9;
+            margin-top: 15px;
+            border-bottom: 1px solid #b3e0f2;
+            padding-bottom: 5px;
+        }
+
+        .ingredient-explanation ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .ingredient-explanation li {
+            margin-bottom: 8px;
+        }
+
+        .calculator-section {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 2px solid #3498db;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.2);
+        }
+
+        .calculator-header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .calculator-header h2 {
+            color: #2980b9;
+            font-size: 1.8em;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.1em;
+        }
+
+        input[type="number"], input[type="checkbox"] {
+            padding: 12px;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            font-size: 18px;
+            background-color: #fff;
+            transition: all 0.3s;
+        }
+
+        input[type="number"]:focus, input[type="checkbox"]:focus {
+            outline: none;
+            border-color: #e74c3c;
+            box-shadow: 0 0 8px rgba(231, 76, 60, 0.3);
+        }
+
+        input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .checkbox-group {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px dashed #3498db;
+        }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            font-weight: normal;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .checkbox-group label:hover {
+            background-color: #e3f2fd;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        #calculate-btn {
+            background-color: #27ae60;
+            color: white;
+            flex: 1;
+            min-width: 180px;
+            border: 2px solid #219653;
+        }
+
+        #calculate-btn:hover {
+            background-color: #219653;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+        }
+
+        #calculate-btn:active {
+            transform: translateY(0);
+        }
+
+        #reset-btn {
+            background-color: #f39c12;
+            color: white;
+            flex: 1;
+            min-width: 150px;
+            border: 2px solid #e67e22;
+        }
+
+        #reset-btn:hover {
+            background-color: #e67e22;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+        }
+
+        #reset-btn:active {
+            transform: translateY(0);
+        }
+
+        .results-section {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 20px;
+            border: 2px solid #e74c3c;
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.2);
+        }
+
+        .results-content h3 {
+            color: #e74c3c;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .results-content ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .results-content li {
+            margin-bottom: 8px;
+            padding: 8px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+
+        .re-calculate button {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 25px;
+            display: block;
+            margin: 20px auto 0;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .re-calculate button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+        }
+
+        .open-calculator-btn {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 18px 30px;
+            font-size: 20px;
+            font-weight: bold;
+            margin: 30px auto;
+            display: block;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 8px 15px rgba(52, 152, 219, 0.4);
+            text-align: center;
+        }
+
+        .open-calculator-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 20px rgba(52, 152, 219, 0.6);
+        }
+
+        .open-calculator-btn:active {
+            transform: translateY(0);
+        }
+
+        .calculator-title {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2.2em;
+            background: linear-gradient(to right, #3498db, #2980b9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .calculator-section {
+                padding: 20px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+            
+            .ingredient-explanation h3 {
+                font-size: 1.3em;
+            }
+        }
+
+        .calculator-animation {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(52, 152, 219, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0); }
+        }
+
+        .ingredient-section {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border-left: 5px solid #3498db;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <header>
             <h1>Bread Dough Calculator</h1>
-            <p>Scientific approach to bread making: Start with ingredients, then adjust hydration</p>
+            <p class="subtitle">Scientific approach to bread making: Start with ingredients, then adjust hydration</p>
         </header>
 
-        <!-- Ingredient Science Introduction -->
-        <section id="ingredient-science" class="ingredient-science">
+        <!-- Introduction Section with Calculator Button -->
+        <section id="introduction-section" class="intro-section">
+            <button id="open-calculator-btn" class="open-calculator-btn calculator-animation">Open Bread Calculator</button>
+            
             <h2>Understanding Bread Ingredients</h2>
-            <div class="ingredient-explanation">
+            
+            <div class="ingredient-section">
                 <h3>Flour</h3>
                 <p>Provides gluten structure - the foundation of bread texture. All-purpose flour has about 10-12% protein, while bread flour is around 12-14%.</p>
-                
+            </div>
+
+            <div class="ingredient-section">
                 <h3>Water</h3>
                 <p>Forms gluten networks and activates yeast. Water makes up 60-75% of most breads, with higher hydration resulting in more open textures.</p>
-                
+            </div>
+
+            <div class="ingredient-section">
                 <h3>Salt</h3>
                 <p>Controls fermentation speed and enhances flavor. Typically 1.8-2.5% of flour weight, it also strengthens gluten networks.</p>
-                
+            </div>
+
+            <div class="ingredient-section">
                 <h3>Yeast</h3>
                 <p>Microorganism that consumes sugar in flour and produces carbon dioxide gas and alcohol, causing dough to rise. Usually 0.1-0.2% of flour weight.
                 <ul>
@@ -33,7 +388,9 @@
                     <li><strong>Instant/Quick-Rise Yeast:</strong> Fine granules, can be mixed directly with dry ingredients</li>
                     <li><strong>Fresh Yeast (Cake Yeast):</strong> Highly active, often used in professional baking</li>
                 </ul></p>
-                
+            </div>
+
+            <div class="ingredient-section">
                 <h3>Hydration</h3>
                 <p>Hydration refers to the water content of dough expressed as a percentage of flour weight. For example, 65% hydration means for every 100g of flour, you have 65g of water.
                 <ul>
@@ -41,7 +398,9 @@
                     <li><strong>Medium Hydration (60-70%):</strong> Balanced texture with good structure and slight openness</li>
                     <li><strong>High Hydration (70%+):</strong> Open crumb with air pockets; requires more technique for handling</li>
                 </ul></p>
-                
+            </div>
+
+            <div class="ingredient-section">
                 <h3>Enrichers (Optional)</h3>
                 <p>Ingredients that add flavor, richness, moisture, and affect hydration. 
                    <ul>
@@ -53,11 +412,15 @@
                    </ul>
                 </p>
             </div>
+
+            <button id="open-calculator-btn-bottom" class="open-calculator-btn">Open Bread Calculator</button>
         </section>
 
-        <!-- Main Calculator -->
-        <section id="calculator-form" class="calculator-form">
-            <h2>Recipe Configuration</h2>
+        <!-- Main Calculator Section -->
+        <section id="calculator-section" class="calculator-section" style="display:none;">
+            <div class="calculator-header">
+                <h2 class="calculator-title">Bread Recipe Calculator</h2>
+            </div>
             
             <div class="input-group">
                 <label for="flour-weight">Total Flour Weight (grams)</label>
@@ -82,7 +445,7 @@
             <h3>Enricher Selection</h3>
             <p>Select which enrichers you want to include in your recipe:</p>
             
-            <div class="input-group checkbox-group">
+            <div class="checkbox-group">
                 <label><input type="checkbox" id="use-eggs"> Eggs (120g = ~1 egg)</label>
                 <label><input type="checkbox" id="use-milk"> Milk (100g = ~1/4 cup)</label>
                 <label><input type="checkbox" id="use-butter"> Butter (100g = ~1/2 stick)</label>
