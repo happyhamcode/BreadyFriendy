@@ -37,6 +37,49 @@
             max-width: 1000px;
             width: 100%;
         }
+        
+        .header {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .header .subtitle {
+            color: #7f8c8d;
+            font-size: 1.2em;
+        }
+        
+        .info-box {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .info-box h2 {
+            color: #2980b9;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .info-box h3 {
+            color: #2980b9;
+            margin-top: 15px;
+            border-bottom: 1px solid #b3e0f2;
+            padding-bottom: 5px;
+        }
 
         .container {
             max-width: 1000px;
@@ -372,13 +415,13 @@
 </head>
 <body>
     <div class="graph-paper-sheet">
-        <header>
-            <h1>Bread Dough Calculator</h1>
-            <p class="subtitle">Scientific approach to bread making: Start with ingredients, then adjust hydration</p>
-        </header>
+        <div class="header">
+            <h1>Bready Frendy</h1>
+            <p class="subtitle">You all in one scientific bread calculator</p>
+        </div>
 
         <!-- Introduction Section with Calculator Button -->
-        <section id="introduction-section" class="intro-section">
+        <section id="introduction-section" class="info-box">
             <button id="open-calculator-btn" class="open-calculator-btn calculator-animation">Open Bread Calculator</button>
             
             <h2>Understanding Bread Ingredients</h2>
