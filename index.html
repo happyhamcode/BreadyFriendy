@@ -34,7 +34,7 @@
                 linear-gradient(rgba(0, 0, 0, 0.15) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 0, 0, 0.15) 1px, transparent 1px);
             background-size: 20px 20px;
-            max-width: 1000px;
+            max-width: 800px;
             width: 100%;
         }
         
@@ -50,8 +50,8 @@
         
         .header h1 {
             color: #2c3e50;
-            margin-bottom: 10px;
-            font-size: 2em;
+            margin-bottom: 5px;
+            font-size: 1.8em;
         }
         
         .header .subtitle {
@@ -59,26 +59,42 @@
             font-size: 1em;
         }
         
-        .info-box {
+        .ingredient-section {
             background-color: white;
-            padding: 25px;
+            padding: 20px;
             border-radius: 10px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             border: 1px solid #e0e0e0;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border-left: 4px solid #3498db;
         }
         
-        .info-box h2 {
-            color: #2980b9;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        
-        .info-box h3 {
+        .ingredient-section h3 {
             color: #2980b9;
             margin-top: 15px;
             border-bottom: 1px solid #b3e0f2;
             padding-bottom: 5px;
+        }
+        
+        .calculator-section {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 2px solid #3498db;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.2);
+        }
+        
+        .calculator-header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        .calculator-header h2 {
+            color: #2980b9;
+            font-size: 1.8em;
         }
         
         .calculator-section {
@@ -442,7 +458,7 @@
         </div>
 
         <!-- Introduction Section with Calculator Button -->
-        <section id="introduction-section" class="info-box">
+        <section id="introduction-section">
             <button id="open-calculator-btn" class="open-calculator-btn calculator-animation">Open Bread Calculator</button>
             
             <h2>Understanding Bread Ingredients</h2>
