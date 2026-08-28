@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const calculateBtn = document.getElementById('calculate-btn');
     const resetBtn = document.getElementById('reset-btn');
     const recalculateBtn = document.getElementById('recalculate-btn');
+    const backToHomeBtn = document.getElementById('back-to-home-btn');
     
     // Set up event listeners
     calculateBtn.addEventListener('click', calculateRecipe);
@@ -11,6 +12,12 @@ document.addEventListener('DOMContentLoaded', function() {
     recalculateBtn.addEventListener('click', function() {
         document.getElementById('results-section').style.display = 'none';
         document.getElementById('calculator-section').scrollIntoView({ behavior: 'smooth' });
+    });
+    
+    // Back to home button
+    backToHomeBtn.addEventListener('click', function() {
+        document.getElementById('calculator-section').style.display = 'none';
+        document.getElementById('introduction-section').style.display = 'block';
     });
     
     // Open calculator buttons
