@@ -49,15 +49,20 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize with sample values for testing
     document.getElementById('flour-weight').value = '1000';
     document.getElementById('target-hydration').value = '65';
+    document.getElementById('salt-percent').value = '2';
+    document.getElementById('yeast-percent').value = '0.2';
 });
 
 function calculateRecipe() {
     // Get input values
     const flourWeight = parseFloat(document.getElementById('flour-weight').value);
     const targetHydration = parseFloat(document.getElementById('target-hydration').value);
+    const saltPercent = parseFloat(document.getElementById('salt-percent').value);
+    const yeastPercent = parseFloat(document.getElementById('yeast-percent').value);
     
-    if (isNaN(flourWeight) || isNaN(targetHydration) || flourWeight <= 0 || targetHydration < 0) {
-        alert('Please enter valid values for flour weight and hydration');
+    if (isNaN(flourWeight) || isNaN(targetHydration) || isNaN(saltPercent) || isNaN(yeastPercent) || 
+        flourWeight <= 0 || targetHydration < 0 || saltPercent < 0 || yeastPercent < 0) {
+        alert('Please enter valid values for all fields');
         return;
     }
     
@@ -93,8 +98,8 @@ function calculateRecipe() {
         totalWater += enricherWeights.cream * 0.82; // Cream is ~82% water
     }
     
-    const saltAmount = flourWeight * 0.02; // 2% salt
-    const yeastAmount = flourWeight * 0.002; // 0.2% yeast
+    const saltAmount = flourWeight * (saltPercent / 100);
+    const yeastAmount = flourWeight * (yeastPercent / 100);
     
     // Calculate final water needed to reach target hydration
     const effectiveWater = totalWater;
@@ -121,8 +126,8 @@ function calculateRecipe() {
                     ((enricherWeights.milk || 0) * 0.87) - 
                     ((enricherWeights.butter || 0) * 0.15) - 
                     ((enricherWeights.cream || 0) * 0.82)).toFixed(1)}g</li>
-                <li>Salt: ${saltAmount.toFixed(1)}g (${((saltAmount / flourWeight) * 100).toFixed(1)}% of flour)</li>
-                <li>Yeast: ${yeastAmount.toFixed(1)}g (${((yeastAmount / flourWeight) * 100).toFixed(1)}% of flour)</li>
+                <li>Salt: ${saltAmount.toFixed(1)}g (${saltPercent}% of flour)</li>
+                <li>Yeast: ${yeastAmount.toFixed(1)}g (${yeastPercent}% of flour)</li>
     `;
     
     // Add enrichers to output
@@ -160,6 +165,8 @@ function calculateRecipe() {
 function resetCalculator() {
     document.getElementById('flour-weight').value = '1000';
     document.getElementById('target-hydration').value = '65';
+    document.getElementById('salt-percent').value = '2';
+    document.getElementById('yeast-percent').value = '0.2';
     
     // Reset enricher checkboxes
     const checkboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]');
