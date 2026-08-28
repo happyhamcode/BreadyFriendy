@@ -8,7 +8,21 @@ document.addEventListener('DOMContentLoaded', function() {
     // Set up event listeners
     calculateBtn.addEventListener('click', calculateRecipe);
     resetBtn.addEventListener('click', resetCalculator);
-    recalculateBtn.addEventListener('click', showCalculator);
+    recalculateBtn.addEventListener('click', function() {
+        document.getElementById('results-section').style.display = 'none';
+        document.getElementById('calculator-section').scrollIntoView({ behavior: 'smooth' });
+    });
+    
+    // Open calculator buttons
+    document.getElementById('open-calculator-btn').addEventListener('click', function() {
+        document.getElementById('introduction-section').style.display = 'none';
+        document.getElementById('calculator-section').style.display = 'block';
+    });
+    
+    document.getElementById('open-calculator-btn-bottom').addEventListener('click', function() {
+        document.getElementById('introduction-section').style.display = 'none';
+        document.getElementById('calculator-section').style.display = 'block';
+    });
     
     // Enricher checkbox handling
     document.getElementById('use-eggs').addEventListener('change', function() {
@@ -66,100 +80,123 @@ function calculateRecipe() {
         return;
     }
     
-    // Calculate base water amount
+    // Calculate water content
     let totalWater = flourWeight * (targetHydration / 100);
     
-    // Track enrichers
-    const enricherWeights = {};
+    // Track enricher contributions to water
+    let enricherWater = 0;
+    let enricherFat = 0;
+    let enricherProtein = 0;
     
-    // Check each enricher
+    // Process enrichers and calculate their contribution
     if (document.getElementById('use-eggs').checked) {
-        enricherWeights.eggs = parseFloat(document.getElementById('eggs-amount-input').value) || 0;
-        totalWater += enricherWeights.eggs * 0.7; // Eggs are ~70% water
+        const eggsAmount = parseFloat(document.getElementById('eggs-amount-input').value);
+        if (!isNaN(eggsAmount)) {
+            enricherWater += eggsAmount * 0.75; // Eggs are ~75% water
+        }
     }
     
     if (document.getElementById('use-milk').checked) {
-        enricherWeights.milk = parseFloat(document.getElementById('milk-amount-input').value) || 0;
-        totalWater += enricherWeights.milk * 0.87; // Milk is ~87% water
+        const milkAmount = parseFloat(document.getElementById('milk-amount-input').value);
+        if (!isNaN(milkAmount)) {
+            enricherWater += milkAmount * 0.87; // Milk is ~87% water
+        }
     }
     
     if (document.getElementById('use-butter').checked) {
-        enricherWeights.butter = parseFloat(document.getElementById('butter-amount-input').value) || 0;
-        totalWater += enricherWeights.butter * 0.15; // Butter is ~15% water
+        const butterAmount = parseFloat(document.getElementById('butter-amount-input').value);
+        if (!isNaN(butterAmount)) {
+            enricherWater += butterAmount * 0.18; // Butter is ~18% water
+            enricherFat += butterAmount * 0.82; // Butter is ~82% fat
+        }
     }
     
     if (document.getElementById('use-oil').checked) {
-        enricherWeights.oil = parseFloat(document.getElementById('oil-amount-input').value) || 0;
-        // Oil is 0% water, but we track it for nutritional info
+        const oilAmount = parseFloat(document.getElementById('oil-amount-input').value);
+        if (!isNaN(oilAmount)) {
+            enricherFat += oilAmount; // Oil is 100% fat
+        }
     }
     
     if (document.getElementById('use-cream').checked) {
-        enricherWeights.cream = parseFloat(document.getElementById('cream-amount-input').value) || 0;
-        totalWater += enricherWeights.cream * 0.82; // Cream is ~82% water
+        const creamAmount = parseFloat(document.getElementById('cream-amount-input').value);
+        if (!isNaN(creamAmount)) {
+            enricherWater += creamAmount * 0.87; // Cream is ~87% water
+            enricherFat += creamAmount * 0.13; // Cream is ~13% fat
+        }
     }
     
+    // Calculate final water content after accounting for enrichers
+    const waterContent = totalWater - enricherWater;
+    
+    // Calculate salt and yeast amounts
     const saltAmount = flourWeight * (saltPercent / 100);
     const yeastAmount = flourWeight * (yeastPercent / 100);
     
-    // Calculate final water needed to reach target hydration
-    const effectiveWater = totalWater;
-    const additionalWaterNeeded = (flourWeight * (targetHydration / 100)) - (effectiveWater - 
-        ((enricherWeights.eggs || 0) * 0.7) - 
-        ((enricherWeights.milk || 0) * 0.87) - 
-        ((enricherWeights.butter || 0) * 0.15) - 
-        ((enricherWeights.cream || 0) * 0.82));
+    // Prepare results
+    let resultsHTML = `<h3>Recipe Results</h3><ul>`;
+    resultsHTML += `<li><strong>Flour:</strong> ${flourWeight}g</li>`;
     
-    // Build and display results
-    const resultsContainer = document.getElementById('results-container');
-    let output = `
-        <div class="results-content">
-            <h3>Recipe Summary</h3>
-            <p><strong>Total Flour:</strong> ${flourWeight}g</p>
-            <p><strong>Target Hydration:</strong> ${targetHydration}%</p>
-            <p><strong>Effective Water Content:</strong> ${effectiveWater.toFixed(1)}g</p>
-            
-            <h4>Ingredients Breakdown</h4>
-            <ul>
-                <li>Flour: ${flourWeight}g (100%)</li>
-                <li>Water: ${(additionalWaterNeeded + effectiveWater - 
-                    ((enricherWeights.eggs || 0) * 0.7) - 
-                    ((enricherWeights.milk || 0) * 0.87) - 
-                    ((enricherWeights.butter || 0) * 0.15) - 
-                    ((enricherWeights.cream || 0) * 0.82)).toFixed(1)}g</li>
-                <li>Salt: ${saltAmount.toFixed(1)}g (${saltPercent}% of flour)</li>
-                <li>Yeast: ${yeastAmount.toFixed(1)}g (${yeastPercent}% of flour)</li>
-    `;
-    
-    // Add enrichers to output
-    if (enricherWeights.eggs > 0) {
-        output += `<li>Eggs: ${enricherWeights.eggs}g (~${(enricherWeights.eggs * 0.7).toFixed(1)}g water)</li>`;
-    }
-    if (enricherWeights.milk > 0) {
-        output += `<li>Milk: ${enricherWeights.milk}g (~${(enricherWeights.milk * 0.87).toFixed(1)}g water)</li>`;
-    }
-    if (enricherWeights.butter > 0) {
-        output += `<li>Butter: ${enricherWeights.butter}g (~${(enricherWeights.butter * 0.15).toFixed(1)}g water)</li>`;
-    }
-    if (enricherWeights.oil > 0) {
-        output += `<li>Oil: ${enricherWeights.oil}g</li>`;
-    }
-    if (enricherWeights.cream > 0) {
-        output += `<li>Cream: ${enricherWeights.cream}g (~${(enricherWeights.cream * 0.82).toFixed(1)}g water)</li>`;
+    if (waterContent > 0) {
+        resultsHTML += `<li><strong>Water:</strong> ${waterContent.toFixed(1)}g</li>`;
     }
     
-    output += `
-            </ul>
-            
-            <h4>Key Information</h4>
-            <p>This recipe will provide approximately ${targetHydration}% hydration when all enrichers are properly accounted for.</p>
-        </div>
-    `;
+    if (enricherWater > 0) {
+        resultsHTML += `<li><strong>Enricher Water:</strong> ${enricherWater.toFixed(1)}g</li>`;
+    }
     
-    resultsContainer.innerHTML = output;
+    if (saltAmount > 0) {
+        resultsHTML += `<li><strong>Salt:</strong> ${saltAmount.toFixed(1)}g</li>`;
+    }
     
-    // Show results
-    document.getElementById('calculator-form').style.display = 'none';
+    if (yeastAmount > 0) {
+        resultsHTML += `<li><strong>Yeast:</strong> ${yeastAmount.toFixed(1)}g</li>`;
+    }
+    
+    // Add enricher details
+    if (document.getElementById('use-eggs').checked) {
+        const eggsAmount = parseFloat(document.getElementById('eggs-amount-input').value);
+        if (!isNaN(eggsAmount)) {
+            resultsHTML += `<li><strong>Eggs:</strong> ${eggsAmount}g</li>`;
+        }
+    }
+    
+    if (document.getElementById('use-milk').checked) {
+        const milkAmount = parseFloat(document.getElementById('milk-amount-input').value);
+        if (!isNaN(milkAmount)) {
+            resultsHTML += `<li><strong>Milk:</strong> ${milkAmount}g</li>`;
+        }
+    }
+    
+    if (document.getElementById('use-butter').checked) {
+        const butterAmount = parseFloat(document.getElementById('butter-amount-input').value);
+        if (!isNaN(butterAmount)) {
+            resultsHTML += `<li><strong>Butter:</strong> ${butterAmount}g</li>`;
+        }
+    }
+    
+    if (document.getElementById('use-oil').checked) {
+        const oilAmount = parseFloat(document.getElementById('oil-amount-input').value);
+        if (!isNaN(oilAmount)) {
+            resultsHTML += `<li><strong>Oil:</strong> ${oilAmount}g</li>`;
+        }
+    }
+    
+    if (document.getElementById('use-cream').checked) {
+        const creamAmount = parseFloat(document.getElementById('cream-amount-input').value);
+        if (!isNaN(creamAmount)) {
+            resultsHTML += `<li><strong>Cream:</strong> ${creamAmount}g</li>`;
+        }
+    }
+    
+    resultsHTML += `</ul>`;
+    
+    // Display results
+    document.getElementById('results-container').innerHTML = resultsHTML;
     document.getElementById('results-section').style.display = 'block';
+    
+    // Scroll to results
+    document.getElementById('results-section').scrollIntoView({ behavior: 'smooth' });
 }
 
 function resetCalculator() {
@@ -176,9 +213,7 @@ function resetCalculator() {
     document.querySelectorAll('.enricher-amounts .input-group').forEach(el => {
         el.style.display = 'none';
     });
-}
-
-function showCalculator() {
-    document.getElementById('calculator-form').style.display = 'block';
+    
+    // Hide results section
     document.getElementById('results-section').style.display = 'none';
 }
