@@ -18,18 +18,24 @@
             color: #333;
             background-color: #B0E0E6; /* Light sky blue background */
             padding: 20px;
-            background-image: 
-                linear-gradient(rgba(0, 0, 0, 0.15) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 0, 0, 0.15) 1px, transparent 1px);
-            background-size: 20px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
         
-        .container {
+        .graph-paper-sheet {
             background-color: white;
             padding: 25px;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             border: 1px solid #e0e0e0;
+            background-image: 
+                linear-gradient(rgba(0, 0, 0, 0.15) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 0, 0, 0.15) 1px, transparent 1px);
+            background-size: 20px 20px;
+            max-width: 1000px;
+            width: 100%;
         }
 
         .container {
@@ -365,7 +371,7 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="graph-paper-sheet">
         <header>
             <h1>Bread Dough Calculator</h1>
             <p class="subtitle">Scientific approach to bread making: Start with ingredients, then adjust hydration</p>
@@ -415,13 +421,13 @@
             <div class="ingredient-section">
                 <h3>Enrichers (Optional)</h3>
                 <p>Ingredients that add flavor, richness, moisture, and affect hydration. 
-                   <ul>
-                       <li>Eggs: Add protein and fat for better structure</li>
-                       <li>Milk: Adds sugar for fermentation and moisture</li>
-                       <li>Butter: Add fat for tenderness and richer flavor</li>
-                       <li>Oils: Provide moisture and make dough more tender</li>
-                       <li>Cream: Creates rich, soft textures (contains both water and fat)</li>
-                   </ul>
+                    <ul>
+                        <li>Eggs: Add protein and fat for better structure</li>
+                        <li>Milk: Adds sugar for fermentation and moisture</li>
+                        <li>Butter: Add fat for tenderness and richer flavor</li>
+                        <li>Oils: Provide moisture and make dough more tender</li>
+                        <li>Cream: Creates rich, soft textures (contains both water and fat)</li>
+                    </ul>
                 </p>
             </div>
 
