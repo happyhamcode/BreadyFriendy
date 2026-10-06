@@ -4,9 +4,9 @@ Written for the next session (Opus). Read "Start here", then the sections you ne
 
 ## Start here
 
-1. `cd /home/happyham/c0d3/breadyfrendy && git status && npm test` (expect 38 passing).
+1. `cd /home/happyham/c0d3/breadyfrendy && git status && npm test` (expect 38 passing; `npm run e2e` has 22).
 2. Read `calc.js` top to bottom (about 350 lines). It is the whole brain of the bread calculator.
-3. Do not start building the cake calculator or the rebrand until the owner says the bread calculator is done. They said they will review it first.
+3. The owner approved the bread calculator on 2026-10-06 ("looks solid"). Stage 2 (cake calculator and rebrand) can start. Ask the 4 open decisions below first.
 4. Work on a branch. Pushing `main` deploys to production.
 
 ## What this is
@@ -22,12 +22,12 @@ Hard product rules from the owner:
 - "Test it into the ground": every scenario should work or produce a clear error.
 - Must work on phone, tablet and desktop.
 
-## Current state (main at 976ee0f)
+## Current state (main at 9529688, deployed)
 
 | Area | Status |
 |---|---|
-| Bread calculator | Done and live. Owner is still reviewing it. |
-| Tests | 38 unit (`npm test`), 21 browser (`npm run e2e`), all passing |
+| Bread calculator | Done, live and approved by the owner. |
+| Tests | 38 unit (`npm test`), 22 browser (`npm run e2e`), all passing |
 | Design | Blueprint navy graph-paper background, white "paper" sheets, amber accent, Bricolage Grotesque headings (self-hosted) |
 | Ads | Empty hidden slots (`ins.ad-slot[hidden]`), privacy page, SEO meta tags. No publisher ID yet. |
 | Cake calculator | Not started. Only scoped in conversation (see below). |
