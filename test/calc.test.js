@@ -129,12 +129,12 @@ test('toGrams: every unit of every ingredient is finite and positive', () => {
 
 test('toGrams known values', () => {
   near(toGrams('flour', 2, 'cup'), 240); near(toGrams('flour', '1 1/2', 'cup-whole-wheat'), 169.5);
-  near(toGrams('egg', 3, 'egg'), 150); near(toGrams('yolk', 4, 'yolk'), 72);
+  near(toGrams('egg', 3, 'egg'), 150); near(toGrams('yolk', 4, 'yolk'), 56);
   near(toGrams('butter', '½', 'stick'), 56.5); near(toGrams('butter', 2, 'tbsp'), 28.375);
   near(toGrams('water', 1, 'cup'), 237); near(toGrams('water', 100, 'ml'), 100.2, 0.1);
-  near(toGrams('milk', 1, 'cup'), 242); near(toGrams('sugar', 1, 'cup'), 200);
+  near(toGrams('milk', 1, 'cup'), 244); near(toGrams('sugar', 1, 'cup'), 198);
   near(toGrams('honey', 1, 'tbsp'), 21.25); near(toGrams('yeast', 1, 'packet'), 7);
-  near(toGrams('salt', 1, 'tsp-diamond'), 2.8); near(toGrams('salt', 1, 'tsp'), 6);
+  near(toGrams('salt', 1, 'tsp-diamond'), 2.667, 0.01); near(toGrams('salt', 1, 'tsp-morton'), 5.333, 0.01); near(toGrams('milkpowder', 0.25, 'cup'), 28); near(toGrams('yeast', 1, 'tbsp'), 9); near(toGrams('salt', 1, 'tsp'), 6);
   near(toGrams('flour', 4, 'oz'), 113.398);
 });
 

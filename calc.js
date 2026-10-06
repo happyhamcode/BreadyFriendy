@@ -7,20 +7,22 @@ export const MAX_GRAMS = 50000;
 export const DEFAULT_FLOUR = 500;
 export const HYDRATION_TOLERANCE = 0.5; // percentage points
 
+// Sources: water/fat = USDA FoodData Central (SR Legacy); dry cups, eggs, salt, yeast = King Arthur ingredient weight chart;
+// liquid cups (water, milk, cream, oil) = physical density (US cup = 236.6 ml), not KA's 8 oz = 227 g convention.
 // water = water fraction, fat = fat fraction, cup = grams per US cup (tbsp = /16, tsp = /48, ml = cup/CUP_ML)
 // count = grams per natural unit (egg, yolk, stick...). pct = default baker's % when left blank.
 export const ING = {
   flour:     { label: 'Flour',       water: 0,    fat: 0,    cup: 120, count: null },
   water:     { label: 'Water',       water: 1,    fat: 0,    cup: 237, liquid: true },
   egg:       { label: 'Whole egg',   water: 0.76, fat: 0.10, liquid: true, count: { unit: 'egg', g: 50 } },
-  yolk:      { label: 'Egg yolk',    water: 0.52, fat: 0.27, liquid: true, count: { unit: 'yolk', g: 18 } },
-  milk:      { label: 'Whole milk',  water: 0.88, fat: 0.035, cup: 242, liquid: true },
+  yolk:      { label: 'Egg yolk',    water: 0.52, fat: 0.27, liquid: true, count: { unit: 'yolk', g: 14 } },
+  milk:      { label: 'Whole milk',  water: 0.88, fat: 0.033, cup: 244, liquid: true },
   cream:     { label: 'Heavy cream', water: 0.58, fat: 0.36, cup: 238, liquid: true },
   butter:    { label: 'Butter',      water: 0.16, fat: 0.82, cup: 227, pct: 15, count: { unit: 'stick', g: 113 } },
   oil:       { label: 'Oil',         water: 0,    fat: 1,    cup: 218, pct: 8 },
-  sugar:     { label: 'Sugar',       water: 0,    fat: 0,    cup: 200, pct: 10 },
+  sugar:     { label: 'Sugar',       water: 0,    fat: 0,    cup: 198, pct: 10 },
   honey:     { label: 'Honey',       water: 0.17, fat: 0,    cup: 340, pct: 8 },
-  milkpowder:{ label: 'Milk powder', water: 0.03, fat: 0.01, cup: 120, pct: 5 },
+  milkpowder:{ label: 'Milk powder', water: 0.03, fat: 0.01, cup: 112, pct: 5 },
   salt:      { label: 'Salt',        water: 0,    fat: 0,    pct: 2 },
   yeast:     { label: 'Yeast',       water: 0,    fat: 0 },
 };
@@ -36,8 +38,8 @@ export const YEAST = {
 };
 
 const WEIGHT_UNITS = { g: 1, oz: 28.3495 };
-const SALT_UNITS = { tsp: 6, tbsp: 18, 'tsp-diamond': 2.8, 'tsp-morton': 4.8 };
-const YEAST_UNITS = { tsp: 3.1, tbsp: 9.3, packet: 7, cake: 17 };
+const SALT_UNITS = { tsp: 6, tbsp: 18, 'tsp-diamond': 8 / 3, 'tsp-morton': 16 / 3 };
+const YEAST_UNITS = { tsp: 3, tbsp: 9, packet: 7, cake: 17 };
 
 // Units available for an ingredient: { unit: gramsPerUnit }
 export function unitsFor(id) {
