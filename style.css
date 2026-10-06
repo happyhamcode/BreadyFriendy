@@ -206,7 +206,7 @@ tfoot th, tfoot td { font-weight: 700; border-top: 2px solid var(--ink); border-
   .enrichers, .picks { grid-template-columns: 1fr 1fr; }
   .explain { grid-template-columns: 1fr 1fr; gap: 0; }
   .explain article:first-child { padding-right: 28px; border-right: 1px solid var(--line); }
-  .explain article:last-child { padding-left: 28px; }
+  .explain article + article { padding-left: 28px; }
   .actions button { flex: 0 1 auto; }
   .try { grid-template-columns: 1.1fr .9fr; gap: 24px; }
 }

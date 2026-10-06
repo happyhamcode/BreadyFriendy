@@ -228,3 +228,12 @@ for (const [name, w, h] of [['phone', 375, 700], ['small phone', 320, 640], ['ta
     if (w >= 1024) expect(Math.abs(f.y - r.y)).toBeLessThan(40); else expect(r.y).toBeGreaterThan(f.y + f.height - 5);
   });
 }
+
+test('explanation columns keep padding on both sides of the divider', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto('/');
+  const [a, b] = await page.locator('.explain > article').evaluateAll((els) => els.map((e) => parseFloat(getComputedStyle(e).paddingRight) + parseFloat(getComputedStyle(e).paddingLeft)));
+  expect(a).toBeGreaterThanOrEqual(28); expect(b).toBeGreaterThanOrEqual(28);
+  const gap = await page.locator('.explain > article').nth(1).evaluate((e) => e.querySelector('h2').getBoundingClientRect().left - e.getBoundingClientRect().left);
+  expect(gap).toBeGreaterThanOrEqual(28);
+});
