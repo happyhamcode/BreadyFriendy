@@ -5,24 +5,27 @@
 const CUP_ML = 236.588;
 export const MAX_GRAMS = 50000;
 export const DEFAULT_FLOUR = 500;
+export const DEFAULT_HYDRATION = 65; // percent, used when water is left blank and no hydration is given
 export const HYDRATION_TOLERANCE = 0.5; // percentage points
 
 // Sources: water/fat = USDA FoodData Central (SR Legacy); dry cups, eggs, salt, yeast = King Arthur ingredient weight chart;
 // liquid cups (water, milk, cream, oil) = physical density (US cup = 236.6 ml), not KA's 8 oz = 227 g convention.
+// Recommended amounts when a field is left blank (the same figures the home page states):
+//   pct = % of flour weight; share = fraction of the dough's total water supplied by that liquid.
 // water = water fraction, fat = fat fraction, cup = grams per US cup (tbsp = /16, tsp = /48, ml = cup/CUP_ML)
 // count = grams per natural unit (egg, yolk, stick...). pct = default baker's % when left blank.
 export const ING = {
   flour:     { label: 'Flour',       water: 0,    fat: 0,    cup: 120, count: null },
   water:     { label: 'Water',       water: 1,    fat: 0,    cup: 237, liquid: true },
-  egg:       { label: 'Whole egg',   water: 0.76, fat: 0.10, liquid: true, count: { unit: 'egg', g: 50 } },
-  yolk:      { label: 'Egg yolk',    water: 0.52, fat: 0.27, liquid: true, count: { unit: 'yolk', g: 14 } },
-  milk:      { label: 'Whole milk',  water: 0.88, fat: 0.033, cup: 244, liquid: true },
-  cream:     { label: 'Heavy cream', water: 0.58, fat: 0.36, cup: 238, liquid: true },
-  butter:    { label: 'Butter',      water: 0.16, fat: 0.82, cup: 227, pct: 15, count: { unit: 'stick', g: 113 } },
-  oil:       { label: 'Oil',         water: 0,    fat: 1,    cup: 218, pct: 8 },
+  egg:       { label: 'Whole egg',   water: 0.76, fat: 0.10, liquid: true, pct: 15, count: { unit: 'egg', g: 50 } },
+  yolk:      { label: 'Egg yolk',    water: 0.52, fat: 0.27, liquid: true, pct: 10, count: { unit: 'yolk', g: 14 } },
+  milk:      { label: 'Whole milk',  water: 0.88, fat: 0.033, cup: 244, liquid: true, share: 0.5 },
+  cream:     { label: 'Heavy cream', water: 0.58, fat: 0.36, cup: 238, liquid: true, share: 0.25 },
+  butter:    { label: 'Butter',      water: 0.16, fat: 0.82, cup: 227, pct: 12, count: { unit: 'stick', g: 113 } },
+  oil:       { label: 'Oil',         water: 0,    fat: 1,    cup: 218, pct: 7 },
   sugar:     { label: 'Sugar',       water: 0,    fat: 0,    cup: 198, pct: 10 },
-  honey:     { label: 'Honey',       water: 0.17, fat: 0,    cup: 340, pct: 8 },
-  milkpowder:{ label: 'Milk powder', water: 0.03, fat: 0.01, cup: 112, pct: 5 },
+  honey:     { label: 'Honey',       water: 0.17, fat: 0,    cup: 340, pct: 7 },
+  milkpowder:{ label: 'Milk powder', water: 0.03, fat: 0.01, cup: 112, pct: 4 },
   salt:      { label: 'Salt',        water: 0,    fat: 0,    pct: 2 },
   yeast:     { label: 'Yeast',       water: 0,    fat: 0 },
 };
@@ -92,7 +95,10 @@ const fail = (field, message) => ({ error: { field, message } });
 const g1 = (n) => (n < 20 ? n.toFixed(1) : Math.round(n)); // display rounding
 
 // input: { amounts: { flour, water, salt, yeast, ...enrichers }, hydration (percent|null), yeastType }
-// Returns { recipe, hydration, total, flourDefaulted, waterBreakdown, warnings, yeastEquivalents } or { error: {field, message} }
+// Blank fields get the recommended amount (see ING pct/share, DEFAULT_HYDRATION) or are solved from hydration:
+//   - water blank: enrichers take their recommended amounts, water makes up the rest of the hydration
+//   - water given + hydration given: blank liquid enrichers split whatever water is still missing, equal grams
+// Returns { recipe, hydration, total, flourDefaulted, hydrationDefaulted, waterBreakdown, warnings, yeastEquivalents } or { error: {field, message} }
 export function solve(input) {
   const yt = input?.yeastType ?? 'instant';
   if (!YEAST[yt]) return fail('yeastType', 'Pick a yeast type.');
@@ -118,57 +124,72 @@ export function solve(input) {
   }
 
   const ids = Object.keys(amounts);
-  const auto = new Set();
-  const blanks = ids.filter((id) => amounts[id] === null && id !== 'flour');
-  const blankL = blanks.filter(isLiquid);
+  const how = {}; // id -> 'recommended' | 'solved' for every field the solver filled
+  const warnings = [];
+  let hydrationDefaulted = false;
+  if (H === null && amounts.water === null) { H = DEFAULT_HYDRATION / 100; hydrationDefaulted = true; }
+  const baseH = H ?? DEFAULT_HYDRATION / 100;
+  const waterGiven = amounts.water !== null;
+  const blanks = ids.filter((id) => id !== 'flour' && amounts[id] === null);
   const blankN = blanks.filter((id) => !isLiquid(id));
+  const blankL = blanks.filter((id) => id !== 'water' && isLiquid(id));
+  const solveL = H !== null && waterGiven ? blankL : [];
+  const recL = blankL.filter((id) => !solveL.includes(id));
+  const wf = (id) => waterFrac(id, yt);
+  const knownWater = () => ids.reduce((s, id) => s + (amounts[id] ?? 0) * wf(id), 0);
   let F = amounts.flour;
+  const recAmount = (id) => (ING[id].share != null ? (ING[id].share * baseH * F) / wf(id) : (defaultPct(id, yt) * F) / 100);
+  const tooWet = (water) => {
+    const p = ((water / F) * 100).toFixed(1);
+    return fail('hydration', hydrationDefaulted
+      ? `Your ingredients already contain ${g1(water)} g of water (${p}% hydration), above the recommended ${DEFAULT_HYDRATION}%. Enter a hydration of at least ${p}%, add flour, or lower something.`
+      : `Your ingredients already contain ${g1(water)} g of water (${p}% hydration). Lower them, add flour, or raise hydration to at least ${p}%.`);
+  };
+
   let flourDefaulted = false;
-  const knownWater = () => ids.reduce((s, id) => s + (amounts[id] ?? 0) * waterFrac(id, yt), 0);
-  const fillDefaults = () => { for (const id of blankN) { amounts[id] = (F * defaultPct(id, yt)) / 100; auto.add(id); } };
+  if (F === null) {
+    if (H === null) return fail('flour', 'Enter flour, or enter a hydration % and I will fill in the rest.');
+    if (waterGiven && !solveL.length) { // every liquid is known, so flour follows from the water
+      const D = H - blankN.reduce((s, id) => s + (defaultPct(id, yt) / 100) * wf(id), 0);
+      if (D <= 1e-9) return fail('hydration', 'That hydration is too low for the other ingredients to fit. Raise it.');
+      F = knownWater() / D;
+      if (!(F > 0)) return fail('flour', 'Add some water or liquid, or enter flour, so there is something to solve from.');
+      how.flour = 'solved';
+    } else {
+      F = DEFAULT_FLOUR; flourDefaulted = true; how.flour = 'recommended';
+    }
+  }
+  amounts.flour = F;
+  for (const id of blankN) { amounts[id] = recAmount(id); how[id] = 'recommended'; }
 
   if (H === null) {
-    if (F === null) return fail('flour', 'Enter flour, or enter a hydration % and I will fill in the rest.');
-    if (blankL.length) {
-      return fail(blankL[0], `Enter ${ING[blankL[0]].label.toLowerCase()} (0 is fine), or enter a hydration %.`);
-    }
-    fillDefaults();
+    for (const id of recL) { amounts[id] = recAmount(id); how[id] = 'recommended'; }
+  } else if (!waterGiven) {
+    const room = H * F - knownWater(); // water still available for plain water + the recommended liquids
+    const S = recL.reduce((s, id) => s + recAmount(id) * wf(id), 0);
+    if (room < -1e-9 || (room < 1e-9 && S > 0)) return tooWet(knownWater());
+    const k = S > room ? room / S : 1;
+    if (k < 1) warnings.push(`The recommended amounts of your enrichers hold more water than ${(H * 100).toFixed(0)}% hydration allows, so I scaled them down. Remove an enricher or raise hydration for the full amounts.`);
+    for (const id of recL) { amounts[id] = recAmount(id) * k; how[id] = 'recommended'; }
+    amounts.water = Math.max(0, room - S * k); how.water = 'solved';
   } else {
-    if (F === null) {
-      if (!blankL.length) {
-        const D = H - blankN.reduce((s, id) => s + (defaultPct(id, yt) / 100) * waterFrac(id, yt), 0);
-        const Wk = knownWater();
-        if (D <= 1e-9) return fail('hydration', 'That hydration is too low for the other ingredients to fit. Raise it.');
-        F = Wk / D;
-        if (!(F > 0)) return fail('flour', 'Add some water or liquid, or enter flour, so there is something to solve from.');
-      } else {
-        F = DEFAULT_FLOUR;
-        flourDefaulted = true;
-      }
-      auto.add('flour');
-    }
-    amounts.flour = F;
-    fillDefaults();
     const Wk = knownWater();
-    if (blankL.length) {
+    if (solveL.length) {
       const R = H * F - Wk;
-      if (R < -1e-9) {
-        return fail('hydration', `Your ingredients already contain ${g1(Wk)} g of water (${(Wk / F * 100).toFixed(1)}% hydration). Lower them, add flour, or raise hydration to at least ${(Wk / F * 100).toFixed(1)}%.`);
-      }
-      const each = Math.max(0, R) / blankL.reduce((s, id) => s + waterFrac(id, yt), 0);
-      for (const id of blankL) { amounts[id] = each; auto.add(id); }
-    } else if (!auto.has('flour') && Math.abs(Wk / F - H) * 100 > HYDRATION_TOLERANCE) {
+      if (R < -1e-9) return tooWet(Wk);
+      const each = Math.max(0, R) / solveL.reduce((s, id) => s + wf(id), 0);
+      for (const id of solveL) { amounts[id] = each; how[id] = 'solved'; }
+    } else if (how.flour !== 'solved' && Math.abs(Wk / F - H) * 100 > HYDRATION_TOLERANCE) {
       return fail('hydration', `Your amounts give ${(Wk / F * 100).toFixed(1)}% hydration, but you asked for ${(H * 100).toFixed(1)}%. Clear one field and I'll solve it.`);
     }
   }
 
-  amounts.flour = F;
   const recipe = ids.map((id) => ({
-    id, label: ING[id].label, grams: amounts[id], auto: auto.has(id), pct: (amounts[id] / F) * 100,
+    id, label: ING[id].label, grams: amounts[id], auto: id in how, how: how[id] ?? null, pct: (amounts[id] / F) * 100,
   }));
   const total = recipe.reduce((s, r) => s + r.grams, 0);
   const waterBreakdown = recipe
-    .map((r) => ({ id: r.id, label: r.label, grams: r.grams * waterFrac(r.id, yt) }))
+    .map((r) => ({ id: r.id, label: r.label, grams: r.grams * wf(r.id) }))
     .filter((r) => r.grams > 0);
   const totalWater = waterBreakdown.reduce((s, r) => s + r.grams, 0);
   const hydration = (totalWater / F) * 100;
@@ -180,7 +201,6 @@ export function solve(input) {
 
   const pct = (id) => (amounts[id] ?? 0) / F * 100;
   const fat = ids.reduce((s, id) => s + amounts[id] * ING[id].fat, 0) / F * 100;
-  const warnings = [];
   if (hydration < 50) warnings.push(`Hydration ${hydration.toFixed(0)}% is very low; the dough will be stiff.`);
   if (hydration > 85) warnings.push(`Hydration ${hydration.toFixed(0)}% is very high for enriched dough; expect a batter-like dough.`);
   if (pct('salt') < 1.5 || pct('salt') > 3) warnings.push(`Salt is ${pct('salt').toFixed(1)}% of flour; 1.5-3% is typical.`);
@@ -188,10 +208,24 @@ export function solve(input) {
   else if (pct('yeast') > 3 * YEAST[yt].pct) warnings.push(`Yeast is ${pct('yeast').toFixed(1)}% of flour, over 3x the usual amount for ${YEAST[yt].label.toLowerCase()}.`);
   if (pct('sugar') + pct('honey') > 25) warnings.push('Over 25% sugar slows regular yeast; consider osmotolerant (SAF Gold) yeast.');
   if (fat > 60) warnings.push(`Fat is about ${fat.toFixed(0)}% of flour; very rich doughs need long mixing and gentle handling.`);
+  if (hydrationDefaulted) warnings.push(`No hydration entered, so I used the recommended ${DEFAULT_HYDRATION}%.`);
   if (flourDefaulted) warnings.push(`No flour entered, so I used ${DEFAULT_FLOUR} g. Change it and press Enter to rescale.`);
 
-  return { recipe, hydration, total, flourDefaulted, waterBreakdown, warnings, yeastEquivalents, yeastType: yt };
+  return { recipe, hydration, total, flourDefaulted, hydrationDefaulted, waterBreakdown, warnings, yeastEquivalents, yeastType: yt };
 }
+
+// Typical true-hydration brackets with example breads. Rich doughs read low: butter and eggs add richness, not water.
+// Boundaries: min inclusive, max exclusive. The home page lists the same brackets (a test keeps them in sync).
+export const BRACKETS = [
+  { min: 0, max: 45, label: 'Very stiff', breads: 'Too dry for most bread. Closer to pasta or cracker dough.' },
+  { min: 45, max: 55, label: 'Stiff and rich', breads: 'Brioche, bagels, pretzels, croissant dough.' },
+  { min: 55, max: 62, label: 'Firm', breads: 'Challah, cinnamon rolls, Neapolitan-style pizza.' },
+  { min: 62, max: 70, label: 'Soft and workable', breads: 'Sandwich loaves, dinner rolls, milk bread, New York-style pizza, classic French bread.' },
+  { min: 70, max: 80, label: 'Sticky, open crumb', breads: 'Rustic baguettes, country loaves, Hokkaido milk bread, pan pizza.' },
+  { min: 80, max: 90, label: 'Very wet', breads: 'Ciabatta, focaccia, Roman-style pizza.' },
+  { min: 90, max: Infinity, label: 'Batter-like', breads: 'Pan de cristal and no-knead batters. Not a kneaded dough.' },
+].map((b) => ({ ...b, range: b.min === 0 ? `Under ${b.max}%` : b.max === Infinity ? `${b.min}%+` : `${b.min}-${b.max}%` }));
+export const bracketFor = (h) => (Number.isFinite(h) && h >= 0 ? BRACKETS.find((b) => h >= b.min && h < b.max) : null) ?? null;
 
 // Scale a solved result. target: { totalDough } or { loaves, each } in grams.
 export function scale(result, target) {

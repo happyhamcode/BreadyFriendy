@@ -1,4 +1,4 @@
-import { ING, ENRICHERS, BASE, YEAST, solve, scale, toGrams, unitsFor, friendly, encodeShare, decodeShare, parseAmount } from './calc.js';
+import { ING, ENRICHERS, BASE, YEAST, BRACKETS, bracketFor, solve, scale, toGrams, unitsFor, friendly, encodeShare, decodeShare, parseAmount } from './calc.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 const UNIT_LABEL = { g: 'g', oz: 'oz', cup: 'cup', tbsp: 'tbsp', tsp: 'tsp', ml: 'ml', egg: 'egg(s)', yolk: 'yolk(s)', stick: 'stick(s)', packet: 'packet(s)', cake: 'cake(s)',
@@ -23,13 +23,20 @@ for (const card of document.querySelectorAll('.enricher[data-id]')) {
 
 // ---- hero demo: hydration slider on 500 g flour
 const range = $('#demo-range');
-const feel = (h) => (h < 55 ? 'Very stiff' : h < 62 ? 'Stiff, easy to shape' : h < 70 ? 'Soft, workable' : h < 80 ? 'Sticky, open crumb' : 'Very wet, advanced');
 const drawDemo = () => {
-  const h = +range.value;
-  $('#demo-h').textContent = h + '%'; $('#demo-feel').textContent = feel(h);
+  const h = +range.value, b = bracketFor(h);
+  $('#demo-h').textContent = h + '%'; $('#demo-feel').textContent = b.label;
+  $('#demo-breads').innerHTML = `<strong>${b.range}:</strong> ${b.breads}`;
   $('#demo-water').textContent = Math.round(5 * h) + ' g'; $('#demo-bar').style.setProperty('--h', h / 100);
 };
 range.addEventListener('input', drawDemo); drawDemo();
+
+// ---- hydration guide inside the calculator (highlights the bracket you are in)
+$('#guide-list').innerHTML = BRACKETS.map((b) => `<li data-min="${b.min}"><b>${b.range}</b><span><strong>${b.label}.</strong> ${b.breads}</span></li>`).join('');
+const markGuide = (h) => {
+  const on = bracketFor(h);
+  for (const li of document.querySelectorAll('#guide-list li')) li.classList.toggle('on', !!on && +li.dataset.min === on.min);
+};
 
 // ---- picker, with an info tooltip per enricher
 const picks = $('.picks');
@@ -91,7 +98,7 @@ function buildForm(ids) {
 rows.addEventListener('input', (e) => {
   if (e.target.id.startsWith('in-')) { auto.delete(e.target.id.slice(3)); mark(e.target.id.slice(3)); }
 });
-$('#in-hydration').addEventListener('input', () => { auto.delete('hydration'); mark('hydration'); });
+$('#in-hydration').addEventListener('input', (e) => { auto.delete('hydration'); mark('hydration'); markGuide(parseAmount(e.target.value)); });
 rows.addEventListener('click', (e) => {
   const row = e.target.closest('.row'); if (!row) return;
   const id = row.querySelector('input').id.slice(3);
@@ -148,8 +155,11 @@ $('#form').addEventListener('submit', (e) => { e.preventDefault(); run(); });
 function render(r) {
   $('#hydration-line').innerHTML = `<strong>${r.hydration.toFixed(1)}%</strong> true hydration`;
   $('#res-bar').style.setProperty('--h', r.hydration / 100);
+  const b = bracketFor(r.hydration);
+  $('#res-bracket').innerHTML = b ? `At ${r.hydration.toFixed(1)}%: <strong>${b.label}.</strong> ${b.breads}` : '';
+  markGuide(r.hydration);
   $('#calc').classList.add('has-results');
-  $('#results-body').innerHTML = r.recipe.map((x) => `<tr><th scope="row">${x.label}${x.auto ? ' <span class="hint">(calculated)</span>' : ''}<span class="src">${friendly(x.id, x.grams)}</span></th>
+  $('#results-body').innerHTML = r.recipe.map((x) => `<tr><th scope="row">${x.label}${x.how ? ` <span class="hint">(${x.how === 'recommended' ? 'recommended' : 'calculated'})</span>` : ''}<span class="src">${friendly(x.id, x.grams)}</span></th>
     <td class="num">${x.grams < 20 ? x.grams.toFixed(1) : Math.round(x.grams)}</td><td class="num">${x.pct.toFixed(1)}%</td></tr>`).join('');
   $('#total').textContent = Math.round(r.total) + ' g';
   $('#warnings').innerHTML = r.warnings.map((w) => `<li>${w}</li>`).join('');

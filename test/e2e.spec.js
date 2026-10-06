@@ -28,13 +28,43 @@ test('Enter fills blanks: flour + hydration solves water', async ({ page }) => {
   await expect(page.locator('#in-water')).toHaveClass(/auto/);
 });
 
-test('hydration only: even split across liquids, flour defaults', async ({ page }) => {
+test('hydration only: recommended enrichers, water fills the rest', async ({ page }) => {
   await open(page, ['milk', 'egg']);
   await page.fill('#in-hydration', '65'); await page.press('#in-hydration', 'Enter');
   expect(await val(page, 'flour')).toBe('500');
-  expect(await val(page, 'water')).toBe(await val(page, 'milk'));
-  expect(await val(page, 'milk')).toBe(await val(page, 'egg'));
+  expect(await val(page, 'egg')).toBe('75');       // 15% of flour
+  expect(await val(page, 'milk')).toBe('184.7');   // half of the water
+  expect(await val(page, 'water')).toBe('105.5');
+  expect(await val(page, 'salt')).toBe('10');
   await expect(page.locator('#hydration-line')).toContainText('65.0%');
+  await expect(page.locator('#results-body tr', { hasText: 'Whole egg' })).toContainText('(recommended)');
+  await expect(page.locator('#results-body tr', { hasText: 'Water' }).first()).toContainText('(calculated)');
+});
+
+test('empty form: recommended amounts, 65% hydration, 500 g flour', async ({ page }) => {
+  await open(page, ['egg', 'butter']);
+  await page.press('#in-flour', 'Enter');
+  expect(await val(page, 'flour')).toBe('500'); expect(await val(page, 'hydration')).toBe('65');
+  expect(await val(page, 'egg')).toBe('75'); expect(await val(page, 'butter')).toBe('60');
+  await expect(page.locator('#warnings')).toContainText('recommended 65%');
+  await page.fill('#in-flour', '1000'); await page.press('#in-flour', 'Enter');   // everything calculated rescales
+  expect(await val(page, 'egg')).toBe('150'); expect(await val(page, 'butter')).toBe('120');
+});
+
+test('bread examples: home list, demo slider, calculator guide and result line', async ({ page }) => {
+  await page.goto('/');
+  for (const w of ['Brioche', 'Challah', 'Neapolitan-style pizza', 'classic French bread', 'Ciabatta', 'focaccia']) await expect(page.locator('.ranges')).toContainText(w);
+  await expect(page.locator('.hero #demo-range')).toHaveCount(0);   // demo is not next to the Build button
+  await page.locator('#demo-range').fill('82');
+  await expect(page.locator('#demo-breads')).toContainText('Ciabatta'); await expect(page.locator('#demo-feel')).toHaveText('Very wet');
+  await page.locator('#demo-range').fill('50'); await expect(page.locator('#demo-breads')).toContainText('Brioche');
+  await page.getByRole('button', { name: 'Build my dough' }).first().click(); await page.locator('#to-calc').click();
+  await page.locator('.guide summary').click();
+  await expect(page.locator('#guide-list li')).toHaveCount(7); await expect(page.locator('#guide-list li.on')).toHaveCount(0);
+  await page.fill('#in-hydration', '58'); await expect(page.locator('#guide-list li.on')).toContainText('Challah');
+  await page.fill('#in-hydration', '66'); await expect(page.locator('#guide-list li.on')).toContainText('French');
+  await page.fill('#in-flour', '500'); await page.press('#in-flour', 'Enter');
+  await expect(page.locator('#res-bracket')).toContainText('66.0%'); await expect(page.locator('#res-bracket')).toContainText('Soft and workable');
 });
 
 test('re-Enter after editing flour recomputes calculated fields', async ({ page }) => {
@@ -53,25 +83,25 @@ test('reverse mode reports hydration into the field', async ({ page }) => {
   expect(await val(page, 'hydration')).toBe('70');
 });
 
-test('errors: nothing entered, conflict, enrichers too wet, junk', async ({ page }) => {
+test('errors: conflict, enrichers too wet, junk', async ({ page }) => {
   await open(page, ['milk']);
-  await page.press('#in-flour', 'Enter');
-  await expect(page.locator('#msg')).toContainText(/flour/i);
-  await page.fill('#in-flour', '500'); await page.press('#in-flour', 'Enter');
-  await expect(page.locator('#msg')).toContainText(/water/i);
-  await expect(page.locator('#in-water')).toHaveAttribute('aria-invalid', 'true');
-  await page.fill('#in-water', '300'); await page.fill('#in-milk', '100'); await page.fill('#in-hydration', '50');
+  await page.fill('#in-water', '300'); await page.fill('#in-milk', '100'); await page.fill('#in-flour', '500'); await page.fill('#in-hydration', '50');
   await page.press('#in-hydration', 'Enter');
   await expect(page.locator('#msg')).toContainText(/give 77\.6% hydration/);
+  await expect(page.locator('#in-hydration')).toHaveAttribute('aria-invalid', 'true');
   await page.fill('#in-flour', '100'); await page.fill('#in-water', ''); await page.fill('#in-milk', '200');
   await page.fill('#in-hydration', '60'); await page.press('#in-hydration', 'Enter');
   await expect(page.locator('#msg')).toContainText(/already contain/);
-  await page.fill('#in-flour', 'abc'); await page.press('#in-flour', 'Enter');
+  await page.fill('#in-hydration', ''); await page.press('#in-hydration', 'Enter');
+  await expect(page.locator('#msg')).toContainText(/recommended 65%/);
+  await page.fill('#in-milk', ''); await page.fill('#in-flour', 'abc'); await page.press('#in-flour', 'Enter');
   await expect(page.locator('#msg')).toContainText(/number/);
   await page.fill('#in-flour', '-5'); await page.press('#in-flour', 'Enter');
   await expect(page.locator('#msg')).toContainText(/number/);
   await page.fill('#in-flour', '0'); await page.press('#in-flour', 'Enter');
   await expect(page.locator('#msg')).toContainText(/more than 0/);
+  await page.fill('#in-flour', '500'); await page.fill('#in-hydration', '151'); await page.press('#in-hydration', 'Enter');
+  await expect(page.locator('#msg')).toContainText(/between 1% and 150%/);
   await expect(page.locator('#results')).toBeHidden();
 });
 
