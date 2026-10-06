@@ -200,7 +200,7 @@ test('toGrams: every unit of every ingredient is finite and positive', () => {
 
 test('toGrams known values', () => {
   near(toGrams('flour', 2, 'cup'), 240); near(toGrams('flour', '1 1/2', 'cup-whole-wheat'), 169.5);
-  near(toGrams('egg', 3, 'egg'), 150); near(toGrams('yolk', 4, 'yolk'), 56);
+  near(toGrams('egg', 3, 'egg'), 150); near(toGrams('yolk', 4, 'yolk'), 68);
   near(toGrams('butter', '½', 'stick'), 56.5); near(toGrams('butter', 2, 'tbsp'), 28.375);
   near(toGrams('water', 1, 'cup'), 237); near(toGrams('water', 100, 'ml'), 100.2, 0.1);
   near(toGrams('milk', 1, 'cup'), 244); near(toGrams('sugar', 1, 'cup'), 198);
@@ -284,7 +284,7 @@ test('toFraction rounds to kitchen fractions', () => {
 
 test('friendly uses fractions, never decimals', () => {
   assert.equal(friendly('egg', 115), '2 ½ eggs'); assert.equal(friendly('egg', 50), '1 egg'); assert.equal(friendly('egg', 20), '½ egg'); assert.equal(friendly('egg', 5), 'less than ½ egg');
-  assert.equal(friendly('yolk', 28), '2 yolks');
+  assert.equal(friendly('yolk', 34), '2 yolks'); assert.equal(friendly('yolk', 17), '1 yolk');
   assert.equal(friendly('butter', 113), '1 stick'); assert.equal(friendly('butter', 75), '¾ stick'); assert.equal(friendly('butter', 14.2), '1 tbsp');
   assert.equal(friendly('salt', 12), '2 tsp table salt'); assert.equal(friendly('salt', 10), '1 ¾ tsp table salt');
   assert.equal(friendly('yeast', 5), '1 ¾ tsp'); assert.equal(friendly('yeast', 0.1), 'a pinch');

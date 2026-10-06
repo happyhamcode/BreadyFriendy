@@ -72,11 +72,11 @@ Other exports: `parseAmount` (accepts `1 1/2`, `¾`, `.5`; rejects `2/0`, `1,5`,
 
 Verified on 2026-10-06:
 - Water and fat fractions: USDA FoodData Central API (SR Legacy ids 171287 egg, 172184 yolk, 173410 butter, 169640 honey, 170877 milk powder, 170859 cream, 172217 milk).
-- Dry cups, egg, salt and yeast weights: King Arthur ingredient weight chart (https://www.kingarthurbaking.com/learn/ingredient-weight-chart). All-purpose and bread flour 120 g/cup, whole wheat 113, sugar 198, butter 113 g per 8 tbsp, honey 21 g/tbsp, milk powder 28 g per quarter cup, table salt 18 g/tbsp, Diamond kosher 8, Morton kosher 16, instant yeast 9 g/tbsp, large egg 50 g, yolk 14 g.
+- Dry cups, egg, salt and yeast weights: King Arthur ingredient weight chart (https://www.kingarthurbaking.com/learn/ingredient-weight-chart). All-purpose and bread flour 120 g/cup, whole wheat 113, sugar 198, butter 113 g per 8 tbsp, honey 21 g/tbsp, milk powder 28 g per quarter cup, table salt 18 g/tbsp, Diamond kosher 8, Morton kosher 16, instant yeast 9 g/tbsp, large egg 50 g (also USDA). Large yolk 17 g is from USDA (FDC 172184); King Arthur's chart says 14 g and was not used.
 
 Deliberate choices:
 - Liquid cups (water 237, milk 244, cream 238, oil 218) use real density, not King Arthur's "8 oz = 227 g" convention, so a baker using a measuring cup gets the right weight.
-- Yolk is 14 g (King Arthur). USDA's large yolk is closer to 17 g. Decide before launch; it changes "2 yolks" conversions.
+- Yolk is 17 g (USDA FoodData Central, FDC 172184, "large"). The owner chose USDA over King Arthur's 14 g on 2026-10-06.
 
 Not checked against a source (from memory or convention): cake (fresh) yeast 17 g, cream cup 238 g, butter tablespoon 14.2 g, active-dry and fresh yeast conversion ratios (1.3x and 3x), every "typical %" range on the enricher cards, the hydration bracket examples. Treat these as claims to verify before the owner relies on them for ad-supported educational content.
 

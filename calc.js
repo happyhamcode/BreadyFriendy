@@ -18,7 +18,7 @@ export const ING = {
   flour:     { label: 'Flour',       water: 0,    fat: 0,    cup: 120, count: null },
   water:     { label: 'Water',       water: 1,    fat: 0,    cup: 237, liquid: true },
   egg:       { label: 'Whole egg',   water: 0.76, fat: 0.10, liquid: true, pct: 15, count: { unit: 'egg', g: 50 } },
-  yolk:      { label: 'Egg yolk',    water: 0.52, fat: 0.27, liquid: true, pct: 10, count: { unit: 'yolk', g: 14 } },
+  yolk:      { label: 'Egg yolk',    water: 0.52, fat: 0.27, liquid: true, pct: 10, count: { unit: 'yolk', g: 17 } },
   milk:      { label: 'Whole milk',  water: 0.88, fat: 0.033, cup: 244, liquid: true, share: 0.5 },
   cream:     { label: 'Heavy cream', water: 0.58, fat: 0.36, cup: 238, liquid: true, share: 0.25 },
   butter:    { label: 'Butter',      water: 0.16, fat: 0.82, cup: 227, pct: 12, count: { unit: 'stick', g: 113 } },
