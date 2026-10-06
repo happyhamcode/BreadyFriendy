@@ -5,153 +5,176 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Bread Friend: Enriched Dough Calculator</title>
   <meta name="description" content="Free enriched dough calculator. Pick eggs, milk, butter, sugar and more, enter what you have in grams or cups, and Bread Friend fills in the rest using true hydration.">
-  <meta name="theme-color" content="#87ceeb">
+  <meta name="theme-color" content="#0e2a44">
   <meta property="og:title" content="Bread Friend: Enriched Dough Calculator">
   <meta property="og:description" content="Calculate enriched dough recipes by hydration. Eggs, milk, butter, sugar, honey and more, with cup-to-gram conversion.">
   <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230e2a44'/%3E%3Cpath d='M5 21c-2-6 2-12 11-12s13 6 11 12c0 2-1 3-3 3H8c-2 0-3-1-3-3z' fill='%23e39a3b'/%3E%3C/svg%3E">
+  <link rel="preload" href="fonts/bricolage-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="sheet">
-  <header class="title-card">
-    <h1>Bread Friend</h1>
-    <p class="subtitle">The enriched dough calculator</p>
-  </header>
+<header class="bar">
+  <div class="wrap bar-in">
+    <a class="brand" href="./" id="home-link" aria-label="Bread Friend, home">
+      <svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#e39a3b"/><path d="M6 21c-1.6-5.4 1.8-10 10-10s11.6 4.6 10 10c-.2 1.4-1 2-2.4 2H8.4C7 23 6.2 22.4 6 21z" fill="#0e2a44"/><path d="M12 14.5l2.2 4M16.5 13.8l2.2 4.4M21 14.5l1.8 3.6" stroke="#e39a3b" stroke-width="1.7" stroke-linecap="round" fill="none"/></svg>
+      <span>Bread Friend</span>
+    </a>
+  </div>
+</header>
 
-  <main>
-    <!-- HOME: explanation -->
-    <section id="home">
-      <button type="button" class="cta" data-open-picker>Build my dough</button>
+<main class="wrap">
+  <!-- HOME -->
+  <section id="home">
+    <div class="hero">
+      <div class="hero-copy">
+        <h1>Enriched dough, worked out for you</h1>
+        <p class="lead">Pick your enrichers, enter what you have, and get every gram. Hydration counts the water hiding in milk, eggs and butter, so the number is the one your dough actually has.</p>
+        <button type="button" class="cta" data-open-picker>Build my dough</button>
+      </div>
+      <div class="demo" aria-labelledby="demo-title">
+        <h2 id="demo-title">Try hydration</h2>
+        <p class="demo-sub">Drag to change the water in a dough with <strong>500 g</strong> of flour.</p>
+        <div class="demo-num"><output id="demo-h" for="demo-range">65%</output><span id="demo-feel">Soft, workable</span></div>
+        <input type="range" id="demo-range" min="50" max="90" value="65" aria-label="Hydration percent">
+        <div class="ratio" aria-hidden="true"><i class="r-flour"></i><i class="r-water" id="demo-bar"></i></div>
+        <div class="ratio-key"><span><i class="k-flour"></i>Flour <b>500 g</b></span><span><i class="k-water"></i>Water <b id="demo-water">325 g</b></span></div>
+      </div>
+    </div>
 
-      <div class="card">
+    <div class="paper explain">
+      <article>
         <h2>What is hydration?</h2>
         <p>Hydration is the weight of water in a dough as a percentage of the weight of flour. Every ingredient is measured in grams, because a cup of flour can vary by 30 g or more between bakers.</p>
-        <p class="example"><strong>Example:</strong> 500 g flour and 325 g water is 325 ÷ 500 = <strong>65% hydration</strong>.</p>
-        <ul>
-          <li><strong>55-62%:</strong> stiff dough, easy to shape (bagels, pretzels)</li>
-          <li><strong>62-70%:</strong> soft, workable dough (sandwich loaves, rolls)</li>
-          <li><strong>70%+:</strong> sticky, open crumb, needs more handling skill</li>
+        <p class="note"><strong>Example:</strong> 500 g flour and 325 g water is 325 ÷ 500 = <strong>65% hydration</strong>.</p>
+        <ul class="ranges">
+          <li><b>55-62%</b> Stiff dough, easy to shape. Bagels and pretzels.</li>
+          <li><b>62-70%</b> Soft and workable. Sandwich loaves and rolls.</li>
+          <li><b>70%+</b> Sticky with an open crumb. Needs more handling skill.</li>
         </ul>
-      </div>
-
-      <div class="card">
+      </article>
+      <article>
         <h2>What is enriched dough?</h2>
         <p>Enriched dough is yeast dough with fat, sugar, eggs or dairy added to the flour, water, yeast and salt. Brioche, challah, milk bread, cinnamon rolls and dinner rolls are enriched. The result is a softer, richer crumb that stays fresh longer.</p>
         <p><strong>Here is the catch:</strong> many enrichers are partly water. Milk is about 88% water, a large egg about 76%, butter about 16%. Bread Friend counts that hidden water, so the hydration you see is the true hydration of your dough.</p>
-      </div>
+      </article>
+    </div>
 
-      <ins class="ad-slot" data-slot="home-top" hidden></ins>
+    <ins class="ad-slot" data-slot="home-top" hidden></ins>
 
-      <h2 class="section-title">What each enricher does</h2>
-      <div class="card enricher"><h3>Whole egg</h3>
-        <p><strong>Does:</strong> adds protein, fat and water for structure, richness and golden color. About 76% water, 50 g per large egg.</p>
-        <p><strong>Use when:</strong> you want a rich, bread-like dough: challah, brioche, soft rolls. Typical: 10-25% of flour weight.</p></div>
-      <div class="card enricher"><h3>Egg yolk</h3>
-        <p><strong>Does:</strong> more fat and emulsifiers, less water than whole egg (about 52%). Softer, more tender, deeper yellow. 14 g per yolk.</p>
-        <p><strong>Use when:</strong> you want a cake-like crumb. Typical: 5-15% of flour weight.</p></div>
-      <div class="card enricher"><h3>Milk</h3>
-        <p><strong>Does:</strong> replaces some or all of the water. Milk sugar (lactose) browns the crust and the proteins soften the crumb. About 88% water.</p>
-        <p><strong>Use when:</strong> making milk bread, sandwich loaves and rolls. Typical: replaces half to all of the water.</p></div>
-      <div class="card enricher"><h3>Heavy cream</h3>
-        <p><strong>Does:</strong> brings liquid and fat together for a tender, rich crumb. About 58% water.</p>
-        <p><strong>Use when:</strong> you want richness without handling butter. Typical: replaces part of the liquid.</p></div>
-      <div class="card enricher"><h3>Butter</h3>
-        <p><strong>Does:</strong> coats gluten strands so the crumb is tender, adds flavor, and slows staling. About 82% fat, 16% water. One US stick is 113 g.</p>
-        <p><strong>Use when:</strong> you want classic rich flavor. Typical: 8-15% for rolls, 25-50% for brioche. Add it after the gluten has formed.</p></div>
-      <div class="card enricher"><h3>Oil</h3>
+    <h2 class="band">What each enricher does</h2>
+    <div class="enrichers">
+      <article class="enricher" data-id="egg" data-kind="liquid"><h3>Whole egg</h3>
+        <p><strong>Does:</strong> adds protein, fat and water for structure, richness and golden color. 50 g per large egg.</p>
+        <p><strong>Use when:</strong> you want a rich, bread-like dough: challah, brioche, soft rolls. Typical: 10-25% of flour weight.</p></article>
+      <article class="enricher" data-id="yolk" data-kind="liquid"><h3>Egg yolk</h3>
+        <p><strong>Does:</strong> more fat and emulsifiers, less water than whole egg. Softer, more tender, deeper yellow. 14 g per yolk.</p>
+        <p><strong>Use when:</strong> you want a cake-like crumb. Typical: 5-15% of flour weight.</p></article>
+      <article class="enricher" data-id="milk" data-kind="liquid"><h3>Milk</h3>
+        <p><strong>Does:</strong> replaces some or all of the water. Milk sugar (lactose) browns the crust and the proteins soften the crumb.</p>
+        <p><strong>Use when:</strong> making milk bread, sandwich loaves and rolls. Typical: replaces half to all of the water.</p></article>
+      <article class="enricher" data-id="cream" data-kind="liquid"><h3>Heavy cream</h3>
+        <p><strong>Does:</strong> brings liquid and fat together for a tender, rich crumb.</p>
+        <p><strong>Use when:</strong> you want richness without handling butter. Typical: replaces part of the liquid.</p></article>
+      <article class="enricher" data-id="butter" data-kind="fat"><h3>Butter</h3>
+        <p><strong>Does:</strong> coats gluten strands so the crumb is tender, adds flavor, and slows staling. One US stick is 113 g.</p>
+        <p><strong>Use when:</strong> you want classic rich flavor. Typical: 8-15% for rolls, 25-50% for brioche. Add it after the gluten has formed.</p></article>
+      <article class="enricher" data-id="oil" data-kind="fat"><h3>Oil</h3>
         <p><strong>Does:</strong> pure fat, so no water. A soft crumb that stays moist, and the dough mixes easily.</p>
-        <p><strong>Use when:</strong> you want softness without butter flavor, or a dairy-free dough. Typical: 4-10%.</p></div>
-      <div class="card enricher"><h3>Sugar</h3>
+        <p><strong>Use when:</strong> you want softness without butter flavor, or a dairy-free dough. Typical: 4-10%.</p></article>
+      <article class="enricher" data-id="sugar" data-kind="sweet"><h3>Sugar</h3>
         <p><strong>Does:</strong> tenderizes, browns the crust and holds moisture. Yeast also feeds on it, but a lot of sugar draws water away from yeast and slows rising.</p>
-        <p><strong>Use when:</strong> sweet doughs. Typical: 5-15%. Above 25%, use osmotolerant yeast.</p></div>
-      <div class="card enricher"><h3>Honey</h3>
-        <p><strong>Does:</strong> sweetness, floral flavor and moisture retention. It is about 17% water, so it counts toward hydration.</p>
-        <p><strong>Use when:</strong> whole-grain or rustic enriched loaves. Typical: 5-10%.</p></div>
-      <div class="card enricher"><h3>Milk powder</h3>
-        <p><strong>Does:</strong> adds milk proteins and sugar with almost no water (about 3%). Softer crumb and deeper crust color without making the dough wetter.</p>
-        <p><strong>Use when:</strong> you want a milky flavor but need to keep hydration low. Typical: 3-6%.</p></div>
+        <p><strong>Use when:</strong> sweet doughs. Typical: 5-15%. Above 25%, use osmotolerant yeast.</p></article>
+      <article class="enricher" data-id="honey" data-kind="sweet"><h3>Honey</h3>
+        <p><strong>Does:</strong> sweetness, floral flavor and moisture retention. It is partly water, so it counts toward hydration.</p>
+        <p><strong>Use when:</strong> whole-grain or rustic enriched loaves. Typical: 5-10%.</p></article>
+      <article class="enricher" data-id="milkpowder" data-kind="dry"><h3>Milk powder</h3>
+        <p><strong>Does:</strong> adds milk proteins and sugar with almost no water. Softer crumb and deeper crust color without making the dough wetter.</p>
+        <p><strong>Use when:</strong> you want a milky flavor but need to keep hydration low. Typical: 3-6%.</p></article>
+    </div>
 
-      <button type="button" class="cta" data-open-picker>Build my dough</button>
-    </section>
+    <div class="end-cta"><button type="button" class="cta" data-open-picker>Build my dough</button></div>
+  </section>
 
-    <!-- PICKER -->
-    <section id="picker" hidden>
-      <div class="card">
-        <h2>Pick your enrichers</h2>
-        <p>Flour, water, yeast and salt are always included. Check any enrichers you want. You can change this later.</p>
-        <fieldset class="picks"><legend class="sr-only">Enrichers</legend></fieldset>
+  <!-- PICKER -->
+  <section id="picker" class="stage" hidden>
+    <div class="paper">
+      <h2>Pick your enrichers</h2>
+      <p class="lead-dark">Flour, water, yeast and salt are always included. Check any enrichers you want, and tap <span class="i-demo" aria-hidden="true">i</span> to see what each one does and how much water it adds.</p>
+      <fieldset class="picks"><legend class="sr-only">Enrichers</legend></fieldset>
+      <div class="actions">
+        <button type="button" class="cta" id="to-calc">Open calculator</button>
+        <button type="button" class="secondary" id="clear-picks">Clear selection</button>
+        <button type="button" class="ghost" data-go-home>Back</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CALCULATOR -->
+  <section id="calc" class="stage" hidden>
+    <div class="paper" id="calc-form-card">
+      <h2>Your dough</h2>
+      <ol class="howto">
+        <li>Enter what you know in grams. Use <strong>Convert</strong> for cups, eggs or sticks.</li>
+        <li>Leave blanks for what you want solved, or enter only a hydration %.</li>
+        <li>Press <strong>Enter</strong> or Calculate.</li>
+      </ol>
+      <form id="form" novalidate autocomplete="off">
+        <div id="rows"></div>
+        <div class="row hyd">
+          <label for="in-hydration">Hydration %</label>
+          <input id="in-hydration" inputmode="decimal" placeholder="blank = calculate it" aria-describedby="hint-h">
+          <p class="hint" id="hint-h">With a hydration, blank liquids split the remaining water evenly (by weight).</p>
+        </div>
+        <div id="msg" role="alert" aria-live="assertive"></div>
         <div class="actions">
-          <button type="button" class="cta" id="to-calc">Open calculator</button>
-          <button type="button" class="secondary" data-go-home>Back</button>
+          <button type="submit" class="cta">Calculate</button>
+          <button type="button" class="secondary" id="clear-auto">Clear calculated</button>
+          <button type="button" class="secondary" id="change-enrichers">Change enrichers</button>
         </div>
-      </div>
-    </section>
+      </form>
+    </div>
 
-    <!-- CALCULATOR -->
-    <section id="calc" hidden>
-      <div class="card">
-        <h2>Your dough</h2>
-        <ol class="howto">
-          <li>Enter what you know in grams. Use <strong>Convert</strong> for cups, eggs or sticks.</li>
-          <li>Leave blanks for what you want solved, or enter only a hydration %.</li>
-          <li>Press <strong>Enter</strong> or Calculate.</li>
-        </ol>
-        <form id="form" novalidate autocomplete="off">
-          <div id="rows"></div>
-          <div class="row">
-            <label for="in-hydration">Hydration %</label>
-            <input id="in-hydration" inputmode="decimal" placeholder="blank = calculate it" aria-describedby="hint-h">
-            <p class="hint" id="hint-h">With a hydration, blank liquids split the remaining water evenly (by weight).</p>
-          </div>
-          <div id="msg" role="alert" aria-live="assertive"></div>
-          <div class="actions">
-            <button type="submit" class="cta">Calculate</button>
-            <button type="button" class="secondary" id="clear-auto">Clear calculated</button>
-            <button type="button" class="secondary" id="change-enrichers">Change enrichers</button>
-          </div>
-        </form>
+    <div class="paper recipe" id="results" hidden>
+      <h2>Recipe</h2>
+      <p id="hydration-line" class="gauge"></p>
+      <div class="ratio" aria-hidden="true"><i class="r-flour"></i><i class="r-water" id="res-bar"></i></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Ingredient</th><th class="num">Grams</th><th class="num">Baker's %</th></tr></thead>
+          <tbody id="results-body"></tbody>
+          <tfoot><tr><th>Total dough</th><td class="num" id="total"></td><td></td></tr></tfoot>
+        </table>
       </div>
-
-      <div class="card" id="results" hidden>
-        <h2>Recipe</h2>
-        <p id="hydration-line" class="big"></p>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Ingredient</th><th class="num">Grams</th><th class="num">Baker's %</th></tr></thead>
-            <tbody id="results-body"></tbody>
-            <tfoot><tr><th>Total dough</th><td class="num" id="total"></td><td></td></tr></tfoot>
-          </table>
-        </div>
-        <ul id="warnings" class="warnings"></ul>
-        <h3>Where the water comes from</h3>
-        <ul id="water-sources"></ul>
-        <h3>Yeast equivalents</h3>
-        <p id="yeast-eq"></p>
-        <h3>Scale this recipe</h3>
-        <form id="scale-form" class="scale" novalidate>
-          <label>Total dough (g) <input id="scale-total" inputmode="decimal"></label>
-          <span class="or">or</span>
-          <label>Loaves <input id="scale-loaves" inputmode="decimal"></label>
-          <label>g each <input id="scale-each" inputmode="decimal"></label>
-          <button type="submit" class="secondary">Scale</button>
-          <button type="button" class="secondary" id="scale-reset">Original</button>
-        </form>
-        <p id="scale-msg" class="error" role="alert"></p>
-        <div class="actions">
-          <button type="button" class="secondary" id="share">Copy share link</button>
-          <button type="button" class="secondary" id="print">Print</button>
-        </div>
-        <input id="share-url" readonly hidden aria-label="Share link">
+      <ul id="warnings" class="warnings"></ul>
+      <h3>Where the water comes from</h3>
+      <ul id="water-sources" class="plain"></ul>
+      <h3>Yeast equivalents</h3>
+      <p id="yeast-eq"></p>
+      <h3>Scale this recipe</h3>
+      <form id="scale-form" class="scale" novalidate>
+        <label>Total dough (g) <input id="scale-total" inputmode="decimal"></label>
+        <span class="or">or</span>
+        <label>Loaves <input id="scale-loaves" inputmode="decimal"></label>
+        <label>g each <input id="scale-each" inputmode="decimal"></label>
+        <button type="submit" class="secondary">Scale</button>
+        <button type="button" class="ghost" id="scale-reset">Original</button>
+      </form>
+      <p id="scale-msg" class="error" role="alert"></p>
+      <div class="actions">
+        <button type="button" class="secondary" id="share">Copy share link</button>
+        <button type="button" class="secondary" id="print">Print</button>
       </div>
-      <ins class="ad-slot" data-slot="calc-bottom" hidden></ins>
-    </section>
-  </main>
+      <input id="share-url" readonly hidden aria-label="Share link">
+    </div>
+    <ins class="ad-slot" data-slot="calc-bottom" hidden></ins>
+  </section>
+</main>
 
-  <footer>
-    <p>Bread Friend is a free tool. Nutrition and water figures are typical values; brands vary.</p>
-    <p><a href="privacy.html">Privacy</a></p>
-  </footer>
-</div>
+<footer class="wrap foot">
+  <p>Bread Friend is a free tool. Water and fat figures come from USDA FoodData Central; measures from King Arthur's ingredient weight chart. Brands vary.</p>
+  <p><a href="privacy.html">Privacy</a></p>
+</footer>
 <script type="module" src="app.js"></script>
 </body>
 </html>

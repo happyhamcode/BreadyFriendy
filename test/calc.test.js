@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
-import { solve, scale, parseAmount, toGrams, unitsFor, friendly, encodeShare, decodeShare, ING, YEAST, ENRICHERS } from '../calc.js';
+import { solve, scale, parseAmount, toGrams, unitsFor, friendly, toFraction, encodeShare, decodeShare, ING, YEAST, ENRICHERS } from '../calc.js';
 
 const near = (a, b, eps = 1e-6) => assert.ok(Math.abs(a - b) <= eps, `${a} !~ ${b}`);
 const get = (r, id) => r.recipe.find((x) => x.id === id);
@@ -203,10 +203,27 @@ test('all enrichers selected, hydration only: consistent', () => {
   near(r2.hydration, 70);
 });
 
-test('friendly counts', () => {
-  assert.equal(friendly('egg', 115), '2.3 eggs'); assert.equal(friendly('egg', 50), '1.0 egg');
-  assert.equal(friendly('butter', 113), '1.0 stick'); assert.match(friendly('salt', 12), /2\.0 tsp/);
-  assert.equal(friendly('flour', 240), '2.00 cup'); assert.equal(friendly('oil', 218), '1.00 cup');
+test('toFraction rounds to kitchen fractions', () => {
+  const cup = [[0, ''], [1 / 4, '¼'], [1 / 3, '⅓'], [1 / 2, '½'], [2 / 3, '⅔'], [3 / 4, '¾'], [1, '']];
+  for (const [x, o] of [[0.5, '½'], [1.5, '1 ½'], [2, '2'], [0.33, '⅓'], [1.66, '1 ⅔'], [0.9, '1'], [2.9, '3'], [0.26, '¼'], [3.74, '3 ¾']]) {
+    assert.equal(toFraction(x, cup).text, o, String(x));
+  }
+  assert.equal(toFraction(0.9, cup).value, 1);
+});
+
+test('friendly uses fractions, never decimals', () => {
+  assert.equal(friendly('egg', 115), '2 ½ eggs'); assert.equal(friendly('egg', 50), '1 egg'); assert.equal(friendly('egg', 20), '½ egg'); assert.equal(friendly('egg', 5), 'less than ½ egg');
+  assert.equal(friendly('yolk', 28), '2 yolks');
+  assert.equal(friendly('butter', 113), '1 stick'); assert.equal(friendly('butter', 75), '¾ stick'); assert.equal(friendly('butter', 14.2), '1 tbsp');
+  assert.equal(friendly('salt', 12), '2 tsp table salt'); assert.equal(friendly('salt', 10), '1 ¾ tsp table salt');
+  assert.equal(friendly('yeast', 5), '1 ¾ tsp'); assert.equal(friendly('yeast', 0.1), 'a pinch');
+  assert.equal(friendly('flour', 240), '2 cups'); assert.equal(friendly('flour', 90), '¾ cup'); assert.equal(friendly('flour', 500), '4 ¼ cups');
+  assert.equal(friendly('oil', 218), '1 cup'); assert.equal(friendly('oil', 40), '3 tbsp'); assert.equal(friendly('oil', 7), '1 ½ tsp');
+  assert.equal(friendly('water', 118.5), '½ cup'); assert.equal(friendly('sugar', 1), '¼ tsp'); assert.equal(friendly('flour', 0), '');
+  for (const id of Object.keys(ING)) for (const g of [0.3, 1, 3, 7, 15, 33, 80, 150, 410, 999, 5000]) {
+    const out = friendly(id, g);
+    assert.ok(out, `${id} ${g}`); assert.doesNotMatch(out, /\d\.\d/, `${id} ${g}: ${out}`);
+  }
 });
 
 test('no sourdough anywhere in shipped files', () => {

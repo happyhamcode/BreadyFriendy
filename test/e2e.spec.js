@@ -122,19 +122,79 @@ test('scale and share link round trip', async ({ page, context }) => {
   await expect(bad.locator('#msg')).not.toHaveText('');
 });
 
-test('mobile: no horizontal scroll on any screen', async ({ page }) => {
-  await page.setViewportSize({ width: 375, height: 700 });
-  const overflow = () => page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
-  await page.goto('/'); expect(await overflow()).toBe(false);
-  await open(page, ['egg', 'yolk', 'milk', 'cream', 'butter', 'oil', 'sugar', 'honey', 'milkpowder']);
-  expect(await overflow()).toBe(false);
-  await page.fill('#in-hydration', '65'); await page.press('#in-hydration', 'Enter');
-  expect(await overflow()).toBe(false);
-});
-
 test('dark mode renders', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'dark' });
   await page.goto('/');
-  const bg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
-  expect(bg).toBe('rgb(18, 38, 58)');
+  const bg = await page.evaluate(() => getComputedStyle(document.querySelector('.paper')).backgroundColor);
+  expect(bg).toBe('rgb(20, 40, 60)');
 });
+
+test('title link returns home from picker, calculator and privacy', async ({ page }) => {
+  await open(page, ['egg']);
+  await expect(page.locator('#calc')).toBeVisible();
+  await page.locator('#home-link').click();
+  await expect(page.locator('#home')).toBeVisible(); await expect(page.locator('#calc')).toBeHidden();
+  await page.getByRole('button', { name: 'Build my dough' }).first().click();
+  await expect(page.locator('#picker')).toBeVisible();
+  await page.locator('#home-link').click(); await expect(page.locator('#home')).toBeVisible();
+  await page.goto('/privacy.html'); await page.locator('.brand').click();
+  await expect(page).toHaveURL(/\/$/);
+});
+
+test('picker: tooltips show enricher info + water, clear and reset work', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Build my dough' }).first().click();
+  const tip = page.locator('#tip-milk');
+  await expect(tip).toBeHidden();
+  await page.getByRole('button', { name: 'About Whole milk' }).click();
+  await expect(tip).toBeVisible(); await expect(tip).toContainText('Does:'); await expect(tip).toContainText('Use when:');
+  await expect(tip).toContainText('88 g of water');
+  await page.mouse.move(0, 0); await page.keyboard.press('Escape'); await expect(tip).toBeHidden();
+  await page.getByRole('button', { name: 'About Butter' }).click(); await page.getByRole('button', { name: 'About Oil' }).click();
+  await expect(page.locator('#tip-butter')).toBeHidden(); await expect(page.locator('#tip-oil')).toContainText('no water');
+  await expect(page.locator('.pick-tag').first()).toHaveText('76% water');
+  await page.locator('.picks input[value=egg]').check(); await page.locator('.picks input[value=milk]').check();
+  await page.locator('#clear-picks').click();
+  await expect(page.locator('.picks input:checked')).toHaveCount(0);
+  await page.locator('.picks input[value=egg]').check(); await page.locator('#to-calc').click();
+  await expect(page.locator('#in-egg')).toBeVisible();
+  await expect(page.locator('.picks input:checked')).toHaveCount(0);        // reset after Open calculator
+  await page.locator('#change-enrichers').click();                          // but Change enrichers shows the active set
+  await expect(page.locator('.picks input[value=egg]')).toBeChecked();
+  await page.locator('#home-link').click();
+  await page.getByRole('button', { name: 'Build my dough' }).first().click(); // fresh start from home
+  await expect(page.locator('.picks input:checked')).toHaveCount(0);
+});
+
+test('recipe shows kitchen measures as fractions, never decimals', async ({ page }) => {
+  await open(page, ['egg', 'milk', 'butter', 'sugar']);
+  await page.fill('#in-flour', '500'); await page.fill('#in-hydration', '65'); await page.press('#in-hydration', 'Enter');
+  const hints = await page.locator('#results-body .src').allTextContents();
+  expect(hints.length).toBe(8);
+  for (const h of hints) expect(h).not.toMatch(/\d\.\d/);
+  expect(hints.join('|')).toMatch(/cup/); expect(hints.join('|')).toMatch(/tsp/); expect(hints.join('|')).toMatch(/[¼½¾⅓⅔]/);
+  expect(await page.locator('#results-body tr').first().locator('.src').textContent()).toBe('4 ¼ cups');
+});
+
+test('hero slider updates grams', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#demo-range').fill('80');
+  await expect(page.locator('#demo-h')).toHaveText('80%'); await expect(page.locator('#demo-water')).toHaveText('400 g');
+});
+
+for (const [name, w, h] of [['phone', 375, 700], ['small phone', 320, 640], ['tablet', 820, 1100], ['laptop', 1280, 800], ['wide', 1920, 1080]]) {
+  test(`${name} ${w}px: every screen fits, desktop shows results beside the form`, async ({ page }) => {
+    await page.setViewportSize({ width: w, height: h });
+    const overflow = () => page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
+    await page.goto('/'); expect(await overflow()).toBe(false);
+    await page.getByRole('button', { name: 'Build my dough' }).first().click(); expect(await overflow()).toBe(false);
+    await page.getByRole('button', { name: 'About Whole milk' }).click(); expect(await overflow()).toBe(false);
+    await page.mouse.move(0, 0); await page.keyboard.press('Escape');
+    for (const e of ['egg', 'yolk', 'milk', 'cream', 'butter', 'oil', 'sugar', 'honey', 'milkpowder']) await page.locator(`.picks input[value=${e}]`).check();
+    await page.locator('#to-calc').click(); expect(await overflow()).toBe(false);
+    await page.fill('#in-hydration', '65'); await page.press('#in-hydration', 'Enter');
+    expect(await overflow()).toBe(false);
+    const [f, r] = await Promise.all([page.locator('#calc-form-card').boundingBox(), page.locator('#results').boundingBox()]);
+    if (w >= 1024) expect(Math.abs(f.y - r.y)).toBeLessThan(40); else expect(r.y).toBeGreaterThan(f.y + f.height - 5);
+  });
+}

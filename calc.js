@@ -202,14 +202,39 @@ export function scale(result, target) {
   return { ...result, recipe: result.recipe.map((r) => ({ ...r, grams: r.grams * k })), waterBreakdown: result.waterBreakdown.map((r) => ({ ...r, grams: r.grams * k })), total: t, yeastEquivalents: Object.fromEntries(Object.entries(result.yeastEquivalents).map(([a, b]) => [a, b * k])), factor: k };
 }
 
-// Friendly count, e.g. "2.3 eggs", for ingredients that have one.
-export function friendly(id, grams, yt = 'instant') {
-  const c = ING[id]?.count;
-  if (c) { const n = grams / c.g; return `${n.toFixed(n < 10 ? 1 : 0)} ${c.unit}${Math.abs(n - 1) < 0.05 ? '' : 's'}`; }
-  if (id === 'salt') return `${(grams / SALT_UNITS.tsp).toFixed(1)} tsp table salt`;
-  if (id === 'yeast') return `${(grams / YEAST_UNITS.tsp).toFixed(1)} tsp`;
-  if (ING[id]?.cup) return `${(grams / ING[id].cup).toFixed(2)} cup`;
-  return '';
+const FR = [[1 / 8, '⅛'], [1 / 4, '¼'], [1 / 3, '⅓'], [1 / 2, '½'], [2 / 3, '⅔'], [3 / 4, '¾']];
+const steps = (...vs) => [[0, ''], ...FR.filter(([v]) => vs.some((w) => Math.abs(w - v) < 1e-9)), [1, '']];
+
+// Nearest kitchen fraction as text ("1 ½"). Returns { text, value } where value is the rounded number.
+export function toFraction(x, allowed) {
+  let whole = Math.floor(x);
+  const f = x - whole;
+  let [v, sym] = allowed.reduce((a, b) => (Math.abs(b[0] - f) < Math.abs(a[0] - f) ? b : a));
+  if (v === 1) { whole += 1; v = 0; sym = ''; }
+  return { text: [whole || '', sym].filter(Boolean).join(' ') || '0', value: whole + v };
+}
+const CUP = steps(1 / 4, 1 / 3, 1 / 2, 2 / 3, 3 / 4), TBSP = steps(1 / 4, 1 / 2, 3 / 4), TSP = steps(1 / 8, 1 / 4, 1 / 2, 3 / 4);
+const unitText = (n, allowed, unit) => {
+  const { text, value } = toFraction(n, allowed);
+  return `${text} ${unit}${value > 1 && !/^t(bsp|sp)$/.test(unit) ? 's' : ''}`;
+};
+
+// Kitchen-measure hint for a recipe line, using fractions (never decimals): "1 ½ cups", "¾ tsp", "2 ½ eggs".
+export function friendly(id, grams) {
+  const ing = ING[id];
+  if (!ing || !(grams > 0)) return '';
+  if (id === 'egg' || id === 'yolk') {
+    const n = grams / ing.count.g;
+    return n < 0.25 ? `less than ½ ${ing.count.unit}` : unitText(n, steps(1 / 2), ing.count.unit);
+  }
+  if (id === 'butter' && grams >= ING.butter.count.g / 4) return unitText(grams / ING.butter.count.g, steps(1 / 4, 1 / 2, 3 / 4), 'stick');
+  const tsp = id === 'salt' ? SALT_UNITS.tsp : id === 'yeast' ? YEAST_UNITS.tsp : ing.cup / 48;
+  const cups = ing.cup ? grams / ing.cup : 0;
+  if (cups >= 0.22) return unitText(cups, CUP, 'cup');
+  const tbsp = grams / (tsp * 3);
+  if (tbsp >= 0.75 && id !== 'salt' && id !== 'yeast') return unitText(tbsp, TBSP, 'tbsp');
+  const t = grams / tsp;
+  return t < 0.125 ? 'a pinch' : `${toFraction(t, TSP).text} tsp${id === 'salt' ? ' table salt' : ''}`;
 }
 
 // Share link: ?yt=instant&h=65&flour=500&water=&egg=100 (present key = selected, empty = blank)
