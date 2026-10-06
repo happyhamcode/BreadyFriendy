@@ -1,58 +1,19 @@
-# BreadyFriendy - Bread Dough Calculator
+# Bread Friend
 
-A comprehensive bread dough calculator that helps bakers calculate precise ingredient amounts for various bread types with proper hydration calculations including water content from enriching ingredients.
+Enriched yeast dough calculator using true hydration (water inside milk, eggs, butter, cream, honey and so on counts toward hydration). Static site: no build step, no runtime dependencies.
 
-## Features
+## How it works
+Pick enrichers, enter what you know in grams (or convert from cups, eggs, sticks), leave the rest blank, press Enter.
+- Hydration blank: reports your recipe's hydration. Blank salt, yeast and fats get default baker's percentages.
+- Hydration entered: blank liquids split the remaining water evenly by weight. Blank flour defaults to 500 g.
+- Everything filled and hydration disagrees by more than 0.5 points: error.
 
-- **Multiple Bread Types**: Basic, enriched (brioche), sweet (challah), whole wheat, rye, italian, milk, sourdough
-- **Accurate Calculations**: 
-  - Proper hydration calculations accounting for water content in eggs, milk, butter, cream
-  - Yeast conversions for different yeast types
-  - Batch scaling capabilities
-- **User-Friendly Interface**:
-  - Bread type selection at top of page with detailed descriptions
-  - Guided workflow with appropriate inputs for each bread type
-  - Clear results display with all ingredient amounts
-- **Validation**: Checks for excessive ingredient quantities to prevent errors
+All math is in `calc.js` (pure functions). `app.js` is the DOM layer.
 
-## How to Use
-
-1. Select a bread type from the buttons at the top of the page
-2. Enter your recipe details in the input fields
-3. Click "Calculate Recipe" to see ingredient amounts
-4. Adjust inputs as needed or return to select a different bread type
-
-## Project Structure
-
+## Develop
 ```
-breadyfrendy/
-├── index.html          # Main HTML structure
-├── script.js           # JavaScript calculations and interface logic  
-├── style.css           # CSS styling for the interface
-├── INGREDIENT_GUIDANCE.md  # Documentation on ingredient usage
-├── DOUGH_TYPE_RESEARCH.md  # Research on dough types and requirements
-├── PROJECT_STRUCTURE.md    # Project file structure documentation
-└── README.md           # This file
+python3 -m http.server 4173   # open http://localhost:4173
+npm test                      # unit tests (node:test)
+npm run e2e                   # browser tests (npx playwright install chromium first)
 ```
-
-## Technical Details
-
-- Pure HTML/CSS/JavaScript implementation (no external dependencies)
-- Responsive design that works on mobile and desktop
-- Modern interface with organized sections and clear navigation
-- Comprehensive ingredient validation to prevent unrealistic values
-
-## Development
-
-To run locally:
-1. Clone this repository
-2. Open `index.html` in a web browser
-3. Start calculating your bread recipes!
-
-## Author
-
-happyhamcode
-
-## License
-
-This project is available as open source under the terms of the MIT License.
+Composition and density figures live in the `ING` table in `calc.js`.
