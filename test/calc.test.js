@@ -77,8 +77,8 @@ test('every recommended amount, with no hydration entered', () => {
   const a = { flour: 1000, water: 650, egg: null, yolk: null, milk: null, cream: null, butter: null, oil: null, sugar: null, honey: null, milkpowder: null, salt: null, yeast: null };
   const r = ok(solve({ amounts: a, hydration: null }));
   const g = (id) => get(r, id).grams;
-  near(g('egg'), 150); near(g('yolk'), 50); near(g('butter'), 150); near(g('oil'), 100); near(g('sugar'), 100);
-  near(g('honey'), 170); near(g('milkpowder'), 60); near(g('salt'), 20); near(g('yeast'), 20);
+  near(g('egg'), 150); near(g('yolk'), 50); near(g('butter'), 150); near(g('oil'), 70); near(g('sugar'), 100);
+  near(g('honey'), 150); near(g('milkpowder'), 60); near(g('salt'), 20); near(g('yeast'), 20);
   near(g('milk'), (0.5 * 0.65 * 1000) / 0.88); near(g('cream'), (0.25 * 0.65 * 1000) / 0.58);
   for (const id of ['egg', 'yolk', 'milk', 'cream', 'butter', 'oil', 'sugar', 'honey', 'milkpowder', 'salt', 'yeast']) assert.equal(get(r, id).how, 'recommended', id);
   assert.equal(get(r, 'water').how, null); assert.ok(!r.hydrationDefaulted);
@@ -132,7 +132,7 @@ test('hydration brackets: boundaries, examples, and the home page lists the same
     [65, 'Soft and workable'], [70, 'Sticky, open crumb'], [80, 'Very wet'], [90, 'Batter-like'], [150, 'Batter-like']]) assert.equal(bracketFor(h).label, label, String(h));
   for (const bad of [NaN, Infinity, -1, null, undefined, 'x']) assert.equal(bracketFor(bad), null, String(bad));
   assert.match(bracketFor(60).breads, /brioche/i); assert.match(bracketFor(85).breads, /focaccia/i);
-  assert.match(bracketFor(66).breads, /sandwich/i); assert.match(bracketFor(50).breads, /challah/i); assert.match(bracketFor(73).breads, /milk bread/i);
+  assert.match(bracketFor(66).breads, /sandwich/i); assert.match(bracketFor(66).breads, /baguettes/); assert.match(bracketFor(76).breads, /Roman/); assert.match(bracketFor(100).breads, /cristal/); assert.match(bracketFor(52).breads, /pretzels/); assert.match(bracketFor(50).breads, /challah/i); assert.match(bracketFor(73).breads, /milk bread/i);
   assert.match([62, 58, 75].map((h) => bracketFor(h).breads).join(), /pizza/i);
   assert.deepEqual(BRACKETS.map((b) => b.range), ['Under 45%', '45-55%', '55-62%', '62-70%', '70-80%', '80-90%', '90%+']);
   const html = readFileSync(new URL('../bread/index.html', import.meta.url), 'utf8');

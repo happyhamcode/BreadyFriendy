@@ -53,7 +53,7 @@ test('empty form: recommended amounts, 65% hydration, 500 g flour', async ({ pag
 
 test('bread examples: home list, demo slider, calculator guide and result line', async ({ page }) => {
   await page.goto('/bread/');
-  for (const w of ['Brioche', 'Challah', 'Neapolitan-style pizza', 'bagels', 'ciabatta', 'Focaccia']) await expect(page.locator('.ranges')).toContainText(w);
+  for (const w of ['Brioche', 'Challah', 'Neapolitan-style', 'bagels', 'ciabatta', 'Focaccia']) await expect(page.locator('.ranges')).toContainText(w);
   await expect(page.locator('.hero #demo-range')).toHaveCount(0);   // demo is not next to the Build button
   await page.locator('#demo-range').fill('82');
   await expect(page.locator('#demo-breads')).toContainText('Focaccia'); await expect(page.locator('#demo-feel')).toHaveText('Very wet');

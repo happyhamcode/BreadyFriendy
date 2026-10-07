@@ -27,9 +27,9 @@ export const ING = {
   milk:      { label: 'Whole milk',  water: 0.88, fat: 0.033, cup: 244, liquid: true, share: 0.5 },
   cream:     { label: 'Heavy cream', water: 0.58, fat: 0.36, cup: 238, liquid: true, share: 0.25 },
   butter:    { label: 'Butter',      water: 0.16, fat: 0.82, cup: 227, pct: 15, count: { unit: 'stick', g: 113 }, stick: true },
-  oil:       { label: 'Oil',         water: 0,    fat: 1,    cup: 218, pct: 10 },
+  oil:       { label: 'Oil',         water: 0,    fat: 1,    cup: 218, pct: 7 },
   sugar:     { label: 'Sugar',       water: 0,    fat: 0,    cup: 198, pct: 10 },
-  honey:     { label: 'Honey',       water: 0.17, fat: 0,    cup: 340, pct: 17 },
+  honey:     { label: 'Honey',       water: 0.17, fat: 0,    cup: 340, pct: 15 },
   milkpowder:{ label: 'Milk powder', water: 0.03, fat: 0.01, cup: 112, pct: 6 },
   salt:      { label: 'Salt',        water: 0,    fat: 0,    pct: 2, units: SALT_UNITS, tspNote: ' table salt' },
   yeast:     { label: 'Yeast',       water: 0,    fat: 0,    units: YEAST_UNITS },
@@ -167,16 +167,17 @@ export function solve(input) {
   return { recipe, hydration, total, flourDefaulted, hydrationDefaulted, waterBreakdown, warnings, yeastEquivalents, yeastType: yt };
 }
 
-// True-hydration brackets with example breads. Examples are only breads whose true hydration was computed (with this file's composition table)
-// from King Arthur's published gram recipes on 2026-10-07. Boundaries: min inclusive, max exclusive. The home page lists the same brackets (a test keeps them in sync).
+// True-hydration brackets with example breads. Each example's hydration was computed (with this file's composition table) from published gram recipes on 2026-10-07:
+// King Arthur plus independent recipes for pizza, baguette, pita, bagels, pretzels, pan de cristal and milk bread. Boundaries: min inclusive, max exclusive.
+// The home page lists the same brackets (a test keeps them in sync).
 export const BRACKETS = [
-  { min: 0, max: 45, label: 'Very stiff', breads: 'Too dry for most bread. Closer to pasta or cracker dough.' },
-  { min: 45, max: 55, label: 'Stiff and rich', breads: 'Challah (about 50% in King Arthur\'s recipe).' },
-  { min: 55, max: 62, label: 'Firm', breads: 'Brioche and brioche buns, Neapolitan-style pizza (the low end of King Arthur\'s range).' },
-  { min: 62, max: 70, label: 'Soft and workable', breads: 'Sandwich bread, bagels, pretzels, pizza.' },
-  { min: 70, max: 80, label: 'Sticky, open crumb', breads: 'Japanese milk bread, cinnamon rolls, ciabatta.' },
+  { min: 0, max: 45, label: 'Very stiff', breads: 'Too dry for most bread.' },
+  { min: 45, max: 55, label: 'Stiff and rich', breads: "Challah (about 50% in King Arthur's recipe), soft pretzels (54-55% in two published recipes)." },
+  { min: 55, max: 62, label: 'Firm', breads: 'Brioche and brioche buns, Neapolitan-style and New York-style pizza, bagels (57-63%).' },
+  { min: 62, max: 70, label: 'Soft and workable', breads: 'Sandwich bread, baguettes (65-70%), pita, whole wheat sandwich loaves.' },
+  { min: 70, max: 80, label: 'Sticky, open crumb', breads: 'Pan pizza, Japanese milk bread, cinnamon rolls, ciabatta, country loaves, Roman-style pizza (75-83%).' },
   { min: 80, max: 90, label: 'Very wet', breads: 'Focaccia.' },
-  { min: 90, max: Infinity, label: 'Batter-like', breads: 'Too wet to knead. Closer to a batter.' },
+  { min: 90, max: Infinity, label: 'Batter-like', breads: 'Pan de cristal (about 100%).' },
 ].map((b) => ({ ...b, range: b.min === 0 ? `Under ${b.max}%` : b.max === Infinity ? `${b.min}%+` : `${b.min}-${b.max}%` }));
 export const bracketFor = (h) => (Number.isFinite(h) && h >= 0 ? BRACKETS.find((b) => h >= b.min && h < b.max) : null) ?? null;
 
