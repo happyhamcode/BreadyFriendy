@@ -2,7 +2,7 @@
 
 ## Start here
 
-1. `cd /home/happyham/c0d3/breadyfrendy && git status && npm test` (expect 55 passing; `npm run e2e` has 42).
+1. `cd /home/happyham/c0d3/breadyfrendy && git status && npm test` (expect 60 passing; `npm run e2e` has 42).
 2. Stage 2 is built on branch `bake-by-math`: rebrand, `/cake/`, `/learn/` (8 pages), combined home. It is NOT on `main` until the owner approves. Pushing `main` deploys to production.
 3. Read "Unverified or judgment calls" below before telling anyone the cake or learn content is verified.
 4. Next owner-facing step: review the preview deploy, then fast-forward `main`.
@@ -43,19 +43,29 @@ Input `{ type, amounts }`, `null` = blank, `NaN` = unparseable. Everything is a 
 - Ingredients not used by the type error ("isn't used in ..."). Balance checks are warnings, never errors.
 - Pan scaling: factor = area ratio (round pi r^2, square s^2, rectangle w x l), same depth. `scaleCake` also takes a plain factor and adds a bake-time caveat.
 
-## Unverified or judgment calls (tell the owner)
+## Ratio audit (2026-10-07, owner: "check all the ratios, trust none of your information")
 
-Checked 2026-10-07 unless noted:
-- Composition (water, fat) for egg white, buttermilk (lowfat), sour cream, cocoa, canola oil, vanilla, cake flour: USDA SR Legacy bulk CSV (the shared `DEMO_KEY` API was rate-limited for ~10 h; the CSV download needs no key: `https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_sr_legacy_food_csv_2018-04.zip`). Egg white large = 33 g (USDA).
-- Dry measures (baking powder 4 g/tsp, soda 6 g/tsp, cocoa 84 g/cup, vanilla 14 g/tbsp) are King Arthur. USDA differs (4.6, 4.6, 86, 4.2 g). Cake flour is 120 g/cup in King Arthur and 137 in USDA; the cake calculator has no separate cake-flour unit.
-- Liquid cups use real density (buttermilk 245, sour cream 230 from USDA), not King Arthur's 227.
+Method: parsed the recipe data (JSON-LD `recipeIngredient`) straight from 41 King Arthur recipe pages (script lived in the session scratchpad; URLs are in `test/published-recipes.test.js` and on the Learn pages), converted to baker's percentages (eggs 50 g, yolk 17, white 33), and set defaults and warning ranges so published recipes sit inside them. USDA composition re-read from the SR Legacy bulk CSV (`https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_sr_legacy_food_csv_2018-04.zip`, no API key; the shared `DEMO_KEY` rate-limits for ~10 h). `test/published-recipes.test.js` is the guard: every fixture recipe must solve with zero warnings, hydration brackets must name the right breads, and defaults must sit inside the published range.
 
-NOT verified against a published source:
-- **Cake type recommended %** for butter, sponge and chiffon, the per-type fat ranges, baking powder ranges, the soda limit (1.5%), sponge egg minimum (120%). They are typical-recipe figures I chose. Pound cake 1:1:1:1 is classic. The high-ratio rule (sugar at least equal to flour, liquid at least equal to sugar) comes from a Baking Sense article, read through a search summary. A separate fetch summary of that article listed odd figures (fat 112% in a pound cake), so I did not rely on it further.
-- **Yeast ratio (owner chose to keep it):** the calculator uses instant : active dry : fresh = 1 : 1.3 : 3. Red Star says instant and active dry are interchangeable one for one, and fresh is 0.4x active or 0.33x instant (read through a search summary, not the page). The learn page states both and flags the difference (about 1.5 g in 500 g flour).
-- **Sugar warning:** lowered by the owner (2026-10-07) from 25% to about 10.5% of flour (sugar + honey), matching King Arthur's 1 tbsp sugar per cup of flour (10.3%). The recommended sugar is 10%, so defaults stay quiet, but sugar + honey defaults (17%) warn. Yeast ratio 1 : 1.3 : 3 kept by the owner; Red Star's 1:1 is stated on the learn page.
-- Learn-page text on butter timing, typical butter 8-15% and 25-50%, and baking powder 1-1.5 tsp per cup is common knowledge, not cited.
-- Hydration bracket examples (bread) are unchanged and still unchecked.
+What the audit found WRONG in the earlier version (fixed):
+- Bread: instant yeast default 1% (King Arthur's same-day enriched recipes use 1.4-2.9%, median ~2%) is now 2% (active 2.6%, fresh 6%). Butter 12% to 15%, oil 7% to 10%, honey 7% to 17% (17-18% when it is the main sweetener), milk powder 4% to 6%, yolk 10% to 5%. Salt 2%, sugar 10%, egg 15%, hydration 65% were already inside the published range.
+- Bread hydration bracket examples were wrong: brioche is ~59% (not 45-55), challah ~50% (not 55-62), cinnamon rolls ~72% (not 55-62), ciabatta ~75% (not 80-90), bagels ~63% (not 45-55). Brackets now list only breads whose hydration was computed from a King Arthur recipe. Removed unsourced examples (baguettes, croissant, NY and Roman pizza, pan de cristal).
+- Bread warnings: "hydration under 50" fired on King Arthur's own challah (49.5%), now under 45. The sugar and honey yeast warning fired on KA recipes at 10-18% sugar, now above 20% (KA suggests SAF Gold from about 10%; the Learn page says both). The 25% before that was my invention; the 10.5% in between would warn on KA's own rolls.
+- Cake: sponge defaults were far too low (egg 160%, sugar 100%); KA sponges use eggs 250-352%, sugar 165-166%. Now sugar 150, egg 250, butter 55. Butter cake defaults moved to the KA median (butter 55, sugar 100, egg 55, milk 75, baking powder 3.2, vanilla 3.5). Chiffon: yolk 55, white 105, water 80, baking powder 4.5, salt 2, vanilla 4. Pound keeps the classic 1:1:1:1 (KA's own run butter 78-100, sugar 82-138, egg 42-88).
+- Cake warnings that fired on KA's own recipes were loosened or removed: "sugar under flour" (KA butter cakes go down to 83%) now below 80%; "eggs well under butter" removed (KA fudge cake has eggs at 44% of its butter); leavening is now baking powder plus soda together (soda-only cakes exist); soda limit 1.5% to 3% (KA uses up to 2.5%).
+- Cake types were missing real ingredients: pound needed baking soda, water and sour cream (KA sour-cream and chocolate pound cakes); butter cake needed water or coffee. Added as extras. Cocoa, sponge and chiffon extras now come from KA chocolate cakes (cocoa 13-24%); sponge has no extras because no KA data.
+- Text that was wrong or unsourced was removed or rewritten: pound cake "no baking powder" (KA's has it), "salt slows yeast", "fat added too early blocks gluten", a Baking Sense pound-cake figure from a bad summary, "1-1.5 tsp baking powder per cup" (KA: 0.75-1.5 tsp, i.e. 2.5-5% of flour).
+
+Verified: USDA water and fat for egg, yolk, milk, cream, butter, honey, milk powder, canola oil, egg white, buttermilk, sour cream, cocoa, vanilla, cake flour; fresh yeast 69% water and 17 g per cake; KA chart values for flour 120, whole wheat 113, sugar 198, butter 113 per 8 tbsp, honey 21 g per tbsp, dry milk 28 g per quarter cup, salt 18/8/16 g per tbsp, instant yeast 3 g per tsp and 9 per tbsp, baking powder 4 g and soda 6 g per tsp, cocoa 42 g per half cup, vanilla 14 g per tbsp, egg 50 g. Where USDA and KA differ the code uses KA for dry goods (baking powder 4.6 vs 4, soda 4.6 vs 6, cocoa 86 vs 84 per cup, cake flour 137 vs 120, all-purpose 125 vs 120) and real density for liquids (water 237, milk 244 vs KA 227). Egg yolk is 17 g (USDA, owner's choice; KA says 14).
+
+Still NOT verified:
+- Yeast ratio instant : active dry : fresh = 1 : 1.3 : 3 (owner chose to keep it). Red Star says instant and active dry are one for one, and fresh is 0.4x active or 0.33x instant (read through a search summary, not the page). Fresh 3x instant agrees with Red Star; active 1.3x does not.
+- Cream as 25% of the dough's water: no recipe checked. Milk as half of the water is inside the KA range (45-66%).
+- Yolk 5% and cream rest on one or two recipes; honey 17% on three KA recipes where honey is the only sweetener.
+- Per-type fat ranges and leavening ranges for cakes are brackets I drew around the 15 KA cake recipes I checked. Other bakers will fall outside. Optional extras (buttermilk 70, sour cream 95, oil 25) are from 1-3 recipes each.
+- Recipes with potato flour, whole wheat, orange juice, cream or yogurt as main liquid were left out of the hydration checks because they change how much water the flour holds.
+- The Baking Sense high-ratio rule (sugar at least flour, liquid at least sugar) is quoted from a search summary. KA's six butter cakes do satisfy "liquid at least sugar".
+- Sources are King Arthur only for the cake and bread ranges, so brand style (American home baking) is baked in.
 
 ## Rebrand state
 

@@ -29,15 +29,15 @@ test('flour blank: solved from the first given anchor ingredient', () => {
   near(g(r, 'flour'), 200); near(g(r, 'butter'), 200);
   assert.equal(r.recipe.find((x) => x.id === 'flour').how, 'solved');
   const b = solveCake({ type: 'butter', amounts: { ...blanks('butter'), milk: 140 } });
-  near(g(b, 'flour'), 200); near(g(b, 'sugar'), 220); // milk is 70% of flour
+  near(g(b, 'flour'), 140 / 0.75); near(g(b, 'sugar'), 140 / 0.75); // milk is 75% of flour
   const c = solveCake({ type: 'butter', amounts: { ...blanks('butter'), egg: 100, milk: 7 } });
-  near(g(c, 'flour'), 200); // egg outranks milk
+  near(g(c, 'flour'), 100 / 0.55); // egg outranks milk
 });
 
 test('flour given wins over everything; given zero stays zero', () => {
   const r = solveCake({ type: 'butter', amounts: { ...blanks('butter'), flour: 100, egg: 999, bakingpowder: 0 } });
   assert.equal(g(r, 'flour'), 100); assert.equal(g(r, 'bakingpowder'), 0);
-  warned(r, /Baking powder is 0\.0%/);
+  warned(r, /Baking powder and soda together are 0\.0%/);
 });
 
 test('every optional ingredient of every type solves alone', () => {
@@ -58,7 +58,7 @@ test('invalid input gives a clear error naming the field', () => {
   assert.match(solveCake({ type: 'pound', amounts: { sugar: -1 } }).error.message, /negative/);
   assert.match(solveCake({ type: 'pound', amounts: { sugar: 60000 } }).error.message, /50 kg/);
   assert.match(solveCake({ type: 'pound', amounts: { flour: 0 } }).error.message, /more than 0/);
-  assert.equal(solveCake({ type: 'pound', amounts: { bakingsoda: null } }).error.field, 'bakingsoda'); // not used in pound
+  assert.equal(solveCake({ type: 'chiffon', amounts: { bakingsoda: null } }).error.field, 'bakingsoda'); // not used in chiffon
   assert.equal(solveCake({ type: 'pound', amounts: { zzz: 1 } }).error.field, 'zzz');
   assert.equal(solveCake({ type: 'pound', amounts: { egg: 4e4 } }).error, undefined); // 40 kg egg -> 40 kg flour is fine
   assert.match(solveCake({ type: 'butter', amounts: { milk: 49000 } }).error.message, /50 kg/); // 70% -> 70 kg flour
@@ -66,16 +66,15 @@ test('invalid input gives a clear error naming the field', () => {
 
 test('balance warnings fire', () => {
   warned(solveCake({ type: 'pound', amounts: { ...blanks('pound'), flour: 100, butter: 50 } }), /Butter is 50%.*1:1:1:1/);
-  warned(solveCake({ type: 'butter', amounts: { ...blanks('butter'), flour: 100, sugar: 80 } }), /at least as much sugar as flour/);
+  warned(solveCake({ type: 'butter', amounts: { ...blanks('butter'), flour: 100, sugar: 70 } }), /butter cakes use 83% or more/);
   warned(solveCake({ type: 'butter', amounts: { ...blanks('butter'), flour: 100, milk: 0, egg: 40, sugar: 120 } }), /Liquid .* less than the sugar/);
-  warned(solveCake({ type: 'butter', amounts: { ...blanks('butter'), flour: 100, egg: 20 } }), /Eggs weigh well under the butter/);
   warned(solveCake({ type: 'sponge', amounts: { ...blanks('sponge'), flour: 100, egg: 80 } }), /whipped eggs/);
   warned(solveCake({ type: 'chiffon', amounts: { ...blanks('chiffon'), flour: 100, white: 20 } }), /Whites weigh less/);
   warned(solveCake({ type: 'butter', amounts: { ...blanks('butter'), flour: 100, butter: 150 } }), /Fat is about/);
-  warned(solveCake({ type: 'butter', amounts: { ...blanks('butter'), flour: 100, bakingpowder: 10 } }), /Baking powder is 10\.0%/);
+  warned(solveCake({ type: 'butter', amounts: { ...blanks('butter'), flour: 100, bakingpowder: 10 } }), /Baking powder and soda together are 10\.0%/);
   warned(solveCake({ type: 'butter', amounts: { ...blanks('butter', ['bakingsoda']), flour: 100 } }), /needs an acid/);
   assert.ok(!solveCake({ type: 'butter', amounts: { ...blanks('butter', ['bakingsoda', 'buttermilk']), flour: 100 } }).warnings.some((w) => /needs an acid/.test(w)));
-  warned(solveCake({ type: 'butter', amounts: { ...blanks('butter', ['bakingsoda', 'buttermilk']), flour: 100, bakingsoda: 3 } }), /soapy/);
+  warned(solveCake({ type: 'butter', amounts: { ...blanks('butter', ['bakingsoda', 'buttermilk']), flour: 100, bakingsoda: 4 } }), /soapy/);
 });
 
 test('pan area and pan scaling', () => {

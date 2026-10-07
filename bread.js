@@ -8,7 +8,7 @@ export { parseAmount, toFraction, MAX_GRAMS } from './core.js';
 export const DEFAULT_FLOUR = 500;
 export const DEFAULT_HYDRATION = 65; // percent, used when water is left blank and no hydration is given
 export const HYDRATION_TOLERANCE = 0.5; // percentage points
-const SUGAR_YEAST_LIMIT = 10.5; // % of flour: King Arthur's 1 tbsp sugar (12.4 g) per cup flour (120 g) is 10.3%
+const SUGAR_YEAST_LIMIT = 20; // % of flour (sugar + honey). King Arthur's own enriched recipes use up to ~18% with regular yeast; they suggest SAF Gold from 1 tbsp sugar per cup (10.3%)
 
 const SALT_UNITS = core.SALT_UNITS;
 const YEAST_UNITS = { tsp: 3, tbsp: 9, packet: 7, cake: 17 };
@@ -23,14 +23,14 @@ export const ING = {
   flour:     { label: 'Flour',       water: 0,    fat: 0,    cup: 120, extraCups: { 'cup-whole-wheat': 113 } },
   water:     { label: 'Water',       water: 1,    fat: 0,    cup: 237, liquid: true },
   egg:       { label: 'Whole egg',   water: 0.76, fat: 0.10, liquid: true, pct: 15, count: { unit: 'egg', g: 50 } },
-  yolk:      { label: 'Egg yolk',    water: 0.52, fat: 0.27, liquid: true, pct: 10, count: { unit: 'yolk', g: 17 } },
+  yolk:      { label: 'Egg yolk',    water: 0.52, fat: 0.27, liquid: true, pct: 5, count: { unit: 'yolk', g: 17 } },
   milk:      { label: 'Whole milk',  water: 0.88, fat: 0.033, cup: 244, liquid: true, share: 0.5 },
   cream:     { label: 'Heavy cream', water: 0.58, fat: 0.36, cup: 238, liquid: true, share: 0.25 },
-  butter:    { label: 'Butter',      water: 0.16, fat: 0.82, cup: 227, pct: 12, count: { unit: 'stick', g: 113 }, stick: true },
-  oil:       { label: 'Oil',         water: 0,    fat: 1,    cup: 218, pct: 7 },
+  butter:    { label: 'Butter',      water: 0.16, fat: 0.82, cup: 227, pct: 15, count: { unit: 'stick', g: 113 }, stick: true },
+  oil:       { label: 'Oil',         water: 0,    fat: 1,    cup: 218, pct: 10 },
   sugar:     { label: 'Sugar',       water: 0,    fat: 0,    cup: 198, pct: 10 },
-  honey:     { label: 'Honey',       water: 0.17, fat: 0,    cup: 340, pct: 7 },
-  milkpowder:{ label: 'Milk powder', water: 0.03, fat: 0.01, cup: 112, pct: 4 },
+  honey:     { label: 'Honey',       water: 0.17, fat: 0,    cup: 340, pct: 17 },
+  milkpowder:{ label: 'Milk powder', water: 0.03, fat: 0.01, cup: 112, pct: 6 },
   salt:      { label: 'Salt',        water: 0,    fat: 0,    pct: 2, units: SALT_UNITS, tspNote: ' table salt' },
   yeast:     { label: 'Yeast',       water: 0,    fat: 0,    units: YEAST_UNITS },
 };
@@ -40,9 +40,9 @@ export const isLiquid = (id) => !!ING[id].liquid;
 
 // pct = default % of flour; water = water fraction (fresh yeast is ~70% water); toInstant = multiplier to instant-yeast grams
 export const YEAST = {
-  instant: { label: 'Instant', pct: 1,   water: 0,    toInstant: 1 },
-  active:  { label: 'Active dry', pct: 1.3, water: 0,  toInstant: 1 / 1.3 },
-  fresh:   { label: 'Fresh (cake)', pct: 3, water: 0.7, toInstant: 1 / 3 },
+  instant: { label: 'Instant', pct: 2,   water: 0,    toInstant: 1 },
+  active:  { label: 'Active dry', pct: 2.6, water: 0,  toInstant: 1 / 1.3 },
+  fresh:   { label: 'Fresh (cake)', pct: 6, water: 0.7, toInstant: 1 / 3 },
 };
 
 export const unitsFor = (id) => core.unitsFor(ING, id);
@@ -154,12 +154,12 @@ export function solve(input) {
 
   const pct = (id) => (amounts[id] ?? 0) / F * 100;
   const fat = ids.reduce((s, id) => s + amounts[id] * ING[id].fat, 0) / F * 100;
-  if (hydration < 50) warnings.push(`Hydration ${hydration.toFixed(0)}% is very low; the dough will be stiff.`);
+  if (hydration < 45) warnings.push(`Hydration ${hydration.toFixed(0)}% is very low; the dough will be stiff.`);
   if (hydration > 85) warnings.push(`Hydration ${hydration.toFixed(0)}% is very high for enriched dough; expect a batter-like dough.`);
   if (pct('salt') < 1.5 || pct('salt') > 3) warnings.push(`Salt is ${pct('salt').toFixed(1)}% of flour; 1.5-3% is typical.`);
   if (pct('yeast') === 0) warnings.push('No yeast: the dough will not rise.');
   else if (pct('yeast') > 3 * YEAST[yt].pct) warnings.push(`Yeast is ${pct('yeast').toFixed(1)}% of flour, over 3x the usual amount for ${YEAST[yt].label.toLowerCase()}.`);
-  if (pct('sugar') + pct('honey') > SUGAR_YEAST_LIMIT) warnings.push(`Over about 10% sugar slows regular yeast; consider osmotolerant (SAF Gold) yeast. King Arthur suggests it at 1 tbsp of sugar per cup of flour.`);
+  if (pct('sugar') + pct('honey') > SUGAR_YEAST_LIMIT) warnings.push(`Over about 20% sugar and honey slows regular yeast; consider osmotolerant (SAF Gold) yeast.`);
   if (fat > 60) warnings.push(`Fat is about ${fat.toFixed(0)}% of flour; very rich doughs need long mixing and gentle handling.`);
   if (hydrationDefaulted) warnings.push(`No hydration entered, so I used the recommended ${DEFAULT_HYDRATION}%.`);
   if (flourDefaulted) warnings.push(`No flour entered, so I used ${DEFAULT_FLOUR} g. Change it and press Enter to rescale.`);
@@ -167,16 +167,16 @@ export function solve(input) {
   return { recipe, hydration, total, flourDefaulted, hydrationDefaulted, waterBreakdown, warnings, yeastEquivalents, yeastType: yt };
 }
 
-// Typical true-hydration brackets with example breads. Rich doughs read low: butter and eggs add richness, not water.
-// Boundaries: min inclusive, max exclusive. The home page lists the same brackets (a test keeps them in sync).
+// True-hydration brackets with example breads. Examples are only breads whose true hydration was computed (with this file's composition table)
+// from King Arthur's published gram recipes on 2026-10-07. Boundaries: min inclusive, max exclusive. The home page lists the same brackets (a test keeps them in sync).
 export const BRACKETS = [
   { min: 0, max: 45, label: 'Very stiff', breads: 'Too dry for most bread. Closer to pasta or cracker dough.' },
-  { min: 45, max: 55, label: 'Stiff and rich', breads: 'Brioche, bagels, pretzels, croissant dough.' },
-  { min: 55, max: 62, label: 'Firm', breads: 'Challah, cinnamon rolls, Neapolitan-style pizza.' },
-  { min: 62, max: 70, label: 'Soft and workable', breads: 'Sandwich loaves, dinner rolls, milk bread, New York-style pizza, classic French bread.' },
-  { min: 70, max: 80, label: 'Sticky, open crumb', breads: 'Rustic baguettes, country loaves, Hokkaido milk bread, pan pizza.' },
-  { min: 80, max: 90, label: 'Very wet', breads: 'Ciabatta, focaccia, Roman-style pizza.' },
-  { min: 90, max: Infinity, label: 'Batter-like', breads: 'Pan de cristal and no-knead batters. Not a kneaded dough.' },
+  { min: 45, max: 55, label: 'Stiff and rich', breads: 'Challah (about 50% in King Arthur\'s recipe).' },
+  { min: 55, max: 62, label: 'Firm', breads: 'Brioche and brioche buns, Neapolitan-style pizza (the low end of King Arthur\'s range).' },
+  { min: 62, max: 70, label: 'Soft and workable', breads: 'Sandwich bread, bagels, pretzels, pizza.' },
+  { min: 70, max: 80, label: 'Sticky, open crumb', breads: 'Japanese milk bread, cinnamon rolls, ciabatta.' },
+  { min: 80, max: 90, label: 'Very wet', breads: 'Focaccia.' },
+  { min: 90, max: Infinity, label: 'Batter-like', breads: 'Too wet to knead. Closer to a batter.' },
 ].map((b) => ({ ...b, range: b.min === 0 ? `Under ${b.max}%` : b.max === Infinity ? `${b.min}%+` : `${b.min}-${b.max}%` }));
 export const bracketFor = (h) => (Number.isFinite(h) && h >= 0 ? BRACKETS.find((b) => h >= b.min && h < b.max) : null) ?? null;
 

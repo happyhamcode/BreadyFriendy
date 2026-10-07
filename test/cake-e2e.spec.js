@@ -18,19 +18,19 @@ test('home explains baker\'s percentage, lists four types, no forbidden words, o
   await expect(page.locator('#picker')).toBeVisible();
   await expect(page.locator('.picks.types input')).toHaveCount(4);
   await page.locator('.picks.types input[value=chiffon]').check();
-  await expect(page.locator('.picks.extras input')).toHaveCount(2); // cocoa, milk
+  await expect(page.locator('.picks.extras input')).toHaveCount(3); // cocoa, milk, buttermilk
   await page.locator('.picks.types input[value=butter]').check();
-  await expect(page.locator('.picks.extras input')).toHaveCount(5);
+  await expect(page.locator('.picks.extras input')).toHaveCount(6);
 });
 
 test('flour given: Enter fills every blank with the type\'s recommended amounts', async ({ page }) => {
   await open(page);
   await page.fill('#in-flour', '250'); await page.press('#in-flour', 'Enter');
-  expect(await val(page, 'butter')).toBe('125'); expect(await val(page, 'sugar')).toBe('275');
-  expect(await val(page, 'egg')).toBe('125'); expect(await val(page, 'milk')).toBe('175');
-  expect(await val(page, 'bakingpowder')).toBe('11.3');
+  expect(await val(page, 'butter')).toBe('137.5'); expect(await val(page, 'sugar')).toBe('250');
+  expect(await val(page, 'egg')).toBe('137.5'); expect(await val(page, 'milk')).toBe('187.5');
+  expect(await val(page, 'bakingpowder')).toBe('8');
   await expect(page.locator('#in-sugar')).toHaveClass(/auto/);
-  await expect(page.locator('#ratio-line')).toContainText('110% sugar');
+  await expect(page.locator('#ratio-line')).toContainText('100% sugar');
   await expect(page.locator('#total')).not.toHaveText('');
   await expect(page.locator('#warnings li')).toHaveCount(0);
 });
@@ -38,10 +38,10 @@ test('flour given: Enter fills every blank with the type\'s recommended amounts'
 test('flour blank: solved from the first ingredient you fill in', async ({ page }) => {
   await open(page);
   await page.fill('#in-egg', '100'); await page.press('#in-egg', 'Enter');
-  expect(await val(page, 'flour')).toBe('200'); expect(await val(page, 'butter')).toBe('100');
+  expect(await val(page, 'flour')).toBe('181.8'); expect(await val(page, 'butter')).toBe('100');
   await expect(page.locator('#in-flour')).toHaveClass(/auto/);
   await page.fill('#in-flour', '400'); await page.press('#in-flour', 'Enter'); // editing flour rescales the rest
-  expect(await val(page, 'butter')).toBe('200');
+  expect(await val(page, 'butter')).toBe('220');
 });
 
 test('empty form: 250 g flour with a notice; pound cake is 1:1:1:1', async ({ page }) => {
@@ -139,7 +139,7 @@ test('share link round trip, tampered link, and brand link goes up to the site h
   expect(url).toContain('/cake/?t=butter'); expect(url).toContain('egg=100');
   const p2 = await context.newPage(); await p2.goto(url);
   await expect(p2.locator('#calc')).toBeVisible();
-  expect(await p2.locator('#in-egg').inputValue()).toBe('100'); expect(await p2.locator('#in-butter').inputValue()).toBe('125');
+  expect(await p2.locator('#in-egg').inputValue()).toBe('100'); expect(await p2.locator('#in-butter').inputValue()).toBe('137.5');
   const bad = await context.newPage(); await bad.goto('/cake/?t=butter&flour=1e9&egg=');
   await expect(bad.locator('#msg')).not.toHaveText('');
   const junk = await context.newPage(); await junk.goto('/cake/?t=zzz&flour=5');

@@ -45,24 +45,24 @@ test('empty form: recommended amounts, 65% hydration, 500 g flour', async ({ pag
   await open(page, ['egg', 'butter']);
   await page.press('#in-flour', 'Enter');
   expect(await val(page, 'flour')).toBe('500'); expect(await val(page, 'hydration')).toBe('65');
-  expect(await val(page, 'egg')).toBe('75'); expect(await val(page, 'butter')).toBe('60');
+  expect(await val(page, 'egg')).toBe('75'); expect(await val(page, 'butter')).toBe('75');
   await expect(page.locator('#warnings')).toContainText('recommended 65%');
   await page.fill('#in-flour', '1000'); await page.press('#in-flour', 'Enter');   // everything calculated rescales
-  expect(await val(page, 'egg')).toBe('150'); expect(await val(page, 'butter')).toBe('120');
+  expect(await val(page, 'egg')).toBe('150'); expect(await val(page, 'butter')).toBe('150');
 });
 
 test('bread examples: home list, demo slider, calculator guide and result line', async ({ page }) => {
   await page.goto('/bread/');
-  for (const w of ['Brioche', 'Challah', 'Neapolitan-style pizza', 'classic French bread', 'Ciabatta', 'focaccia']) await expect(page.locator('.ranges')).toContainText(w);
+  for (const w of ['Brioche', 'Challah', 'Neapolitan-style pizza', 'bagels', 'ciabatta', 'Focaccia']) await expect(page.locator('.ranges')).toContainText(w);
   await expect(page.locator('.hero #demo-range')).toHaveCount(0);   // demo is not next to the Build button
   await page.locator('#demo-range').fill('82');
-  await expect(page.locator('#demo-breads')).toContainText('Ciabatta'); await expect(page.locator('#demo-feel')).toHaveText('Very wet');
-  await page.locator('#demo-range').fill('50'); await expect(page.locator('#demo-breads')).toContainText('Brioche');
+  await expect(page.locator('#demo-breads')).toContainText('Focaccia'); await expect(page.locator('#demo-feel')).toHaveText('Very wet');
+  await page.locator('#demo-range').fill('50'); await expect(page.locator('#demo-breads')).toContainText('Challah');
   await page.getByRole('button', { name: 'Build my dough' }).first().click(); await page.locator('#to-calc').click();
   await page.locator('.guide summary').click();
   await expect(page.locator('#guide-list li')).toHaveCount(7); await expect(page.locator('#guide-list li.on')).toHaveCount(0);
-  await page.fill('#in-hydration', '58'); await expect(page.locator('#guide-list li.on')).toContainText('Challah');
-  await page.fill('#in-hydration', '66'); await expect(page.locator('#guide-list li.on')).toContainText('French');
+  await page.fill('#in-hydration', '58'); await expect(page.locator('#guide-list li.on')).toContainText('Brioche');
+  await page.fill('#in-hydration', '66'); await expect(page.locator('#guide-list li.on')).toContainText('Sandwich');
   await page.fill('#in-flour', '500'); await page.press('#in-flour', 'Enter');
   await expect(page.locator('#res-bracket')).toContainText('66.0%'); await expect(page.locator('#res-bracket')).toContainText('Soft and workable');
 });
@@ -128,9 +128,9 @@ test('yeast type changes default and shows equivalents', async ({ page }) => {
   await open(page);
   await page.selectOption('#yeast-type', 'fresh');
   await page.fill('#in-flour', '1000'); await page.fill('#in-hydration', '65'); await page.press('#in-hydration', 'Enter');
-  expect(await val(page, 'yeast')).toBe('30');
-  await expect(page.locator('#yeast-eq')).toContainText('Instant 10.0 g');
-  expect(await val(page, 'water')).toBe('629');
+  expect(await val(page, 'yeast')).toBe('60');
+  await expect(page.locator('#yeast-eq')).toContainText('Instant 20.0 g');
+  expect(await val(page, 'water')).toBe('608');
 });
 
 test('scale and share link round trip', async ({ page, context }) => {

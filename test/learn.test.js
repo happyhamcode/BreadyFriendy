@@ -47,15 +47,15 @@ test('every "try it" link on the learn pages loads and solves without an error',
 
 test('learn pages quote the same numbers the solvers produce', () => {
   const a = solve({ amounts: { flour: 500, water: null, salt: null, yeast: null }, hydration: 65 });
-  assert.deepEqual(a.recipe.map((r) => r.grams), [500, 325, 10, 5]);
+  assert.deepEqual(a.recipe.map((r) => r.grams), [500, 325, 10, 10]);
   const b = solve({ amounts: { flour: 500, water: 100, salt: 10, yeast: 5, egg: 100, milk: 150 }, hydration: null });
   assert.equal(b.hydration.toFixed(1), '61.6');
   const c = solve({ amounts: { flour: 500, water: null, salt: null, yeast: null, egg: null, butter: null, sugar: null, milk: null }, hydration: 65 });
-  assert.deepEqual(['egg', 'butter', 'sugar', 'milk', 'water'].map((id) => Math.round(c.recipe.find((r) => r.id === id).grams)), [75, 60, 50, 185, 96]);
-  assert.equal(Math.round(c.total), 981);
-  assert.equal((1800 / c.total).toFixed(2), '1.84');
+  assert.deepEqual(['egg', 'butter', 'sugar', 'milk', 'water'].map((id) => Math.round(c.recipe.find((r) => r.id === id).grams)), [75, 75, 50, 185, 94]);
+  assert.equal(Math.round(c.total), 998);
+  assert.equal((1800 / c.total).toFixed(2), '1.80');
   assert.equal(((9 / 8) ** 2).toFixed(2), '1.27'); assert.equal((117 / 64).toFixed(2), '1.83');
-  assert.equal([YEAST.instant, YEAST.active, YEAST.fresh].map((y) => y.pct * 5).join(), '5,6.5,15');
+  assert.equal([YEAST.instant, YEAST.active, YEAST.fresh].map((y) => y.pct * 5).join(), '10,13,30');
   assert.equal((355 / 480 * 100).toFixed(0), '74'); assert.equal((355 / 548 * 100).toFixed(0), '65');
-  const y = html('learn/yeast-conversion/index.html'); assert.match(y, /5 g instant \(1%\), 6\.5 g active dry \(1\.3%\) or 15 g fresh \(3%\)/);
+  const y = html('learn/yeast-conversion/index.html'); assert.match(y, /10 g instant yeast \(2%\), 13 g active dry \(2\.6%\) or 30 g fresh \(6%\)/);
 });

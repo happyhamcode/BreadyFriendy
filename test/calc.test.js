@@ -29,9 +29,9 @@ test('hydration only: flour defaults, enrichers take recommended amounts, water 
   assert.ok(r.flourDefaulted); near(get(r, 'flour').grams, 500);
   near(get(r, 'egg').grams, 75);                         // 15% of flour
   near(get(r, 'milk').grams, (0.5 * 0.65 * 500) / 0.88); // supplies half of the total water
-  near(get(r, 'butter').grams, 60); near(get(r, 'salt').grams, 10); near(get(r, 'yeast').grams, 5);
+  near(get(r, 'butter').grams, 75); near(get(r, 'salt').grams, 10); near(get(r, 'yeast').grams, 10);
   near(r.hydration, 65);
-  near(get(r, 'water').grams, 325 - 75 * 0.76 - 0.5 * 325 - 60 * 0.16);
+  near(get(r, 'water').grams, 325 - 75 * 0.76 - 0.5 * 325 - 75 * 0.16);
   assert.equal(get(r, 'egg').how, 'recommended'); assert.equal(get(r, 'water').how, 'solved');
   assert.ok(r.warnings.some((w) => /used 500/.test(w)));
 });
@@ -56,7 +56,7 @@ test('hydration blank: flour is required; blank water uses the recommended hydra
 
 test('hydration blank: blank salt/yeast/butter get defaults', () => {
   const r = ok(solve({ amounts: { flour: 1000, water: 600, butter: null }, hydration: null }));
-  near(get(r, 'salt').grams, 20); near(get(r, 'butter').grams, 120); near(r.hydration, 61.92);
+  near(get(r, 'salt').grams, 20); near(get(r, 'butter').grams, 150); near(r.hydration, 62.4);
 });
 
 test('solve flour from known liquids', () => {
@@ -66,7 +66,7 @@ test('solve flour from known liquids', () => {
 
 test('solve flour accounts for default-% butter water', () => {
   const r = ok(solve({ amounts: { flour: null, water: 300, butter: null }, hydration: 60 }));
-  near(r.hydration, 60); near(get(r, 'flour').grams, 300 / (0.6 - 0.12 * 0.16));
+  near(r.hydration, 60); near(get(r, 'flour').grams, 300 / (0.6 - 0.15 * 0.16));
 });
 
 test('solve flour: nothing to solve from', () => {
@@ -77,15 +77,15 @@ test('every recommended amount, with no hydration entered', () => {
   const a = { flour: 1000, water: 650, egg: null, yolk: null, milk: null, cream: null, butter: null, oil: null, sugar: null, honey: null, milkpowder: null, salt: null, yeast: null };
   const r = ok(solve({ amounts: a, hydration: null }));
   const g = (id) => get(r, id).grams;
-  near(g('egg'), 150); near(g('yolk'), 100); near(g('butter'), 120); near(g('oil'), 70); near(g('sugar'), 100);
-  near(g('honey'), 70); near(g('milkpowder'), 40); near(g('salt'), 20); near(g('yeast'), 10);
+  near(g('egg'), 150); near(g('yolk'), 50); near(g('butter'), 150); near(g('oil'), 100); near(g('sugar'), 100);
+  near(g('honey'), 170); near(g('milkpowder'), 60); near(g('salt'), 20); near(g('yeast'), 20);
   near(g('milk'), (0.5 * 0.65 * 1000) / 0.88); near(g('cream'), (0.25 * 0.65 * 1000) / 0.58);
   for (const id of ['egg', 'yolk', 'milk', 'cream', 'butter', 'oil', 'sugar', 'honey', 'milkpowder', 'salt', 'yeast']) assert.equal(get(r, id).how, 'recommended', id);
   assert.equal(get(r, 'water').how, null); assert.ok(!r.hydrationDefaulted);
 });
 
 test('recommended yeast follows the yeast type', () => {
-  for (const [yt, p] of [['instant', 1], ['active', 1.3], ['fresh', 3]]) near(get(ok(solve({ amounts: { flour: 1000 }, hydration: 65, yeastType: yt })), 'yeast').grams, p * 10);
+  for (const [yt, p] of [['instant', 2], ['active', 2.6], ['fresh', 6]]) near(get(ok(solve({ amounts: { flour: 1000 }, hydration: 65, yeastType: yt })), 'yeast').grams, p * 10);
 });
 
 test('water given + hydration given: blank liquid enrichers split the missing water equally', () => {
@@ -96,8 +96,8 @@ test('water given + hydration given: blank liquid enrichers split the missing wa
 
 test('water given, hydration blank: blank enrichers get recommended amounts, hydration reported', () => {
   const r = ok(solve({ amounts: { flour: 500, water: 300, egg: null, butter: null }, hydration: null }));
-  near(get(r, 'egg').grams, 75); near(get(r, 'butter').grams, 60);
-  near(r.hydration, (300 + 75 * 0.76 + 60 * 0.16) / 5); assert.ok(!r.hydrationDefaulted);
+  near(get(r, 'egg').grams, 75); near(get(r, 'butter').grams, 75);
+  near(r.hydration, (300 + 75 * 0.76 + 75 * 0.16) / 5); assert.ok(!r.hydrationDefaulted);
 });
 
 test('recommended liquids too wet for the hydration are scaled down with a warning', () => {
@@ -123,15 +123,16 @@ test('home page states the same recommended amounts the solver uses', () => {
   }
   assert.match(html, /we use <strong>half<\/strong> of the water as milk/); assert.match(html, /we use <strong>a quarter<\/strong> of the water as cream/);
   assert.equal(ING.milk.share, 0.5); assert.equal(ING.cream.share, 0.25);
-  assert.match(html, new RegExp(`${DEFAULT_HYDRATION}% hydration`)); assert.equal(ING.salt.pct, 2); assert.equal(YEAST.instant.pct, 1);
+  assert.match(html, new RegExp(`${DEFAULT_HYDRATION}% hydration`)); assert.equal(ING.salt.pct, 2); assert.equal(YEAST.instant.pct, 2);
+  assert.match(html, new RegExp(`${YEAST.instant.pct}% instant yeast \\(${YEAST.active.pct}% active dry, ${YEAST.fresh.pct}% fresh\\)`));
 });
 
 test('hydration brackets: boundaries, examples, and the home page lists the same ones', () => {
   for (const [h, label] of [[0, 'Very stiff'], [44.9, 'Very stiff'], [45, 'Stiff and rich'], [54.99, 'Stiff and rich'], [55, 'Firm'], [62, 'Soft and workable'],
     [65, 'Soft and workable'], [70, 'Sticky, open crumb'], [80, 'Very wet'], [90, 'Batter-like'], [150, 'Batter-like']]) assert.equal(bracketFor(h).label, label, String(h));
   for (const bad of [NaN, Infinity, -1, null, undefined, 'x']) assert.equal(bracketFor(bad), null, String(bad));
-  assert.match(bracketFor(60).breads, /challah/i); assert.match(bracketFor(85).breads, /ciabatta/i);
-  assert.match(bracketFor(66).breads, /French/); assert.match(bracketFor(50).breads, /brioche/i);
+  assert.match(bracketFor(60).breads, /brioche/i); assert.match(bracketFor(85).breads, /focaccia/i);
+  assert.match(bracketFor(66).breads, /sandwich/i); assert.match(bracketFor(50).breads, /challah/i); assert.match(bracketFor(73).breads, /milk bread/i);
   assert.match([62, 58, 75].map((h) => bracketFor(h).breads).join(), /pizza/i);
   assert.deepEqual(BRACKETS.map((b) => b.range), ['Under 45%', '45-55%', '55-62%', '62-70%', '70-80%', '80-90%', '90%+']);
   const html = readFileSync(new URL('../bread/index.html', import.meta.url), 'utf8');
@@ -168,10 +169,10 @@ test('hydration too low for defaults when solving flour', () => {
 });
 
 test('yeast types: defaults and equivalents', () => {
-  for (const [yt, pct] of [['instant', 1], ['active', 1.3], ['fresh', 3]]) {
+  for (const [yt, pct] of [['instant', 2], ['active', 2.6], ['fresh', 6]]) {
     const r = ok(solve({ amounts: { flour: 1000, water: 650, salt: 20, yeast: null }, hydration: null, yeastType: yt }));
     near(get(r, 'yeast').grams, pct * 10);
-    near(r.yeastEquivalents.instant, 10); near(r.yeastEquivalents.active, 13); near(r.yeastEquivalents.fresh, 30);
+    near(r.yeastEquivalents.instant, 20); near(r.yeastEquivalents.active, 26); near(r.yeastEquivalents.fresh, 60);
   }
   bad(solve({ amounts: { flour: 500 }, hydration: 65, yeastType: 'sourdough' }), 'yeastType');
 });
@@ -242,10 +243,11 @@ test('warnings fire', () => {
   assert.match(w({ flour: 500, water: 300, salt: 0, yeast: 5 }), /Salt/);
   assert.match(w({ flour: 500, water: 300, salt: 20, yeast: 5 }), /Salt/);
   assert.match(w({ flour: 500, water: 300, salt: 10, yeast: 0 }), /No yeast/);
-  assert.match(w({ flour: 500, water: 300, salt: 10, yeast: 20 }), /3x/);
+  assert.match(w({ flour: 500, water: 300, salt: 10, yeast: 35 }), /3x/);
   assert.match(w({ flour: 500, water: 300, salt: 10, yeast: 5, sugar: 150 }), /osmotolerant/);
-  assert.match(w({ flour: 500, water: 300, salt: 10, yeast: 5, sugar: 53 }), /osmotolerant/); // 10.6%
-  assert.doesNotMatch(w({ flour: 500, water: 300, salt: 10, yeast: 5, sugar: 51, honey: 0 }), /osmotolerant/); // 10.2%
+  assert.match(w({ flour: 500, water: 300, salt: 10, yeast: 5, sugar: 105 }), /osmotolerant/); // 21%
+  assert.doesNotMatch(w({ flour: 500, water: 300, salt: 10, yeast: 5, sugar: 95, honey: 0 }), /osmotolerant/); // 19%
+  assert.match(w({ flour: 500, water: 300, salt: 10, yeast: 5, sugar: 50, honey: 55 }), /osmotolerant/); // sugar + honey count together
   assert.match(w({ flour: 500, water: 300, salt: 10, yeast: 5, butter: 400 }), /Fat/);
   assert.equal(w({ flour: 500, water: 300, salt: 10, yeast: 5 }), '');
 });
