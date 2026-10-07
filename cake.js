@@ -31,7 +31,9 @@ export const CAKE_ING = {
 };
 export const isLiquid = (id) => ['egg', 'yolk', 'white', 'milk', 'buttermilk', 'sourcream', 'water'].includes(id);
 
-// Starting recipes, % of flour. Derived on 2026-10-07 from King Arthur's published gram recipes (eggs counted at 50 g, yolk 17, white 33):
+// Starting recipes, % of flour. Derived on 2026-10-07 from King Arthur's published gram recipes, then checked against ~20 independent recipes (pooled medians):
+// independent sponge: sugar 95-222 (median 117), egg 157-333 (167), butter 21-100 (32), vanilla 1.1-6.7; butter cake salt 0.6-1.4; chiffon salt 0.5-2.0, fat up to 87.
+// Original KA derivation: (eggs counted at 50 g, yolk 17, white 33):
 //   pound (4 recipes): butter 82-100, sugar 82-130, egg 42-88. The classic 1:1:1:1 is kept as the default; KA's own run slightly lower on eggs.
 //   butter (6): butter 24-63 (most 44-63), sugar 83-165 (most 83-108), egg 50-93, milk/cream/yogurt 62-114, baking powder 2.8-4.0, salt 1.3-3.1, vanilla 3.6-5.8.
 //   sponge (genoise + sponge, 4): sugar 100-166, egg 200-352, butter 0-63, no baking powder.
@@ -48,21 +50,21 @@ export const CAKE_TYPES = {
   },
   butter: {
     label: 'Butter cake', base: ['flour', 'butter', 'sugar', 'egg', 'milk', 'bakingpowder', 'salt', 'vanilla'],
-    pct: { butter: 55, sugar: 100, egg: 55, milk: 75, bakingpowder: 3.2, salt: 1.5, vanilla: 3.5 },
+    pct: { butter: 55, sugar: 100, egg: 55, milk: 75, bakingpowder: 3.2, salt: 1.25, vanilla: 3.5 },
     optional: { buttermilk: 70, sourcream: 95, water: 60, cocoa: 20, bakingsoda: 1.5, oil: 25 },
     fat: [40, 90], leav: [2, 7],
   },
   sponge: {
     label: 'Sponge (genoise)', base: ['flour', 'sugar', 'egg', 'butter', 'salt', 'vanilla'],
-    pct: { sugar: 150, egg: 250, butter: 55, salt: 1.5, vanilla: 8 },
+    pct: { sugar: 125, egg: 200, butter: 35, salt: 1.5, vanilla: 6 },
     optional: {},
-    fat: [20, 90], leav: [0, 3],
+    fat: [15, 110], leav: [0, 3],
   },
   chiffon: {
     label: 'Chiffon', base: ['flour', 'sugar', 'oil', 'yolk', 'white', 'water', 'bakingpowder', 'salt', 'vanilla'],
-    pct: { sugar: 115, oil: 42, yolk: 55, white: 105, water: 80, bakingpowder: 4.5, salt: 2, vanilla: 4 },
+    pct: { sugar: 115, oil: 42, yolk: 55, white: 105, water: 80, bakingpowder: 4.5, salt: 1.5, vanilla: 4 },
     optional: { cocoa: 13, milk: 70, buttermilk: 70 },
-    fat: [40, 70], leav: [3.5, 6],
+    fat: [35, 90], leav: [3.5, 6.5],
   },
 };
 export const defaultPct = (type, id) => CAKE_TYPES[type].pct[id] ?? CAKE_TYPES[type].optional[id];
@@ -117,14 +119,14 @@ export function solveCake(input) {
   }
   if (type === 'butter') {
     if (ratios.sugar < 80) w(`Sugar is ${f0(ratios.sugar)}% of flour. King Arthur's butter cakes use 83% or more, and high-ratio cakes use at least as much sugar as flour.`);
-    if (ratios.liquid < ratios.sugar) w(`Liquid (eggs, milk, dairy) is ${f0(ratios.liquid)}% of flour, less than the sugar at ${f0(ratios.sugar)}%. The sugar will not fully dissolve and the cake can bake dry.`);
+    if (ratios.liquid < ratios.sugar * 0.9) w(`Liquid (eggs, milk, dairy) is ${f0(ratios.liquid)}% of flour, well under the sugar at ${f0(ratios.sugar)}%. High-ratio cakes keep liquid at least equal to the sugar, and the sugar may not fully dissolve.`);
   }
-  if (type === 'sponge' && p('egg') < 180) w(`Eggs are ${f0(p('egg'))}% of flour. A sponge relies on whipped eggs for lift, and King Arthur's sponges use 200% or more.`);
+  if (type === 'sponge' && p('egg') < 150) w(`Eggs are ${f0(p('egg'))}% of flour. A sponge relies on whipped eggs for lift, and published sponges use 150% or more (King Arthur's 250% or more).`);
   if (type === 'chiffon' && p('white') < p('yolk')) w('Whites weigh less than the yolks. Chiffon lifts on whipped whites, so use at least as many whites as yolks.');
   if (ratios.fat < T.fat[0] || ratios.fat > T.fat[1]) w(`Fat is about ${f0(ratios.fat)}% of flour; ${T.fat[0]}-${T.fat[1]}% is typical for ${T.label.toLowerCase()}.`);
   const leav = p('bakingpowder') + p('bakingsoda');
   if (leav < T.leav[0] || leav > T.leav[1]) w(`Baking powder and soda together are ${leav.toFixed(1)}% of flour; ${T.leav[0]}-${T.leav[1]}% is typical here (King Arthur's cakes use about 0.8-1.5 tsp baking powder per cup of flour, 2.5-5%, or soda alone up to about 2.5%).`);
-  if (p('bakingsoda') > 0 && !Object.keys(amounts).some((id) => CAKE_ING[id].acid && amounts[id] > 0)) w('Baking soda needs an acid (buttermilk, sour cream or natural cocoa) to react. Without one it leaves a soapy taste.');
+  if (p('bakingsoda') >= 1 && !Object.keys(amounts).some((id) => CAKE_ING[id].acid && amounts[id] > 0)) w('Baking soda at this amount needs an acid (buttermilk, sour cream or natural cocoa) to react. Without one it leaves a soapy taste. (A small pinch with baking powder is fine.)');
   if (p('bakingsoda') > 3) w(`Baking soda is ${p('bakingsoda').toFixed(1)}% of flour. King Arthur's cakes use up to about 2.5%; much more can taste soapy.`);
   if (flourDefaulted) w(`No flour or anchor ingredient entered, so I used ${DEFAULT_FLOUR} g flour. Change it and press Enter to rescale.`);
 

@@ -67,7 +67,7 @@ test('invalid input gives a clear error naming the field', () => {
 test('balance warnings fire', () => {
   warned(solveCake({ type: 'pound', amounts: { ...blanks('pound'), flour: 100, butter: 50 } }), /Butter is 50%.*1:1:1:1/);
   warned(solveCake({ type: 'butter', amounts: { ...blanks('butter'), flour: 100, sugar: 70 } }), /butter cakes use 83% or more/);
-  warned(solveCake({ type: 'butter', amounts: { ...blanks('butter'), flour: 100, milk: 0, egg: 40, sugar: 120 } }), /Liquid .* less than the sugar/);
+  warned(solveCake({ type: 'butter', amounts: { ...blanks('butter'), flour: 100, milk: 0, egg: 40, sugar: 120 } }), /Liquid .* well under the sugar/);
   warned(solveCake({ type: 'sponge', amounts: { ...blanks('sponge'), flour: 100, egg: 80 } }), /whipped eggs/);
   warned(solveCake({ type: 'chiffon', amounts: { ...blanks('chiffon'), flour: 100, white: 20 } }), /Whites weigh less/);
   warned(solveCake({ type: 'butter', amounts: { ...blanks('butter'), flour: 100, butter: 150 } }), /Fat is about/);

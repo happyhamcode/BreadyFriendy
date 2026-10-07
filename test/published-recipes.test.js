@@ -36,9 +36,37 @@ test('published King Arthur cakes solve with no balance warnings', () => {
   assert.ok(CAKES.length >= 15);
 });
 
+// Independent (non-King-Arthur) recipes, read from their own pages on 2026-10-07 by a research pass. Cups, tsp and egg counts converted by hand
+// (baking powder 4.5 g/tsp, salt 5 g/tsp, vanilla 4 g/tsp, egg 50 g), so leavening, salt and vanilla are approximate. Egg whites in a butter cake are entered as egg.
+const INDEPENDENT_CAKES = [
+  ['pound', "Simone's Kitchen pound cake", 'https://insimoneskitchen.com/wprm_print/basic-pound-cake-recipe', { flour: 225, butter: 225, sugar: 225, egg: 225, salt: 5, vanilla: 4 }],
+  ['pound', "Stefan's Gourmet pound cake", 'https://stefangourmet.com/2012/01/15/pound-cake/', { flour: 300, butter: 300, sugar: 300, egg: 300, bakingpowder: 15 }],
+  ['pound', 'Allinson Victoria sponge (self-raising flour)', 'https://www.allinsonflour.co.uk/recipes/victoria-sponge', { flour: 225, butter: 225, sugar: 225, egg: 200, milk: 15, vanilla: 4 }],
+  ['butter', 'Cake by Courtney classic vanilla (whites as egg)', 'https://cakebycourtney.com/wprm_print/classic-vanilla-cake', { flour: 345, butter: 226, sugar: 350, egg: 198, buttermilk: 240, sourcream: 120, bakingpowder: 10, salt: 5, vanilla: 13 }],
+  ['butter', 'Sweetly Cakes 6-inch vanilla', 'https://sweetlycakes.com/en/6-inch-vanilla-cake/print/68843', { flour: 270, butter: 150, sugar: 300, egg: 150, buttermilk: 220, bakingpowder: 6.75, bakingsoda: 3, salt: 1.25, vanilla: 6 }],
+  ['butter', 'Lovefood vanilla layer cake', 'https://lovefood.com/recipes/59708/vanilla-layer-cake-recipe', { flour: 275, butter: 200, sugar: 375, egg: 201, milk: 160, bakingpowder: 9, salt: 2.5, vanilla: 14 }],
+  ['butter', 'Baking with Butter 8-inch vanilla', 'https://bakingwithbutter.com/wprm_print/perfect-8-inch-vanilla-cake', { flour: 310, butter: 113, oil: 54, sugar: 250, egg: 150, milk: 180, bakingpowder: 9, bakingsoda: 1.5, salt: 2.5, vanilla: 8 }],
+  ['sponge', 'Sikana genoise', 'https://sikana.tv/en/cooking/prepare-your-own-desserts/simple-recipe-for-genoise-italian-sponge-cake', { flour: 75, sugar: 125, egg: 250, butter: 30 }],
+  ['sponge', 'Cooklang genoise', 'https://recipes.cooklang.org/recipes/591', { flour: 120, sugar: 132, egg: 200, butter: 25, salt: 1.5, vanilla: 1.3 }],
+  ['sponge', 'Baking Like a Chef genoise', 'https://www.bakinglikeachef.com/genoise-cake-recipe/', { flour: 120, sugar: 120, egg: 200, butter: 30 }],
+  ['sponge', 'Only Crumbs Remain genoise', 'https://onlycrumbsremain.com/side-by-side-baking-genoise-cake/', { flour: 125, sugar: 125, egg: 200, butter: 40 }],
+  ['sponge', 'Delicious magazine genoise', 'https://www.deliciousmagazine.co.uk/recipes/genoise-sponge/', { flour: 100, sugar: 125, egg: 200, butter: 100 }],
+  ['chiffon', "America's Test Kitchen chiffon", 'https://www.americastestkitchen.com/lessons/recipes/2146-chiffon-cake', { flour: 151, sugar: 298, oil: 109, yolk: 85, white: 165, water: 177, bakingpowder: 9, salt: 3, vanilla: 12 }],
+  ['chiffon', 'Sweetly Cakes chiffon', 'https://sweetlycakes.com/en/chiffon-cake/print/36953/', { flour: 210, sugar: 225, oil: 115, yolk: 119, white: 231, water: 180, bakingpowder: 9, salt: 3, vanilla: 8 }],
+  ['chiffon', 'Baking Sense chiffon', 'https://www.baking-sense.com/wprm_print/13675', { flour: 283.5, sugar: 340, oil: 91, yolk: 102, white: 198, water: 170, bakingpowder: 13.5, salt: 3, vanilla: 12 }],
+];
+
+test('independent (non-King-Arthur) cakes solve with no balance warnings', () => {
+  for (const [type, name, url, amounts] of INDEPENDENT_CAKES) {
+    const r = solveCake({ type, amounts });
+    assert.equal(r.error, undefined, `${name} (${url})`);
+    assert.deepEqual(r.warnings, [], `${name} (${url}): ${r.warnings}`);
+  }
+});
+
 test('cake type defaults sit inside the range of the published recipes of that type', () => {
   for (const type of Object.keys(CAKE_TYPES)) {
-    const recs = CAKES.filter((c) => c[0] === type).map((c) => c[3]);
+    const recs = [...CAKES, ...INDEPENDENT_CAKES.map((c) => [c[0], c[1], c[2], c[3]])].filter((c) => c[0] === type).map((c) => c[3]);
     for (const [id, pct] of Object.entries(CAKE_TYPES[type].pct)) {
       if (id === 'flour') continue;
       const seen = recs.filter((a) => a[id] !== undefined).map((a) => (a[id] / a.flour) * 100);
