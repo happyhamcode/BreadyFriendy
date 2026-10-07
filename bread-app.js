@@ -1,9 +1,6 @@
 import { ING, ENRICHERS, BASE, YEAST, BRACKETS, bracketFor, solve, scale, toGrams, unitsFor, friendly, encodeShare, decodeShare, parseAmount } from './bread.js';
+import { $, fmt, initTips, rowHtml, wireRows, wireShare } from './ui.js';
 
-const $ = (s, r = document) => r.querySelector(s);
-const UNIT_LABEL = { g: 'g', oz: 'oz', cup: 'cup', tbsp: 'tbsp', tsp: 'tsp', ml: 'ml', egg: 'egg(s)', yolk: 'yolk(s)', stick: 'stick(s)', packet: 'packet(s)', cake: 'cake(s)',
-  'cup-whole-wheat': 'cup (whole wheat)', 'tsp-diamond': 'tsp (Diamond kosher)', 'tsp-morton': 'tsp (Morton kosher)' };
-const fmt = (n) => String(Math.round(n * 10) / 10);
 const show = (id) => { for (const s of ['home', 'picker', 'calc']) $('#' + s).hidden = s !== id; closeTips(); scrollTo({ top: 0 }); };
 const wide = () => matchMedia('(min-width: 1024px)').matches;
 const pct = (n) => Math.round(n * 100);
@@ -51,17 +48,7 @@ for (const id of ENRICHERS) {
     <div class="tip" id="tip-${id}" role="tooltip">${text}<p class="tip-water">${water} ${f ? `About ${f}% fat.` : ''}</p></div>`;
   picks.append(item);
 }
-function closeTips(except) {
-  for (const b of document.querySelectorAll('.info[aria-expanded=true]')) if (b !== except) b.setAttribute('aria-expanded', 'false');
-}
-picks.addEventListener('click', (e) => {
-  const b = e.target.closest('.info');
-  if (!b) return;
-  const open = b.getAttribute('aria-expanded') !== 'true';
-  closeTips(b); b.setAttribute('aria-expanded', open);
-});
-document.addEventListener('click', (e) => { if (!e.target.closest('.info, .tip')) closeTips(); });
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeTips(); });
+const closeTips = initTips(picks);
 const picked = () => ENRICHERS.filter((id) => $(`.picks input[value=${id}]`).checked);
 const setPicks = (ids) => { for (const id of ENRICHERS) $(`.picks input[value=${id}]`).checked = ids.includes(id); };
 const openPicker = (keep) => { setPicks(keep ? selected : []); show('picker'); };
@@ -79,13 +66,7 @@ function buildForm(ids) {
     row.className = 'row';
     const yeastSel = id === 'yeast'
       ? `<select id="yeast-type" aria-label="Yeast type">${Object.entries(YEAST).map(([k, y]) => `<option value="${k}">${y.label}</option>`).join('')}</select>` : '';
-    row.innerHTML = `<label for="in-${id}">${ING[id].label} (g)</label>
-      <div class="inline"><input id="in-${id}" inputmode="decimal" placeholder="blank = solve it">${yeastSel}
-      <button type="button" class="conv-toggle" aria-expanded="false" aria-controls="conv-${id}">Convert</button></div>
-      <div class="convert" id="conv-${id}" hidden>
-        <input inputmode="decimal" placeholder="amount, e.g. 1 1/2" aria-label="${ING[id].label} amount">
-        <select aria-label="${ING[id].label} unit">${Object.keys(unitsFor(id)).filter((u) => u !== 'g').map((u) => `<option value="${u}">${UNIT_LABEL[u] ?? u}</option>`).join('')}</select>
-        <button type="button" class="secondary">Fill grams</button><p class="conv-msg" role="alert"></p></div>`;
+    row.innerHTML = rowHtml(id, ING[id].label, Object.keys(unitsFor(id)).filter((u) => u !== 'g'), yeastSel);
     rows.append(row);
     if (id in old) input(id).value = old[id];
     else if (id === 'flour') input(id).value = '';
@@ -95,26 +76,12 @@ function buildForm(ids) {
   for (const id of [...auto]) if (!selected.includes(id) && id !== 'hydration') auto.delete(id);
 }
 
-rows.addEventListener('input', (e) => {
-  if (e.target.id.startsWith('in-')) { auto.delete(e.target.id.slice(3)); mark(e.target.id.slice(3)); }
+wireRows(rows, {
+  toGrams,
+  onEdit: (id) => { auto.delete(id); mark(id); },
+  onFill: (id, v) => { input(id).value = v; auto.delete(id); mark(id); },
 });
 $('#in-hydration').addEventListener('input', (e) => { auto.delete('hydration'); mark('hydration'); markGuide(parseAmount(e.target.value)); });
-rows.addEventListener('click', (e) => {
-  const row = e.target.closest('.row'); if (!row) return;
-  const id = row.querySelector('input').id.slice(3);
-  if (e.target.classList.contains('conv-toggle')) {
-    const panel = $('#conv-' + id), open = panel.hidden;
-    panel.hidden = !open; e.target.setAttribute('aria-expanded', open);
-    if (open) panel.querySelector('input').focus();
-  } else if (e.target.closest('.convert') && e.target.tagName === 'BUTTON') {
-    const panel = $('#conv-' + id), msg = $('.conv-msg', panel);
-    const g = toGrams(id, panel.querySelector('input').value, panel.querySelector('select').value);
-    if (Number.isNaN(g)) { msg.textContent = 'Enter an amount like 2, 1 1/2 or ¾.'; return; }
-    msg.textContent = '';
-    input(id).value = fmt(g); auto.delete(id); mark(id); panel.hidden = true;
-    $('.conv-toggle', row).setAttribute('aria-expanded', 'false');
-  }
-});
 
 function mark(id) {
   const el = id === 'hydration' ? $('#in-hydration') : input(id);
@@ -179,11 +146,7 @@ $('#scale-form').addEventListener('submit', (e) => {
 });
 $('#scale-reset').addEventListener('click', () => { if (last) { render(last); $('#scale-msg').textContent = ''; } });
 
-$('#share').addEventListener('click', async () => {
-  const url = `${location.origin}${location.pathname}?${encodeShare(readState())}`;
-  const box = $('#share-url'); box.value = url; box.hidden = false; box.select();
-  try { await navigator.clipboard.writeText(url); $('#share').textContent = 'Copied!'; setTimeout(() => ($('#share').textContent = 'Copy share link'), 2000); } catch { /* user can copy from the box */ }
-});
+wireShare($('#share'), $('#share-url'), () => `${location.origin}${location.pathname}?${encodeShare(readState())}`);
 $('#print').addEventListener('click', () => print());
 
 // ---- navigation
