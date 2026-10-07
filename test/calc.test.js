@@ -116,7 +116,7 @@ test('known ingredients already wetter than hydration: error mentions the recomm
 });
 
 test('home page states the same recommended amounts the solver uses', () => {
-  const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+  const html = readFileSync(new URL('../bread/index.html', import.meta.url), 'utf8');
   for (const id of ['egg', 'yolk', 'butter', 'oil', 'sugar', 'honey', 'milkpowder']) {
     const card = html.match(new RegExp(`data-id="${id}"[\\s\\S]*?</article>`))[0];
     assert.match(card, new RegExp(`we use <strong>${ING[id].pct}%</strong>`), id);
@@ -134,7 +134,7 @@ test('hydration brackets: boundaries, examples, and the home page lists the same
   assert.match(bracketFor(66).breads, /French/); assert.match(bracketFor(50).breads, /brioche/i);
   assert.match([62, 58, 75].map((h) => bracketFor(h).breads).join(), /pizza/i);
   assert.deepEqual(BRACKETS.map((b) => b.range), ['Under 45%', '45-55%', '55-62%', '62-70%', '70-80%', '80-90%', '90%+']);
-  const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+  const html = readFileSync(new URL('../bread/index.html', import.meta.url), 'utf8');
   for (const b of BRACKETS) { assert.ok(html.includes(b.range), b.range); assert.ok(html.includes(b.breads), b.breads); }
 });
 

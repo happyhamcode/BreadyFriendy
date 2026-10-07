@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 const open = async (page, enrichers = []) => {
-  await page.goto('/');
+  await page.goto('/bread/');
   await page.getByRole('button', { name: 'Build my dough' }).first().click();
   for (const e of enrichers) await page.locator(`.picks input[value=${e}]`).check();
   await page.locator('#to-calc').click();
@@ -9,7 +9,7 @@ const open = async (page, enrichers = []) => {
 const val = (page, id) => page.locator(`#in-${id}`).inputValue();
 
 test('home has explanation, no sourdough, button opens picker', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/bread/');
   await expect(page.getByRole('heading', { name: 'What is hydration?' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'What is enriched dough?' })).toBeVisible();
   expect((await page.content()).toLowerCase()).not.toContain('sourdough');
@@ -52,7 +52,7 @@ test('empty form: recommended amounts, 65% hydration, 500 g flour', async ({ pag
 });
 
 test('bread examples: home list, demo slider, calculator guide and result line', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/bread/');
   for (const w of ['Brioche', 'Challah', 'Neapolitan-style pizza', 'classic French bread', 'Ciabatta', 'focaccia']) await expect(page.locator('.ranges')).toContainText(w);
   await expect(page.locator('.hero #demo-range')).toHaveCount(0);   // demo is not next to the Build button
   await page.locator('#demo-range').fill('82');
@@ -148,13 +148,13 @@ test('scale and share link round trip', async ({ page, context }) => {
   await expect(p2.locator('#calc')).toBeVisible();
   await expect(p2.locator('#hydration-line')).toContainText('65.0%');
   expect(await p2.locator('#in-egg').inputValue()).toBe('100');
-  const bad = await context.newPage(); await bad.goto('/?yt=x&h=abc&flour=1e9&egg=');
+  const bad = await context.newPage(); await bad.goto('/bread/?yt=x&h=abc&flour=1e9&egg=');
   await expect(bad.locator('#msg')).not.toHaveText('');
 });
 
 test('dark mode renders', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'dark' });
-  await page.goto('/');
+  await page.goto('/bread/');
   const bg = await page.evaluate(() => getComputedStyle(document.querySelector('.paper')).backgroundColor);
   expect(bg).toBe('rgb(20, 40, 60)');
 });
@@ -172,7 +172,7 @@ test('title link returns home from picker, calculator and privacy', async ({ pag
 });
 
 test('picker: tooltips show enricher info + water, clear and reset work', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/bread/');
   await page.getByRole('button', { name: 'Build my dough' }).first().click();
   const tip = page.locator('#tip-milk');
   await expect(tip).toBeHidden();
@@ -207,7 +207,7 @@ test('recipe shows kitchen measures as fractions, never decimals', async ({ page
 });
 
 test('hero slider updates grams', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/bread/');
   await page.locator('#demo-range').fill('80');
   await expect(page.locator('#demo-h')).toHaveText('80%'); await expect(page.locator('#demo-water')).toHaveText('400 g');
 });
@@ -216,7 +216,7 @@ for (const [name, w, h] of [['phone', 375, 700], ['small phone', 320, 640], ['ta
   test(`${name} ${w}px: every screen fits, desktop shows results beside the form`, async ({ page }) => {
     await page.setViewportSize({ width: w, height: h });
     const overflow = () => page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
-    await page.goto('/'); expect(await overflow()).toBe(false);
+    await page.goto('/bread/'); expect(await overflow()).toBe(false);
     await page.getByRole('button', { name: 'Build my dough' }).first().click(); expect(await overflow()).toBe(false);
     await page.getByRole('button', { name: 'About Whole milk' }).click(); expect(await overflow()).toBe(false);
     await page.mouse.move(0, 0); await page.keyboard.press('Escape');
@@ -231,9 +231,16 @@ for (const [name, w, h] of [['phone', 375, 700], ['small phone', 320, 640], ['ta
 
 test('explanation columns keep padding on both sides of the divider', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
-  await page.goto('/');
+  await page.goto('/bread/');
   const [a, b] = await page.locator('.explain > article').evaluateAll((els) => els.map((e) => parseFloat(getComputedStyle(e).paddingRight) + parseFloat(getComputedStyle(e).paddingLeft)));
   expect(a).toBeGreaterThanOrEqual(28); expect(b).toBeGreaterThanOrEqual(28);
   const gap = await page.locator('.explain > article').nth(1).evaluate((e) => e.querySelector('h2').getBoundingClientRect().left - e.getBoundingClientRect().left);
   expect(gap).toBeGreaterThanOrEqual(28);
+});
+
+test('old share links on / forward to /bread/ with the recipe solved', async ({ page }) => {
+  await page.goto('/?yt=instant&h=65&flour=500&water=&egg=100');
+  await expect(page).toHaveURL(/\/bread\/\?/);
+  await expect(page.locator('#hydration-line')).toContainText('65.0%');
+  expect(await page.locator('#in-egg').inputValue()).toBe('100');
 });
