@@ -3,9 +3,60 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Bread Friend</title>
-  <meta http-equiv="refresh" content="0; url=bread/">
-  <script>location.replace('bread/' + location.search + location.hash);</script>
+  <title>Bake by Math: Bread and Cake Calculators</title>
+  <meta name="description" content="Free bread and cake calculators that work in grams and baker's percentages, plus short guides on hydration, scaling, yeast and cake balance.">
+  <meta name="theme-color" content="#0e2a44">
+  <meta property="og:title" content="Bake by Math: Bread and Cake Calculators">
+  <meta property="og:description" content="Enter what you have, get every gram. Enriched dough by true hydration, cakes by baker's percentage, and the math explained.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23e39a3b'/%3E%3Cg fill='none' stroke='%230e2a44' stroke-width='2.6' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='3.6'/%3E%3Ccircle cx='21' cy='21' r='3.6'/%3E%3Cpath d='M22 8L10 24'/%3E%3C/g%3E%3C/svg%3E">
+  <link rel="preload" href="fonts/bricolage-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="style.css">
+  <script>if (location.search) location.replace('/bread/' + location.search + location.hash); // links shared before the site had a bread/cake split</script>
 </head>
-<body><p><a href="bread/">Open the bread calculator</a></p></body>
+<body>
+<header class="bar">
+  <div class="wrap bar-in">
+    <a class="brand" href="/" aria-label="Bake by Math, home"><svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#e39a3b"/><g fill="none" stroke="#0e2a44" stroke-width="2.6" stroke-linecap="round"><circle cx="11" cy="11" r="3.6"/><circle cx="21" cy="21" r="3.6"/><path d="M22 8L10 24"/></g></svg><span>Bake by Math</span></a>
+    <nav class="topnav" aria-label="Sections"><a href="/bread/">Bread</a><a href="/cake/">Cake</a><a href="/learn/">Learn</a></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="hero">
+    <h1>Bake by math</h1>
+    <p class="lead">Free bread and cake calculators. Enter what you have, get every gram, and see why the recipe works.</p>
+  </div>
+
+  <div class="enrichers two">
+    <article class="enricher" data-kind="liquid"><h2>Bread</h2>
+      <p>Enriched dough with eggs, milk, butter, sugar and more. Hydration counts the water hiding in each ingredient, so the number is the one your dough really has.</p>
+      <p><a class="cta" href="/bread/">Open the bread calculator</a></p></article>
+    <article class="enricher" data-kind="fat"><h2>Cake</h2>
+      <p>Pound, butter, sponge and chiffon, by baker's percentage. Balance checks warn you before the cake goes wrong, and pan-size scaling resizes any recipe.</p>
+      <p><a class="cta" href="/cake/">Open the cake calculator</a></p></article>
+  </div>
+
+  <ins class="ad-slot" data-slot="home-top" hidden></ins>
+
+  <h2 class="band">Learn the math</h2>
+  <div class="paper">
+    <ul class="learn-list">
+      <li><a href="/learn/bakers-percentage/">Baker's percentage</a><span>Why flour is always 100%, and how that makes every recipe scale.</span></li>
+      <li><a href="/learn/true-hydration/">True hydration</a><span>Why milk, eggs and butter count as water.</span></li>
+      <li><a href="/learn/designing-a-recipe/">Designing a recipe</a><span>Pick a target, choose enrichers, let the blanks fill in.</span></li>
+      <li><a href="/learn/scaling/">Scaling</a><span>By total weight, by loaves, and by pan size.</span></li>
+      <li><a href="/learn/yeast-conversion/">Yeast conversion</a><span>Instant, active dry and fresh, and how to swap them.</span></li>
+      <li><a href="/learn/sugar-fat-and-yeast/">Sugar, fat and yeast</a><span>What each does to the rise and the crumb.</span></li>
+      <li><a href="/learn/measuring/">Measuring</a><span>Why grams beat cups, and how the Convert tool works.</span></li>
+      <li><a href="/learn/cake-balance/">Cake balance</a><span>The ratio rules, and what breaks when they drift.</span></li>
+    </ul>
+  </div>
+</main>
+
+<footer class="wrap foot">
+  <p>Bake by Math is a free tool. Water and fat figures come from USDA FoodData Central; measures from King Arthur's ingredient weight chart. Brands vary.</p>
+  <p><a href="/privacy.html">Privacy</a></p>
+</footer>
+</body>
 </html>

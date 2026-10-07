@@ -1,4 +1,4 @@
-// Bread Friend calculation core. Pure functions, no DOM.
+// Bread calculation core. Pure functions, no DOM.
 // Hydration = true water (plain water + water inside enrichers) / flour.
 // Inputs use grams; null/undefined = blank (to be solved), NaN = unparseable text.
 import * as core from './core.js';

@@ -1,4 +1,4 @@
-# Bread Friend
+# Bake by Math
 
 Enriched yeast dough calculator using true hydration (water inside milk, eggs, butter, cream, honey and so on counts toward hydration). Static site: no build step, no runtime dependencies.
 

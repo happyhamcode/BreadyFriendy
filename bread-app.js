@@ -151,11 +151,6 @@ $('#print').addEventListener('click', () => print());
 
 // ---- navigation
 for (const b of document.querySelectorAll('[data-open-picker]')) b.addEventListener('click', () => openPicker(false));
-$('#home-link').addEventListener('click', (e) => {
-  e.preventDefault();
-  if (location.search) history.replaceState(null, '', location.pathname);
-  show('home');
-});
 $('#clear-picks').addEventListener('click', () => setPicks([]));
 $('[data-go-home]').addEventListener('click', () => show('home'));
 $('#to-calc').addEventListener('click', () => { buildForm([...BASE.slice(0, 2), ...picked(), ...BASE.slice(2)]); setPicks([]); show('calc'); input('flour').focus(); });

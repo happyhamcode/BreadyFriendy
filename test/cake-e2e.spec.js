@@ -144,7 +144,7 @@ test('share link round trip, tampered link, and brand link goes up to the site h
   await expect(bad.locator('#msg')).not.toHaveText('');
   const junk = await context.newPage(); await junk.goto('/cake/?t=zzz&flour=5');
   await expect(junk.locator('#home')).toBeVisible();
-  await expect(page.locator('.brand')).toHaveAttribute('href', '../');
+  await expect(page.locator('.brand')).toHaveAttribute('href', '/');
 });
 
 test('dark mode renders', async ({ page }) => {

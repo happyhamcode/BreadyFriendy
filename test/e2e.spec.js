@@ -159,16 +159,15 @@ test('dark mode renders', async ({ page }) => {
   expect(bg).toBe('rgb(20, 40, 60)');
 });
 
-test('title link returns home from picker, calculator and privacy', async ({ page }) => {
+test('brand link goes to the site home from calculator and privacy; nav marks the current section', async ({ page }) => {
   await open(page, ['egg']);
   await expect(page.locator('#calc')).toBeVisible();
-  await page.locator('#home-link').click();
-  await expect(page.locator('#home')).toBeVisible(); await expect(page.locator('#calc')).toBeHidden();
-  await page.getByRole('button', { name: 'Build my dough' }).first().click();
-  await expect(page.locator('#picker')).toBeVisible();
-  await page.locator('#home-link').click(); await expect(page.locator('#home')).toBeVisible();
+  await expect(page.locator('.topnav a[aria-current=page]')).toHaveText('Bread');
+  await page.locator('.brand').click();
+  await expect(page).toHaveURL(/localhost:4173\/$/);
+  await expect(page.getByRole('heading', { name: 'Bake by math', level: 1 })).toBeVisible();
   await page.goto('/privacy.html'); await page.locator('.brand').click();
-  await expect(page).toHaveURL(/\/$/);
+  await expect(page).toHaveURL(/localhost:4173\/$/);
 });
 
 test('picker: tooltips show enricher info + water, clear and reset work', async ({ page }) => {
@@ -191,7 +190,7 @@ test('picker: tooltips show enricher info + water, clear and reset work', async 
   await expect(page.locator('.picks input:checked')).toHaveCount(0);        // reset after Open calculator
   await page.locator('#change-enrichers').click();                          // but Change enrichers shows the active set
   await expect(page.locator('.picks input[value=egg]')).toBeChecked();
-  await page.locator('#home-link').click();
+  await page.locator('[data-go-home]').click();
   await page.getByRole('button', { name: 'Build my dough' }).first().click(); // fresh start from home
   await expect(page.locator('.picks input:checked')).toHaveCount(0);
 });
@@ -243,4 +242,19 @@ test('old share links on / forward to /bread/ with the recipe solved', async ({ 
   await expect(page).toHaveURL(/\/bread\/\?/);
   await expect(page.locator('#hydration-line')).toContainText('65.0%');
   expect(await page.locator('#in-egg').inputValue()).toBe('100');
+});
+
+test('site home links to bread, cake and every learn page; learn pages render and link back', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('.enricher a.cta')).toHaveCount(2);
+  const links = await page.locator('.learn-list a').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
+  expect(links).toHaveLength(8);
+  for (const href of links) {
+    const r = await page.goto(href); expect(r.status(), href).toBe(200);
+    await expect(page.locator('h1')).toHaveCount(1);
+    await expect(page.locator('.topnav a[aria-current=page]')).toHaveText('Learn');
+    expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), href).toBe(false);
+  }
+  await page.goto('/learn/'); await page.locator('.learn-list a').first().click(); await expect(page).toHaveURL(/learn\/bakers-percentage\//);
+  await page.locator('.try-link a').first().click(); await expect(page.locator('#hydration-line')).toContainText('65.0%');
 });

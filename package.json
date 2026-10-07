@@ -1,9 +1,9 @@
 {
-  "name": "bread-friend",
+  "name": "bake-by-math",
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test test/calc.test.js test/cake.test.js",
+    "test": "node --test test/calc.test.js test/cake.test.js test/learn.test.js",
     "e2e": "playwright test"
   },
   "devDependencies": {
