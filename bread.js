@@ -8,6 +8,7 @@ export { parseAmount, toFraction, MAX_GRAMS } from './core.js';
 export const DEFAULT_FLOUR = 500;
 export const DEFAULT_HYDRATION = 65; // percent, used when water is left blank and no hydration is given
 export const HYDRATION_TOLERANCE = 0.5; // percentage points
+const SUGAR_YEAST_LIMIT = 10.5; // % of flour: King Arthur's 1 tbsp sugar (12.4 g) per cup flour (120 g) is 10.3%
 
 const SALT_UNITS = core.SALT_UNITS;
 const YEAST_UNITS = { tsp: 3, tbsp: 9, packet: 7, cake: 17 };
@@ -158,7 +159,7 @@ export function solve(input) {
   if (pct('salt') < 1.5 || pct('salt') > 3) warnings.push(`Salt is ${pct('salt').toFixed(1)}% of flour; 1.5-3% is typical.`);
   if (pct('yeast') === 0) warnings.push('No yeast: the dough will not rise.');
   else if (pct('yeast') > 3 * YEAST[yt].pct) warnings.push(`Yeast is ${pct('yeast').toFixed(1)}% of flour, over 3x the usual amount for ${YEAST[yt].label.toLowerCase()}.`);
-  if (pct('sugar') + pct('honey') > 25) warnings.push('Over 25% sugar slows regular yeast; consider osmotolerant (SAF Gold) yeast.');
+  if (pct('sugar') + pct('honey') > SUGAR_YEAST_LIMIT) warnings.push(`Over about 10% sugar slows regular yeast; consider osmotolerant (SAF Gold) yeast. King Arthur suggests it at 1 tbsp of sugar per cup of flour.`);
   if (fat > 60) warnings.push(`Fat is about ${fat.toFixed(0)}% of flour; very rich doughs need long mixing and gentle handling.`);
   if (hydrationDefaulted) warnings.push(`No hydration entered, so I used the recommended ${DEFAULT_HYDRATION}%.`);
   if (flourDefaulted) warnings.push(`No flour entered, so I used ${DEFAULT_FLOUR} g. Change it and press Enter to rescale.`);

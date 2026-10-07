@@ -52,8 +52,8 @@ Checked 2026-10-07 unless noted:
 
 NOT verified against a published source:
 - **Cake type recommended %** for butter, sponge and chiffon, the per-type fat ranges, baking powder ranges, the soda limit (1.5%), sponge egg minimum (120%). They are typical-recipe figures I chose. Pound cake 1:1:1:1 is classic. The high-ratio rule (sugar at least equal to flour, liquid at least equal to sugar) comes from a Baking Sense article, read through a search summary. A separate fetch summary of that article listed odd figures (fat 112% in a pound cake), so I did not rely on it further.
-- **Yeast ratio:** the calculator uses instant : active dry : fresh = 1 : 1.3 : 3. Red Star says instant and active dry are interchangeable one for one, and fresh is 0.4x active or 0.33x instant (read through a search summary, not the page). The learn page states both and flags the difference (about 1.5 g in 500 g flour). Owner decision: keep 1.3 or switch to 1.
-- **Sugar warning:** King Arthur recommends osmotolerant yeast at 1 tbsp sugar per cup of flour (about 10%). The calculator warns only above 25% and the recommended sugar is 10%. The learn page states both. Owner decision: lower the warning threshold?
+- **Yeast ratio (owner chose to keep it):** the calculator uses instant : active dry : fresh = 1 : 1.3 : 3. Red Star says instant and active dry are interchangeable one for one, and fresh is 0.4x active or 0.33x instant (read through a search summary, not the page). The learn page states both and flags the difference (about 1.5 g in 500 g flour).
+- **Sugar warning:** lowered by the owner (2026-10-07) from 25% to about 10.5% of flour (sugar + honey), matching King Arthur's 1 tbsp sugar per cup of flour (10.3%). The recommended sugar is 10%, so defaults stay quiet, but sugar + honey defaults (17%) warn. Yeast ratio 1 : 1.3 : 3 kept by the owner; Red Star's 1:1 is stated on the learn page.
 - Learn-page text on butter timing, typical butter 8-15% and 25-50%, and baking powder 1-1.5 tsp per cup is common knowledge, not cited.
 - Hydration bracket examples (bread) are unchanged and still unchecked.
 

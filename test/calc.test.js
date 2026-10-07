@@ -244,6 +244,8 @@ test('warnings fire', () => {
   assert.match(w({ flour: 500, water: 300, salt: 10, yeast: 0 }), /No yeast/);
   assert.match(w({ flour: 500, water: 300, salt: 10, yeast: 20 }), /3x/);
   assert.match(w({ flour: 500, water: 300, salt: 10, yeast: 5, sugar: 150 }), /osmotolerant/);
+  assert.match(w({ flour: 500, water: 300, salt: 10, yeast: 5, sugar: 53 }), /osmotolerant/); // 10.6%
+  assert.doesNotMatch(w({ flour: 500, water: 300, salt: 10, yeast: 5, sugar: 51, honey: 0 }), /osmotolerant/); // 10.2%
   assert.match(w({ flour: 500, water: 300, salt: 10, yeast: 5, butter: 400 }), /Fat/);
   assert.equal(w({ flour: 500, water: 300, salt: 10, yeast: 5 }), '');
 });
