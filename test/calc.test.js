@@ -85,7 +85,7 @@ test('every recommended amount, with no hydration entered', () => {
 });
 
 test('recommended yeast follows the yeast type', () => {
-  for (const [yt, p] of [['instant', 2], ['active', 2.6], ['fresh', 6]]) near(get(ok(solve({ amounts: { flour: 1000 }, hydration: 65, yeastType: yt })), 'yeast').grams, p * 10);
+  for (const [yt, p] of [['instant', 2], ['active', 2.5], ['fresh', 6]]) near(get(ok(solve({ amounts: { flour: 1000 }, hydration: 65, yeastType: yt })), 'yeast').grams, p * 10);
 });
 
 test('water given + hydration given: blank liquid enrichers split the missing water equally', () => {
@@ -169,10 +169,10 @@ test('hydration too low for defaults when solving flour', () => {
 });
 
 test('yeast types: defaults and equivalents', () => {
-  for (const [yt, pct] of [['instant', 2], ['active', 2.6], ['fresh', 6]]) {
+  for (const [yt, pct] of [['instant', 2], ['active', 2.5], ['fresh', 6]]) {
     const r = ok(solve({ amounts: { flour: 1000, water: 650, salt: 20, yeast: null }, hydration: null, yeastType: yt }));
     near(get(r, 'yeast').grams, pct * 10);
-    near(r.yeastEquivalents.instant, 20); near(r.yeastEquivalents.active, 26); near(r.yeastEquivalents.fresh, 60);
+    near(r.yeastEquivalents.instant, 20); near(r.yeastEquivalents.active, 25); near(r.yeastEquivalents.fresh, 60);
   }
   bad(solve({ amounts: { flour: 500 }, hydration: 65, yeastType: 'sourdough' }), 'yeastType');
 });

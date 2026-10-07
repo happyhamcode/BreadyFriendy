@@ -41,7 +41,7 @@ export const isLiquid = (id) => !!ING[id].liquid;
 // pct = default % of flour; water = water fraction (fresh yeast is ~70% water); toInstant = multiplier to instant-yeast grams
 export const YEAST = {
   instant: { label: 'Instant', pct: 2,   water: 0,    toInstant: 1 },
-  active:  { label: 'Active dry', pct: 2.6, water: 0,  toInstant: 1 / 1.3 },
+  active:  { label: 'Active dry', pct: 2.5, water: 0,  toInstant: 1 / 1.25 },
   fresh:   { label: 'Fresh (cake)', pct: 6, water: 0.7, toInstant: 1 / 3 },
 };
 

@@ -55,7 +55,7 @@ test('learn pages quote the same numbers the solvers produce', () => {
   assert.equal(Math.round(c.total), 998);
   assert.equal((1800 / c.total).toFixed(2), '1.80');
   assert.equal(((9 / 8) ** 2).toFixed(2), '1.27'); assert.equal((117 / 64).toFixed(2), '1.83');
-  assert.equal([YEAST.instant, YEAST.active, YEAST.fresh].map((y) => y.pct * 5).join(), '10,13,30');
+  assert.equal([YEAST.instant, YEAST.active, YEAST.fresh].map((y) => y.pct * 5).join(), '10,12.5,30');
   assert.equal((355 / 480 * 100).toFixed(0), '74'); assert.equal((355 / 548 * 100).toFixed(0), '65');
-  const y = html('learn/yeast-conversion/index.html'); assert.match(y, /10 g instant yeast \(2%\), 13 g active dry \(2\.6%\) or 30 g fresh \(6%\)/);
+  const y = html('learn/yeast-conversion/index.html'); assert.match(y, /10 g instant yeast \(2%\), 12\.5 g active dry \(2\.5%\) or 30 g fresh \(6%\)/);
 });
