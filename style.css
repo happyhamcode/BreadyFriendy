@@ -267,3 +267,11 @@ a.cta, .paper a.cta { display: inline-block; color: #1d1303; text-decoration: no
 .prose .try-link { display: flex; flex-wrap: wrap; gap: 10px; margin: 26px 0 0; }
 .prose ul, .prose ol { padding-left: 22px; }
 .prose li { margin-bottom: 6px; max-width: 68ch; }
+.brand span { white-space: nowrap; }
+.bar-in { flex-wrap: wrap; }
+.learn-list li { align-content: start; }
+@media (min-width: 640px) { .enrichers.two { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 420px) {
+  .brand { font-size: 1.1rem; gap: 8px; } .brand svg { width: 28px; height: 28px; }
+  .topnav { gap: 10px; } .topnav a { font-size: .92rem; }
+}

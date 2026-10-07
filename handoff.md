@@ -1,84 +1,66 @@
-# Handoff: Bread Friend to "Bake by Math"
-
-Written for the next session (Opus). Read "Start here", then the sections you need.
+# Handoff: Bake by Math (bread + cake + learn)
 
 ## Start here
 
-1. `cd /home/happyham/c0d3/breadyfrendy && git status && npm test` (expect 38 passing; `npm run e2e` has 22).
-2. Read `calc.js` top to bottom (about 350 lines). It is the whole brain of the bread calculator.
-3. The owner approved the bread calculator on 2026-10-06 ("looks solid"). Stage 2 (cake calculator and rebrand) can start. Ask the 4 open decisions below first.
-4. Work on a branch. Pushing `main` deploys to production.
+1. `cd /home/happyham/c0d3/breadyfrendy && git status && npm test` (expect 55 passing; `npm run e2e` has 42).
+2. Stage 2 is built on branch `bake-by-math`: rebrand, `/cake/`, `/learn/` (8 pages), combined home. It is NOT on `main` until the owner approves. Pushing `main` deploys to production.
+3. Read "Unverified or judgment calls" below before telling anyone the cake or learn content is verified.
+4. Next owner-facing step: review the preview deploy, then fast-forward `main`.
 
 ## What this is
 
-A free, static website (no build step, no runtime dependencies) for calculating enriched yeast dough by true hydration. Goal: ad revenue. It is live at https://bready-friendy.vercel.app/.
-
-Next stage: rebrand to **Bake by Math**, one site with an all-in-one **bread and cake** calculator, plus teaching content on how to design, scale and understand baking math.
+A free static site (no build step, no runtime dependencies) at https://bready-friendy.vercel.app/ (URL unchanged; renames deferred). Goal: ad revenue. Calculators work in grams and baker's percentages; teaching pages explain the math.
 
 Hard product rules from the owner:
-- No wild-yeast / fermented-starter breads, ever. A test fails if the forbidden words appear in any root file (see `test/calc.test.js`, last test). Do not write those words in root `.md`, `.html`, `.js`, `.css` or `.json` files, including this one.
-- Enriched dough is the focus. Home page order: explain hydration and enriched dough, then what each enricher does, then a button into the calculator.
-- Calculator flow: flour, water, yeast and salt are always on. Pick enrichers. Enter grams (or convert from cups and so on). Press Enter and the blanks fill in, or a clear error appears.
-- "Test it into the ground": every scenario should work or produce a clear error.
-- Must work on phone, tablet and desktop.
+- No wild-yeast / fermented-starter breads, ever. `test/calc.test.js` (last test) scans every `.html/.js/.css/.md/.json` outside `node_modules`, `test`, `test-results`, `.git`. Do not write those words anywhere in the repo, including here.
+- Enriched dough is the bread focus. Calculator flow: base ingredients always on, pick extras, enter grams (or Convert), press Enter, blanks fill or a clear error shows.
+- Every scenario works or gives a clear error. Works on phone, tablet and desktop.
 
-## Current state (main at 9529688, deployed)
-
-| Area | Status |
-|---|---|
-| Bread calculator | Done, live and approved by the owner. |
-| Tests | 38 unit (`npm test`), 22 browser (`npm run e2e`), all passing |
-| Design | Blueprint navy graph-paper background, white "paper" sheets, amber accent, Bricolage Grotesque headings (self-hosted) |
-| Ads | Empty hidden slots (`ins.ad-slot[hidden]`), privacy page, SEO meta tags. No publisher ID yet. |
-| Cake calculator | Not started. Only scoped in conversation (see below). |
-| Rebrand | Not started. Name still "Bread Friend". |
-
-### Files
+## Layout
 
 ```
-index.html          home + picker + calculator markup (one page, three views)
-style.css           one stylesheet; tokens on :root, dark mode via prefers-color-scheme
-calc.js             PURE logic, no DOM: ingredient table, solver, units, fractions, brackets, share links
-app.js              DOM layer only: views, form, tooltips, results, scale, share
-privacy.html        needed for ad approval
-fonts/              Bricolage Grotesque latin subset (woff2)
-test/calc.test.js   node:test unit tests
-test/e2e.spec.js    Playwright tests (5 viewport sizes, dark mode, flows)
-playwright.config.js, package.json (type: module; only devDependency is @playwright/test)
+index.html            site home: Bread / Cake cards + Learn list. A script forwards old /?yt=... share links to /bread/
+bread/index.html      bread home + picker + calculator (the old index.html)
+cake/index.html       cake home (4 types, ingredient cards) + picker + calculator
+learn/index.html, learn/<slug>/index.html   8 pages. Generated once from a script; edit the HTML directly now
+core.js               shared pure helpers: parseAmount, toGrams/unitsFor/friendly (take an ingredient table), toFraction, checkAmounts, fail, MAX_GRAMS
+bread.js              bread ING table, solve (true hydration), brackets, yeast, scale, share links
+cake.js               CAKE_ING, CAKE_TYPES, solveCake, panArea, scaleCake, share links
+ui.js                 DOM helpers shared by both apps: tooltips, row + Convert widget, share button
+bread-app.js, cake-app.js   DOM layers
+style.css             one stylesheet, tokens on :root, dark mode via prefers-color-scheme
+privacy.html          needed for ad approval
+test/calc.test.js (bread, forbidden words), cake.test.js, learn.test.js (links, numbers), e2e.spec.js, cake-e2e.spec.js
 ```
+Logic modules never touch the DOM. Every page copy that states numbers has a sync test (bread cards, cake type cards, learn worked examples).
 
-### How the bread solver works (calc.js `solve`)
+## How the cake solver works (`cake.js` `solveCake`)
 
-Input: `{ amounts: {flour, water, salt, yeast, ...enrichers}, hydration (percent or null), yeastType }`. `null` means blank, `NaN` means unparseable text.
+Input `{ type, amounts }`, `null` = blank, `NaN` = unparseable. Everything is a % of flour.
+- Flour given: blanks get the type's recommended % of flour (`how: 'recommended'`).
+- Flour blank, something given: flour is solved from the first given ingredient in the order egg, butter, sugar, oil, milk, buttermilk, sour cream, water, yolk, white (`how: 'solved'`).
+- Nothing given: 250 g flour plus a notice.
+- Ingredients not used by the type error ("isn't used in ..."). Balance checks are warnings, never errors.
+- Pan scaling: factor = area ratio (round pi r^2, square s^2, rectangle w x l), same depth. `scaleCake` also takes a plain factor and adds a bake-time caveat.
 
-- **Hydration is true water:** water inside each ingredient counts (milk 88%, whole egg 76%, yolk 52%, cream 58%, butter 16%, honey 17%, milk powder 3%, fresh yeast 70%) divided by flour weight.
-- **Validation first:** finite, at least 0, at most 50 kg; flour above 0; hydration 1 to 150.
-- **Recommended amounts for blanks** (the home page states the same numbers; a test keeps them in sync):
-  - egg 15%, yolk 10%, butter 12%, oil 7%, sugar 10%, honey 7%, milk powder 4%, salt 2% of flour
-  - yeast 1% instant, 1.3% active dry, 3% fresh
-  - milk supplies half of the total water, cream a quarter
-  - blank water with no hydration given uses 65%
-  - blank flour with a hydration or blank water uses 500 g
-- **Hydration given, water blank:** enrichers take recommended amounts, water makes up the remainder. If recommended liquids hold more water than the hydration allows, they are scaled down and a warning is shown. If the fixed amounts already exceed it, error.
-- **Hydration given, water given:** blank liquid enrichers (egg, yolk, milk, cream) split the missing water in equal grams. If nothing is blank and the numbers disagree with the hydration by more than 0.5 points, error with the actual and requested values.
-- **Hydration blank, water given:** blanks get recommended amounts, the true hydration is reported.
-- **All liquids known and flour blank with a hydration:** flour is solved algebraically.
-- Each recipe row carries `how: 'recommended' | 'solved' | null`. The UI labels rows "(recommended)" or "(calculated)". Fields filled by the solver are tracked as "auto" in `app.js` and count as blank again on the next Enter, so editing flour and pressing Enter rescales everything.
-- Warnings (non-blocking): hydration under 50 or over 85, salt outside 1.5 to 3%, no yeast, yeast over 3x normal, sugar over 25%, fat over 60%.
+## Unverified or judgment calls (tell the owner)
 
-Other exports: `parseAmount` (accepts `1 1/2`, `¾`, `.5`; rejects `2/0`, `1,5`, `1e3`), `toGrams`, `unitsFor`, `friendly` and `toFraction` (kitchen measures as fractions, never decimals), `scale`, `encodeShare`/`decodeShare` (share link, tamper-safe because values go back through `solve`), `BRACKETS`/`bracketFor` (hydration ranges with example breads).
+Checked 2026-10-07 unless noted:
+- Composition (water, fat) for egg white, buttermilk (lowfat), sour cream, cocoa, canola oil, vanilla, cake flour: USDA SR Legacy bulk CSV (the shared `DEMO_KEY` API was rate-limited for ~10 h; the CSV download needs no key: `https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_sr_legacy_food_csv_2018-04.zip`). Egg white large = 33 g (USDA).
+- Dry measures (baking powder 4 g/tsp, soda 6 g/tsp, cocoa 84 g/cup, vanilla 14 g/tbsp) are King Arthur. USDA differs (4.6, 4.6, 86, 4.2 g). Cake flour is 120 g/cup in King Arthur and 137 in USDA; the cake calculator has no separate cake-flour unit.
+- Liquid cups use real density (buttermilk 245, sour cream 230 from USDA), not King Arthur's 227.
 
-### Data sources and what is NOT verified
+NOT verified against a published source:
+- **Cake type recommended %** for butter, sponge and chiffon, the per-type fat ranges, baking powder ranges, the soda limit (1.5%), sponge egg minimum (120%). They are typical-recipe figures I chose. Pound cake 1:1:1:1 is classic. The high-ratio rule (sugar at least equal to flour, liquid at least equal to sugar) comes from a Baking Sense article, read through a search summary. A separate fetch summary of that article listed odd figures (fat 112% in a pound cake), so I did not rely on it further.
+- **Yeast ratio:** the calculator uses instant : active dry : fresh = 1 : 1.3 : 3. Red Star says instant and active dry are interchangeable one for one, and fresh is 0.4x active or 0.33x instant (read through a search summary, not the page). The learn page states both and flags the difference (about 1.5 g in 500 g flour). Owner decision: keep 1.3 or switch to 1.
+- **Sugar warning:** King Arthur recommends osmotolerant yeast at 1 tbsp sugar per cup of flour (about 10%). The calculator warns only above 25% and the recommended sugar is 10%. The learn page states both. Owner decision: lower the warning threshold?
+- Learn-page text on butter timing, typical butter 8-15% and 25-50%, and baking powder 1-1.5 tsp per cup is common knowledge, not cited.
+- Hydration bracket examples (bread) are unchanged and still unchecked.
 
-Verified on 2026-10-06:
-- Water and fat fractions: USDA FoodData Central API (SR Legacy ids 171287 egg, 172184 yolk, 173410 butter, 169640 honey, 170877 milk powder, 170859 cream, 172217 milk).
-- Dry cups, egg, salt and yeast weights: King Arthur ingredient weight chart (https://www.kingarthurbaking.com/learn/ingredient-weight-chart). All-purpose and bread flour 120 g/cup, whole wheat 113, sugar 198, butter 113 g per 8 tbsp, honey 21 g/tbsp, milk powder 28 g per quarter cup, table salt 18 g/tbsp, Diamond kosher 8, Morton kosher 16, instant yeast 9 g/tbsp, large egg 50 g (also USDA). Large yolk 17 g is from USDA (FDC 172184); King Arthur's chart says 14 g and was not used.
+## Rebrand state
 
-Deliberate choices:
-- Liquid cups (water 237, milk 244, cream 238, oil 218) use real density, not King Arthur's "8 oz = 227 g" convention, so a baker using a measuring cup gets the right weight.
-- Yolk is 17 g (USDA FoodData Central, FDC 172184, "large"). The owner chose USDA over King Arthur's 14 g on 2026-10-06.
-
-Not checked against a source (from memory or convention): cake (fresh) yeast 17 g, cream cup 238 g, butter tablespoon 14.2 g, active-dry and fresh yeast conversion ratios (1.3x and 3x), every "typical %" range on the enricher cards, the hydration bracket examples. Treat these as claims to verify before the owner relies on them for ad-supported educational content.
+Done: name, title and meta, new inline `%` mark (amber square, navy), nav (Bread, Cake, Learn), footer, privacy page, README, package name. The mark is simple on purpose; swap the inline SVG in each page header and the data-URI favicon if the owner supplies a logo (grep `stroke-width="2.6"`).
+Deferred by the owner: renaming the Vercel project, GitHub repo or domain. Old bread share links on `/` still work through the forwarder.
 
 ## Deploy facts
 
@@ -117,66 +99,11 @@ Shell gotchas seen this session:
 
 - Output style: ADHD-friendly. Lead with the next action, numbered steps, one concrete next action at the end, no preamble or recap, errors stated as cause and fix.
 - Verify claims. The owner asked for figures to be validated against real sources and was right: several numbers were wrong. Say what was and was not checked.
-- Second opinion: send each diff to the local model (`qwen3-coder:30b` at `https://ollama.thehappyham.net/api/generate`, `stream: false`; first call after idle takes about 110 s) and reconcile findings. It found nothing real on `calc.js`; use it as a cheap sanity check, not an authority.
+- Second opinion: send each diff to the local model (`qwen3-coder:30b` at `https://ollama.thehappyham.net/api/generate`, `stream: false`; first call after idle takes about 110 s) and reconcile findings. It found nothing real on `calc.js` or `cake.js` (it misread algebra and missed existing guards); use it as a cheap sanity check, not an authority.
 - Ponytail mode is on: smallest working change, one runnable check per non-trivial logic path.
 - The owner iterates by looking at the live site on devices. Screenshot at 390, 820 and 1360 px before declaring UI work done.
 
-## Stage 2: "Bake by Math" (not started)
-
-### Open decisions to ask the owner first (one question, short)
-
-1. Cake types for v1: pound, butter, sponge, chiffon, or all four?
-2. Structure: separate pages under one site (`/bread/`, `/cake/`, `/learn/`), or a toggle on one page? Recommendation: separate pages, shared design, so each page can rank in search and carry its own ad slots.
-3. Domain and repo/Vercel renames.
-4. Logo and mark. The current loaf-in-a-square is a placeholder.
-
-### Recommended architecture (keep it vanilla, no build step)
-
-Split `calc.js` into modules (ES modules already work):
-- `core.js`: `parseAmount`, `toGrams`, `unitsFor`, `friendly`, `toFraction`, `encodeShare`/`decodeShare`, `scale`, validation helpers, the ingredient composition table (`ING`).
-- `bread.js`: current solver, brackets, yeast.
-- `cake.js`: new solver and balance checks.
-- Shared UI pieces in `app.js` or small modules: ingredient rows, convert widget, results table, tooltips, scale box, share link, guide list.
-- Keep the rule that logic modules never touch the DOM. Keep tests exhaustive: every new rule gets a unit test and a browser test.
-- Extend the "recommended values when blank" pattern per domain, and keep a test that the page copy and the solver state identical numbers.
-- Extend the forbidden-words guard test to scan any new directories (it currently reads only files in the repo root).
-
-### Cake calculator: design notes
-
-Cakes are not driven by hydration. They are driven by ratios against flour (baker's percentage, flour = 100%) and by balance. Reuse the same flow: pick ingredients, enter grams or convert, press Enter, blanks filled with recommended values, errors where invalid.
-
-Established reference points (verify each against a cited source before publishing; mark confidence in the UI copy):
-- Pound cake is classically 1:1:1:1 by weight: flour, butter, sugar, eggs. Modern recipes drift from that.
-- "High-ratio" cake guidance (Cake Bible tradition): sugar at or above flour weight, liquid (eggs plus milk and so on) at or above sugar weight, fat roughly 40 to 60% of flour. Check exact numbers before encoding.
-- Cake flour is lower protein than all-purpose (about 7 to 9% versus 10 to 12%); swapping changes tenderness.
-- Leavening is about 1 to 1.5 tsp baking powder per cup of flour (convert to grams with `unitsFor`), baking soda only with an acid. Baking powder and soda need new rows in the ingredient table with gram weights per teaspoon from a source.
-- Eggs: 50 g large, 76% water, so they count as liquid and structure. Butter is about 16% water, 81% fat. Whole milk 88% water. Reuse the existing composition table; add cocoa, cake flour, buttermilk, oil, sour cream, baking powder, baking soda, vanilla only with sourced figures.
-- Balance checks to implement as warnings and errors: sugar versus flour, liquid versus sugar, fat percentage range, leavening range, egg-to-flour ratio, total liquid.
-- Pan scaling: batter volume scales with pan area. Round pan area is pi times radius squared, so 8 inch to 9 inch is a factor of (9/8)^2, about 1.27. Square pans use side squared. Offer "convert this recipe to a different pan" as a feature. Bake time and temperature change; state that rule of thumb as approximate.
-- Reuse `scale` for plain multipliers; add a pan-based scaler on top.
-
-### Learn section: content seeds for "how to use these tools to design, scale, or learn the math"
-
-Write as short, example-led pages, each ending with a link into the relevant calculator pre-filled via a share link (the share-link format is already in `encodeShare`).
-
-1. **Baker's percentage.** Everything is a percentage of flour weight, so recipes scale by multiplication. Worked example with the table the calculator already shows.
-2. **True hydration.** Why milk, eggs and butter count as partly water, with the composition table and a live slider (the home page demo is a template).
-3. **Designing a recipe.** Start from the target bracket (brioche about 45 to 55%, sandwich loaf 62 to 70%, ciabatta 80 to 90%), choose enrichers, let blanks fill with recommended values, then adjust. Teach how to read the warnings.
-4. **Scaling.** Scale factor equals target dough weight divided by current total. Salt and yeast scale linearly at home; very large batches use less yeast, which should be stated as an approximation unless sourced. Pan-area scaling for cakes. Using loaves times grams-each.
-5. **Yeast conversion.** Instant, active dry and fresh at roughly 1 : 1.3 : 3 (verify). When to use each.
-6. **Sugar, fat and yeast.** Why more than about 25% sugar slows regular yeast, why butter is added after gluten forms, what fat percentage does to crumb.
-7. **Measuring.** Why grams beat cups, with the real spread for a cup of flour, and how the Convert tool works.
-8. **Cake balance.** The ratio rules above, with the pound cake 1:1:1:1 example, and what breaks when the balance is off.
-
-Each page needs unique, accurate text. The ad program rewards original, useful content, so avoid thin pages and avoid unsourced claims; link or name sources (USDA FoodData Central, King Arthur chart, other cited references).
-
-### Rebrand checklist
-
-- Name and tagline in: `<title>`, meta description, `og:*`, favicon, the top bar (`.brand`), footer, `privacy.html`, README, `package.json` name.
-- Keep the title link returning home from every screen (`#home-link`, tested).
-- New home page for the combined site: two clear entry points (Bread, Cake), then the Learn section. The current home page content becomes `/bread/`.
-- Update `theme-color`, and decide whether the cake side gets its own accent. Keep the one-bold-moment rule: the hero demo slider is the memorable element today.
-- Redirects or keep `index.html` working so existing links do not break.
+## Stage 2 follow-ups
 
 ### Monetization to-do (owner decision, not started)
 

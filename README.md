@@ -8,7 +8,7 @@ Pick enrichers, enter what you know in grams (or convert from cups, eggs, sticks
 - Hydration entered: blank liquids split the remaining water evenly by weight. Blank flour defaults to 500 g.
 - Everything filled and hydration disagrees by more than 0.5 points: error.
 
-All math is in `calc.js` (pure functions). `app.js` is the DOM layer.
+Bread math is in `bread.js`, cake math in `cake.js`, shared helpers in `core.js` (all pure functions). `bread-app.js` and `cake-app.js` are the DOM layers, with shared pieces in `ui.js`. Pages: `/`, `/bread/`, `/cake/`, `/learn/`.
 
 ## Develop
 ```
@@ -16,4 +16,4 @@ python3 -m http.server 4173   # open http://localhost:4173
 npm test                      # unit tests (node:test)
 npm run e2e                   # browser tests (npx playwright install chromium first)
 ```
-Composition and density figures live in the `ING` table in `calc.js`.
+Composition and density figures live in the `ING` table in `bread.js` and `CAKE_ING` in `cake.js`.

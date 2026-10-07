@@ -258,3 +258,12 @@ test('site home links to bread, cake and every learn page; learn pages render an
   await page.goto('/learn/'); await page.locator('.learn-list a').first().click(); await expect(page).toHaveURL(/learn\/bakers-percentage\//);
   await page.locator('.try-link a').first().click(); await expect(page.locator('#hydration-line')).toContainText('65.0%');
 });
+
+test('site home, learn index and a learn page fit a 320px phone', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 640 });
+  for (const u of ['/', '/learn/', '/learn/measuring/', '/cake/', '/bread/']) {
+    await page.goto(u);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), u).toBe(false);
+    expect(await page.locator('.brand span').evaluate((s) => s.getBoundingClientRect().height < 30), u).toBe(true); // brand stays on one line
+  }
+});
