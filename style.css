@@ -237,7 +237,7 @@ tfoot th, tfoot td { font-weight: 700; border-top: 2px solid var(--ink); border-
 .rec-list { list-style: none; margin: 0 0 8px; padding: 0; display: grid; gap: 2px; font-size: .94rem; }
 .rec-list li { display: flex; justify-content: space-between; gap: 10px; border-bottom: 1px dotted var(--line); padding: 2px 0; }
 .rec-list strong { font-variant-numeric: tabular-nums; }
-.pan { border: 0; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 6px; flex: 1 1 230px; }
+.pan { border: 0; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 6px; flex: 1 1 100%; }
 .pan legend { font-weight: 650; font-size: .9rem; padding: 0; margin-bottom: 3px; }
 .pan select, .pan input { flex: 1 1 90px; width: auto; min-width: 0; }
 .picks.types { margin-bottom: 4px; }
