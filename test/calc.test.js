@@ -298,6 +298,10 @@ test('friendly uses fractions, never decimals', () => {
 });
 
 test('no sourdough anywhere in shipped files', () => {
-  const files = readdirSync(new URL('..', import.meta.url)).filter((f) => /\.(html|js|css|md|json)$/.test(f));
-  for (const f of files) assert.doesNotMatch(readFileSync(new URL(`../${f}`, import.meta.url), 'utf8'), /sourdough|levain|starter culture/i, f);
+  const walk = (dir) => readdirSync(dir, { withFileTypes: true }).flatMap((d) => (d.isDirectory()
+    ? (['node_modules', 'test-results', '.git', 'test'].includes(d.name) ? [] : walk(new URL(`${d.name}/`, dir)))
+    : /\.(html|js|css|md|json)$/.test(d.name) ? [new URL(d.name, dir)] : []));
+  const files = walk(new URL('../', import.meta.url));
+  assert.ok(files.length >= 8);
+  for (const f of files) assert.doesNotMatch(readFileSync(f, 'utf8'), /sourdough|levain|starter culture/i, f.pathname);
 });

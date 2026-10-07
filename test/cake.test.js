@@ -120,3 +120,14 @@ test('share round trip and tampering', () => {
 test('every default percent exists for every base ingredient', () => {
   for (const [t, T] of Object.entries(CAKE_TYPES)) for (const id of T.base.filter((i) => i !== 'flour')) assert.ok(defaultPct(t, id) >= 0, `${t}/${id}`);
 });
+
+test('cake page states the same recommended percentages the solver uses', async () => {
+  const { readFileSync } = await import('node:fs');
+  const html = readFileSync(new URL('../cake/index.html', import.meta.url), 'utf8');
+  for (const [t, T] of Object.entries(CAKE_TYPES)) {
+    const card = html.match(new RegExp(`data-type="${t}"[\\s\\S]*?</article>`))[0];
+    const listed = [...card.matchAll(/data-id="(\w+)">[^<]*<strong>([\d.]+)%<\/strong>/g)].map((m) => [m[1], +m[2]]);
+    assert.deepEqual(listed.map((x) => x[0]).sort(), T.base.filter((i) => i !== 'flour').sort(), t);
+    for (const [id, p] of listed) assert.equal(p, T.pct[id], `${t}/${id}`);
+  }
+});

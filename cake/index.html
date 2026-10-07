@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cake Ratio Calculator: Pound, Butter, Sponge, Chiffon | Bake by Math</title>
+  <meta name="description" content="Free cake calculator. Pick pound, butter, sponge or chiffon, enter what you have in grams or cups, and Bake by Math fills in the rest using baker's percentages, with balance checks and pan-size scaling.">
+  <meta name="theme-color" content="#0e2a44">
+  <meta property="og:title" content="Cake Ratio Calculator | Bake by Math">
+  <meta property="og:description" content="Pound, butter, sponge and chiffon cakes by baker's percentage, with balance warnings and pan-size scaling.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23e39a3b'/%3E%3Cg fill='none' stroke='%230e2a44' stroke-width='2.6' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='3.6'/%3E%3Ccircle cx='21' cy='21' r='3.6'/%3E%3Cpath d='M22 8L10 24'/%3E%3C/g%3E%3C/svg%3E">
+  <link rel="preload" href="../fonts/bricolage-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="bar">
+  <div class="wrap bar-in">
+    <a class="brand" href="../" aria-label="Bake by Math, home">
+      <svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#e39a3b"/><g fill="none" stroke="#0e2a44" stroke-width="2.6" stroke-linecap="round"><circle cx="11" cy="11" r="3.6"/><circle cx="21" cy="21" r="3.6"/><path d="M22 8L10 24"/></g></svg>
+      <span>Bake by Math</span>
+    </a>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- HOME -->
+  <section id="home">
+    <div class="hero">
+      <h1>Cake, worked out by ratio</h1>
+      <p class="lead">Pick pound, butter, sponge or chiffon, enter what you have, and get every gram. Every amount is a percentage of the flour, so a recipe scales to any pan and any size.</p>
+      <button type="button" class="cta" data-open-picker>Build my cake</button>
+    </div>
+
+    <div class="paper explain">
+      <article>
+        <h2>What is a baker's percentage?</h2>
+        <p>Every ingredient is written as a percentage of the flour's weight, so flour is always 100%. Cakes are measured in grams, because a cup of flour can vary by 30 g or more between bakers.</p>
+        <p class="note"><strong>Example:</strong> 250 g flour and 125 g butter: 125 ÷ 250 = <strong>50% butter</strong>. Double the flour and every other amount doubles with it.</p>
+        <p>That is the whole trick behind scaling, swapping and fixing recipes: change one percentage and you can see exactly what you changed.</p>
+      </article>
+      <article>
+        <h2>Why balance matters</h2>
+        <p>A cake works because a few jobs are shared out. Flour and eggs give structure. Fat and sugar make it tender. Liquid dissolves the sugar and makes steam. Baking powder or whipped eggs lift it. Too much of one and the others cannot keep up.</p>
+        <p><strong>Leave something blank</strong> and Bake by Math fills in a typical amount for the cake type you chose, listed on each card below. If the numbers drift out of balance, you get a plain warning instead of a failed cake.</p>
+        <p class="hint">These are common home-baking starting points, not laws. Change them to suit your recipe.</p>
+      </article>
+    </div>
+
+    <ins class="ad-slot" data-slot="home-top" hidden></ins>
+
+    <h2 class="band">Four kinds of cake</h2>
+    <div class="enrichers" id="type-cards">
+      <article class="enricher" data-type="pound" data-kind="fat"><h3>Pound cake</h3>
+        <p class="blurb">Equal weights of flour, butter, sugar and eggs (1:1:1:1), the original recipe. Dense, fine and buttery, with no baking powder: creamed butter and eggs carry the rise.</p>
+        <ul class="rec-list"><li data-id="butter">Butter <strong>100%</strong></li><li data-id="sugar">Sugar <strong>100%</strong></li><li data-id="egg">Whole egg <strong>100%</strong></li><li data-id="salt">Salt <strong>1%</strong></li><li data-id="vanilla">Vanilla <strong>2%</strong></li></ul>
+        <p class="rec">Left blank, we use these percentages of flour.</p></article>
+      <article class="enricher" data-type="butter" data-kind="sweet"><h3>Butter cake</h3>
+        <p class="blurb">Creamed butter and sugar, eggs, milk and baking powder: the everyday layer, sheet or cupcake. A soft, tender crumb with a high sugar and liquid share.</p>
+        <ul class="rec-list"><li data-id="butter">Butter <strong>50%</strong></li><li data-id="sugar">Sugar <strong>110%</strong></li><li data-id="egg">Whole egg <strong>50%</strong></li><li data-id="milk">Milk <strong>70%</strong></li><li data-id="bakingpowder">Baking powder <strong>4.5%</strong></li><li data-id="salt">Salt <strong>1.5%</strong></li><li data-id="vanilla">Vanilla <strong>2%</strong></li></ul>
+        <p class="rec">Left blank, we use these percentages of flour.</p></article>
+      <article class="enricher" data-type="sponge" data-kind="liquid"><h3>Sponge (genoise)</h3>
+        <p class="blurb">Whole eggs whipped with sugar carry all the lift. Very little fat and no baking powder. Light and springy, often brushed with syrup.</p>
+        <ul class="rec-list"><li data-id="sugar">Sugar <strong>100%</strong></li><li data-id="egg">Whole egg <strong>160%</strong></li><li data-id="butter">Butter <strong>25%</strong></li><li data-id="salt">Salt <strong>0.5%</strong></li><li data-id="vanilla">Vanilla <strong>2%</strong></li></ul>
+        <p class="rec">Left blank, we use these percentages of flour.</p></article>
+      <article class="enricher" data-type="chiffon" data-kind="dry"><h3>Chiffon</h3>
+        <p class="blurb">Oil, yolks and water mixed into the flour, then folded into whipped whites, plus baking powder. Tender like a butter cake, light like a sponge, and it stays moist.</p>
+        <ul class="rec-list"><li data-id="sugar">Sugar <strong>110%</strong></li><li data-id="oil">Oil <strong>40%</strong></li><li data-id="yolk">Egg yolk <strong>45%</strong></li><li data-id="white">Egg white <strong>100%</strong></li><li data-id="water">Water <strong>65%</strong></li><li data-id="bakingpowder">Baking powder <strong>4%</strong></li><li data-id="salt">Salt <strong>1.5%</strong></li><li data-id="vanilla">Vanilla <strong>2%</strong></li></ul>
+        <p class="rec">Left blank, we use these percentages of flour.</p></article>
+    </div>
+
+    <h2 class="band">What each ingredient does</h2>
+    <div class="enrichers">
+      <article class="enricher" data-id="sugar" data-kind="sweet"><h3>Sugar</h3>
+        <p><strong>Does:</strong> sweetens, holds water so the cake stays moist, tenderizes by delaying the set of the batter, browns the crust, and helps whipped eggs keep their air.</p>
+        <p><strong>Use when:</strong> always. Most cakes have sugar at 100% of the flour or more.</p></article>
+      <article class="enricher" data-id="butter" data-kind="fat"><h3>Butter</h3>
+        <p><strong>Does:</strong> fat coats the flour proteins so the crumb is tender. Creamed with sugar, it traps air that expands in the oven. One US stick is 113 g.</p>
+        <p><strong>Use when:</strong> you want flavor and a fine crumb. Pound and butter cakes depend on it.</p></article>
+      <article class="enricher" data-id="oil" data-kind="fat"><h3>Oil</h3>
+        <p><strong>Does:</strong> pure fat, no water. It stays liquid when cold, so oil cakes stay soft from the fridge. It cannot be creamed, so the lift comes from baking powder or whipped eggs.</p>
+        <p><strong>Use when:</strong> chiffon, or when you want a moist cake that is quick to mix.</p></article>
+      <article class="enricher" data-id="egg" data-kind="liquid"><h3>Whole egg</h3>
+        <p><strong>Does:</strong> the protein sets to give structure, the yolk fat and lecithin hold the batter together, and the water makes steam. 50 g per large egg.</p>
+        <p><strong>Use when:</strong> always. Eggs are the structure of a butter cake and the lift of a sponge.</p></article>
+      <article class="enricher" data-id="yolk" data-kind="liquid"><h3>Egg yolk</h3>
+        <p><strong>Does:</strong> more fat and less water than a whole egg. Richer color, flavor and a fine crumb. 17 g per large yolk.</p>
+        <p><strong>Use when:</strong> chiffon and rich cakes.</p></article>
+      <article class="enricher" data-id="white" data-kind="liquid"><h3>Egg white</h3>
+        <p><strong>Does:</strong> almost all water and protein. Whipped, it makes a foam that lifts chiffon and angel-style cakes. 33 g per large white.</p>
+        <p><strong>Use when:</strong> you want a light, airy crumb.</p></article>
+      <article class="enricher" data-id="milk" data-kind="liquid"><h3>Milk</h3>
+        <p><strong>Does:</strong> water to dissolve the sugar and make steam, with a little fat. Milk proteins and sugar help the crust brown.</p>
+        <p><strong>Use when:</strong> butter cakes, or to loosen a stiff batter.</p></article>
+      <article class="enricher" data-id="buttermilk" data-kind="liquid"><h3>Buttermilk</h3>
+        <p><strong>Does:</strong> a tangy, acidic liquid. The acid softens the crumb and reacts with baking soda to make gas.</p>
+        <p><strong>Use when:</strong> red velvet, chocolate and any recipe that uses baking soda.</p></article>
+      <article class="enricher" data-id="sourcream" data-kind="fat"><h3>Sour cream</h3>
+        <p><strong>Does:</strong> acidic like buttermilk, with about 19% fat. A moist, tender, slightly tangy crumb.</p>
+        <p><strong>Use when:</strong> a dense, moist cake such as coffee cake or pound cake.</p></article>
+      <article class="enricher" data-id="cocoa" data-kind="dry"><h3>Cocoa (natural)</h3>
+        <p><strong>Does:</strong> adds flavor, color and about 14% fat. Natural cocoa is acidic, so it reacts with baking soda. Cocoa soaks up liquid like flour does.</p>
+        <p><strong>Use when:</strong> chocolate cakes. Dutch-processed cocoa is alkalized and not acidic, so it needs baking powder instead of soda.</p></article>
+      <article class="enricher" data-id="bakingpowder" data-kind="dry"><h3>Baking powder</h3>
+        <p><strong>Does:</strong> baking soda plus a dry acid. It releases gas when wet and again in the oven. About 1 to 1½ tsp per cup of flour is typical.</p>
+        <p><strong>Use when:</strong> butter cakes and chiffon. Old powder goes flat.</p></article>
+      <article class="enricher" data-id="bakingsoda" data-kind="dry"><h3>Baking soda</h3>
+        <p><strong>Does:</strong> makes gas only when it meets an acid such as buttermilk, sour cream or natural cocoa. Too much, or with no acid, leaves a soapy taste.</p>
+        <p><strong>Use when:</strong> your recipe already has an acid.</p></article>
+    </div>
+
+    <div class="end-cta"><button type="button" class="cta" data-open-picker>Build my cake</button></div>
+  </section>
+
+  <!-- PICKER -->
+  <section id="picker" class="stage" hidden>
+    <div class="paper">
+      <h2>Pick your cake</h2>
+      <p class="lead-dark">Choose a type. Its usual ingredients are always included. Then check any extras you want, and tap <span class="i-demo" aria-hidden="true">i</span> to see what each one does.</p>
+      <fieldset class="picks types"><legend class="sr-only">Cake type</legend></fieldset>
+      <h3>Extras</h3>
+      <fieldset class="picks extras"><legend class="sr-only">Extras</legend></fieldset>
+      <div class="actions">
+        <button type="button" class="cta" id="to-calc">Open calculator</button>
+        <button type="button" class="ghost" data-go-home>Back</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CALCULATOR -->
+  <section id="calc" class="stage" hidden>
+    <div class="paper" id="calc-form-card">
+      <h2 id="calc-title">Your cake</h2>
+      <ol class="howto">
+        <li>Enter what you know in grams. Use <strong>Convert</strong> for cups, eggs or sticks.</li>
+        <li>Leave blanks and I will use the typical amounts for this cake, worked out from your flour, or from the first ingredient you fill in.</li>
+        <li>Press <strong>Enter</strong> or Calculate.</li>
+      </ol>
+      <form id="form" novalidate autocomplete="off">
+        <div id="rows"></div>
+        <div id="msg" role="alert" aria-live="assertive"></div>
+        <div class="actions">
+          <button type="submit" class="cta">Calculate</button>
+          <button type="button" class="secondary" id="clear-auto">Clear calculated</button>
+          <button type="button" class="secondary" id="change-cake">Change cake</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="paper recipe" id="results" hidden>
+      <h2>Recipe</h2>
+      <p id="ratio-line" class="gauge"></p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Ingredient</th><th class="num">Grams</th><th class="num">Baker's %</th></tr></thead>
+          <tbody id="results-body"></tbody>
+          <tfoot><tr><th>Total batter</th><td class="num" id="total"></td><td></td></tr></tfoot>
+        </table>
+      </div>
+      <ul id="warnings" class="warnings"></ul>
+      <h3>Change the pan size</h3>
+      <form id="pan-form" class="scale" novalidate>
+        <fieldset class="pan"><legend>From pan</legend>
+          <select id="pan-from-shape" aria-label="From pan shape"><option value="round">Round</option><option value="square">Square</option><option value="rect">Rectangle</option></select>
+          <input id="pan-from-a" inputmode="decimal" aria-label="From pan diameter" placeholder="diameter">
+          <input id="pan-from-b" inputmode="decimal" aria-label="From pan length" placeholder="length" hidden></fieldset>
+        <fieldset class="pan"><legend>To pan</legend>
+          <select id="pan-to-shape" aria-label="To pan shape"><option value="round">Round</option><option value="square">Square</option><option value="rect">Rectangle</option></select>
+          <input id="pan-to-a" inputmode="decimal" aria-label="To pan diameter" placeholder="diameter">
+          <input id="pan-to-b" inputmode="decimal" aria-label="To pan length" placeholder="length" hidden></fieldset>
+        <button type="submit" class="secondary">Scale to pan</button>
+        <button type="button" class="ghost" id="scale-reset">Original</button>
+      </form>
+      <p class="hint">Use the same unit (inches or cm) for both pans. This assumes the same batter depth.</p>
+      <form id="mult-form" class="scale" novalidate>
+        <label>Or multiply everything by <input id="mult" inputmode="decimal" placeholder="e.g. 1.5 or 1/2"></label>
+        <button type="submit" class="secondary">Multiply</button>
+      </form>
+      <p id="scale-msg" class="error" role="alert"></p>
+      <div class="actions">
+        <button type="button" class="secondary" id="share">Copy share link</button>
+        <button type="button" class="secondary" id="print">Print</button>
+      </div>
+      <input id="share-url" readonly hidden aria-label="Share link">
+    </div>
+    <ins class="ad-slot" data-slot="calc-bottom" hidden></ins>
+  </section>
+</main>
+
+<footer class="wrap foot">
+  <p>Bake by Math is a free tool. Water and fat figures come from USDA FoodData Central; measures from King Arthur's ingredient weight chart. Cake ratios are common starting points, not laws. Brands vary.</p>
+  <p><a href="../privacy.html">Privacy</a></p>
+</footer>
+<script type="module" src="../cake-app.js"></script>
+</body>
+</html>
