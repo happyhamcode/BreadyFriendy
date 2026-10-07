@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
-import { solve, scale, BRACKETS, bracketFor, DEFAULT_HYDRATION, parseAmount, toGrams, unitsFor, friendly, toFraction, encodeShare, decodeShare, ING, YEAST, ENRICHERS } from '../calc.js';
+import { solve, scale, BRACKETS, bracketFor, DEFAULT_HYDRATION, parseAmount, toGrams, unitsFor, friendly, toFraction, encodeShare, decodeShare, ING, YEAST, ENRICHERS } from '../bread.js';
 
 const near = (a, b, eps = 1e-6) => assert.ok(Math.abs(a - b) <= eps, `${a} !~ ${b}`);
 const get = (r, id) => r.recipe.find((x) => x.id === id);

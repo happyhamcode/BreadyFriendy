@@ -1,12 +1,16 @@
 // Bread Friend calculation core. Pure functions, no DOM.
 // Hydration = true water (plain water + water inside enrichers) / flour.
 // Inputs use grams; null/undefined = blank (to be solved), NaN = unparseable text.
+import * as core from './core.js';
+import { MAX_GRAMS } from './core.js';
 
-const CUP_ML = 236.588;
-export const MAX_GRAMS = 50000;
+export { parseAmount, toFraction, MAX_GRAMS } from './core.js';
 export const DEFAULT_FLOUR = 500;
 export const DEFAULT_HYDRATION = 65; // percent, used when water is left blank and no hydration is given
 export const HYDRATION_TOLERANCE = 0.5; // percentage points
+
+const SALT_UNITS = { tsp: 6, tbsp: 18, 'tsp-diamond': 8 / 3, 'tsp-morton': 16 / 3 };
+const YEAST_UNITS = { tsp: 3, tbsp: 9, packet: 7, cake: 17 };
 
 // Sources: water/fat = USDA FoodData Central (SR Legacy); dry cups, eggs, salt, yeast = King Arthur ingredient weight chart;
 // liquid cups (water, milk, cream, oil) = physical density (US cup = 236.6 ml), not KA's 8 oz = 227 g convention.
@@ -15,19 +19,19 @@ export const HYDRATION_TOLERANCE = 0.5; // percentage points
 // water = water fraction, fat = fat fraction, cup = grams per US cup (tbsp = /16, tsp = /48, ml = cup/CUP_ML)
 // count = grams per natural unit (egg, yolk, stick...). pct = default baker's % when left blank.
 export const ING = {
-  flour:     { label: 'Flour',       water: 0,    fat: 0,    cup: 120, count: null },
+  flour:     { label: 'Flour',       water: 0,    fat: 0,    cup: 120, extraCups: { 'cup-whole-wheat': 113 } },
   water:     { label: 'Water',       water: 1,    fat: 0,    cup: 237, liquid: true },
   egg:       { label: 'Whole egg',   water: 0.76, fat: 0.10, liquid: true, pct: 15, count: { unit: 'egg', g: 50 } },
   yolk:      { label: 'Egg yolk',    water: 0.52, fat: 0.27, liquid: true, pct: 10, count: { unit: 'yolk', g: 17 } },
   milk:      { label: 'Whole milk',  water: 0.88, fat: 0.033, cup: 244, liquid: true, share: 0.5 },
   cream:     { label: 'Heavy cream', water: 0.58, fat: 0.36, cup: 238, liquid: true, share: 0.25 },
-  butter:    { label: 'Butter',      water: 0.16, fat: 0.82, cup: 227, pct: 12, count: { unit: 'stick', g: 113 } },
+  butter:    { label: 'Butter',      water: 0.16, fat: 0.82, cup: 227, pct: 12, count: { unit: 'stick', g: 113 }, stick: true },
   oil:       { label: 'Oil',         water: 0,    fat: 1,    cup: 218, pct: 7 },
   sugar:     { label: 'Sugar',       water: 0,    fat: 0,    cup: 198, pct: 10 },
   honey:     { label: 'Honey',       water: 0.17, fat: 0,    cup: 340, pct: 7 },
   milkpowder:{ label: 'Milk powder', water: 0.03, fat: 0.01, cup: 112, pct: 4 },
-  salt:      { label: 'Salt',        water: 0,    fat: 0,    pct: 2 },
-  yeast:     { label: 'Yeast',       water: 0,    fat: 0 },
+  salt:      { label: 'Salt',        water: 0,    fat: 0,    pct: 2, units: SALT_UNITS, tspNote: ' table salt' },
+  yeast:     { label: 'Yeast',       water: 0,    fat: 0,    units: YEAST_UNITS },
 };
 export const ENRICHERS = ['egg', 'yolk', 'milk', 'cream', 'butter', 'oil', 'sugar', 'honey', 'milkpowder'];
 export const BASE = ['flour', 'water', 'salt', 'yeast'];
@@ -40,54 +44,9 @@ export const YEAST = {
   fresh:   { label: 'Fresh (cake)', pct: 3, water: 0.7, toInstant: 1 / 3 },
 };
 
-const WEIGHT_UNITS = { g: 1, oz: 28.3495 };
-const SALT_UNITS = { tsp: 6, tbsp: 18, 'tsp-diamond': 8 / 3, 'tsp-morton': 16 / 3 };
-const YEAST_UNITS = { tsp: 3, tbsp: 9, packet: 7, cake: 17 };
-
-// Units available for an ingredient: { unit: gramsPerUnit }
-export function unitsFor(id) {
-  const ing = ING[id];
-  if (!ing) return null;
-  const u = { ...WEIGHT_UNITS };
-  if (id === 'salt') return { ...u, ...SALT_UNITS };
-  if (id === 'yeast') return { ...u, ...YEAST_UNITS };
-  if (ing.cup) {
-    u.cup = ing.cup; u.tbsp = ing.cup / 16; u.tsp = ing.cup / 48; u.ml = ing.cup / CUP_ML;
-  }
-  if (id === 'flour') u['cup-whole-wheat'] = 113;
-  if (ing.count) u[ing.count.unit] = ing.count.g;
-  return u;
-}
-
-const VULGAR = { '¼': 0.25, '½': 0.5, '¾': 0.75, '⅓': 1 / 3, '⅔': 2 / 3, '⅛': 0.125, '⅜': 0.375, '⅝': 0.625, '⅞': 0.875 };
-
-// "1 1/2", "¾", "1¾", ".5", "2" -> number. "" -> null (blank). Anything else -> NaN.
-export function parseAmount(text) {
-  if (typeof text === 'number') return Number.isFinite(text) ? text : NaN;
-  if (text == null) return null;
-  let s = String(text).trim();
-  if (s === '') return null;
-  let total = 0;
-  const v = s.match(/([¼½¾⅓⅔⅛⅜⅝⅞])$/);
-  if (v) { total += VULGAR[v[1]]; s = s.slice(0, -1).trim(); if (s === '') return total; }
-  const mixed = s.match(/^(\d+)\s+(\d+)\s*\/\s*(\d+)$/);
-  if (mixed) {
-    if (+mixed[3] === 0 || v) return NaN;
-    return +mixed[1] + +mixed[2] / +mixed[3] + total;
-  }
-  const frac = s.match(/^(\d+)\s*\/\s*(\d+)$/);
-  if (frac) return +frac[2] === 0 || v ? NaN : +frac[1] / +frac[2];
-  if (/^(\d+\.?\d*|\.\d+)$/.test(s)) return parseFloat(s) + total;
-  return NaN;
-}
-
-// Convert an amount in a unit to grams. Returns number, or NaN on bad amount/unit.
-export function toGrams(id, amount, unit) {
-  const units = unitsFor(id);
-  const n = parseAmount(amount);
-  if (!units || n === null || !Number.isFinite(n) || n < 0 || !(unit in units)) return NaN;
-  return n * units[unit];
-}
+export const unitsFor = (id) => core.unitsFor(ING, id);
+export const toGrams = (id, amount, unit) => core.toGrams(ING, id, amount, unit);
+export const friendly = (id, grams) => core.friendly(ING, id, grams);
 
 const waterFrac = (id, yt) => (id === 'yeast' ? YEAST[yt].water : ING[id].water);
 const defaultPct = (id, yt) => (id === 'yeast' ? YEAST[yt].pct : ING[id].pct);
@@ -234,41 +193,6 @@ export function scale(result, target) {
   if (!Number.isFinite(t) || t <= 0 || t > MAX_GRAMS * 4) return fail('scale', 'Enter a positive target dough weight.');
   const k = t / result.total;
   return { ...result, recipe: result.recipe.map((r) => ({ ...r, grams: r.grams * k })), waterBreakdown: result.waterBreakdown.map((r) => ({ ...r, grams: r.grams * k })), total: t, yeastEquivalents: Object.fromEntries(Object.entries(result.yeastEquivalents).map(([a, b]) => [a, b * k])), factor: k };
-}
-
-const FR = [[1 / 8, '⅛'], [1 / 4, '¼'], [1 / 3, '⅓'], [1 / 2, '½'], [2 / 3, '⅔'], [3 / 4, '¾']];
-const steps = (...vs) => [[0, ''], ...FR.filter(([v]) => vs.some((w) => Math.abs(w - v) < 1e-9)), [1, '']];
-
-// Nearest kitchen fraction as text ("1 ½"). Returns { text, value } where value is the rounded number.
-export function toFraction(x, allowed) {
-  let whole = Math.floor(x);
-  const f = x - whole;
-  let [v, sym] = allowed.reduce((a, b) => (Math.abs(b[0] - f) < Math.abs(a[0] - f) ? b : a));
-  if (v === 1) { whole += 1; v = 0; sym = ''; }
-  return { text: [whole || '', sym].filter(Boolean).join(' ') || '0', value: whole + v };
-}
-const CUP = steps(1 / 4, 1 / 3, 1 / 2, 2 / 3, 3 / 4), TBSP = steps(1 / 4, 1 / 2, 3 / 4), TSP = steps(1 / 8, 1 / 4, 1 / 2, 3 / 4);
-const unitText = (n, allowed, unit) => {
-  const { text, value } = toFraction(n, allowed);
-  return `${text} ${unit}${value > 1 && !/^t(bsp|sp)$/.test(unit) ? 's' : ''}`;
-};
-
-// Kitchen-measure hint for a recipe line, using fractions (never decimals): "1 ½ cups", "¾ tsp", "2 ½ eggs".
-export function friendly(id, grams) {
-  const ing = ING[id];
-  if (!ing || !(grams > 0)) return '';
-  if (id === 'egg' || id === 'yolk') {
-    const n = grams / ing.count.g;
-    return n < 0.25 ? `less than ½ ${ing.count.unit}` : unitText(n, steps(1 / 2), ing.count.unit);
-  }
-  if (id === 'butter' && grams >= ING.butter.count.g / 4) return unitText(grams / ING.butter.count.g, steps(1 / 4, 1 / 2, 3 / 4), 'stick');
-  const tsp = id === 'salt' ? SALT_UNITS.tsp : id === 'yeast' ? YEAST_UNITS.tsp : ing.cup / 48;
-  const cups = ing.cup ? grams / ing.cup : 0;
-  if (cups >= 0.22) return unitText(cups, CUP, 'cup');
-  const tbsp = grams / (tsp * 3);
-  if (tbsp >= 0.75 && id !== 'salt' && id !== 'yeast') return unitText(tbsp, TBSP, 'tbsp');
-  const t = grams / tsp;
-  return t < 0.125 ? 'a pinch' : `${toFraction(t, TSP).text} tsp${id === 'salt' ? ' table salt' : ''}`;
 }
 
 // Share link: ?yt=instant&h=65&flour=500&water=&egg=100 (present key = selected, empty = blank)

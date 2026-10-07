@@ -1,4 +1,4 @@
-import { ING, ENRICHERS, BASE, YEAST, BRACKETS, bracketFor, solve, scale, toGrams, unitsFor, friendly, encodeShare, decodeShare, parseAmount } from './calc.js';
+import { ING, ENRICHERS, BASE, YEAST, BRACKETS, bracketFor, solve, scale, toGrams, unitsFor, friendly, encodeShare, decodeShare, parseAmount } from './bread.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 const UNIT_LABEL = { g: 'g', oz: 'oz', cup: 'cup', tbsp: 'tbsp', tsp: 'tsp', ml: 'ml', egg: 'egg(s)', yolk: 'yolk(s)', stick: 'stick(s)', packet: 'packet(s)', cake: 'cake(s)',
