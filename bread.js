@@ -9,7 +9,7 @@ export const DEFAULT_FLOUR = 500;
 export const DEFAULT_HYDRATION = 65; // percent, used when water is left blank and no hydration is given
 export const HYDRATION_TOLERANCE = 0.5; // percentage points
 
-const SALT_UNITS = { tsp: 6, tbsp: 18, 'tsp-diamond': 8 / 3, 'tsp-morton': 16 / 3 };
+const SALT_UNITS = core.SALT_UNITS;
 const YEAST_UNITS = { tsp: 3, tbsp: 9, packet: 7, cake: 17 };
 
 // Sources: water/fat = USDA FoodData Central (SR Legacy); dry cups, eggs, salt, yeast = King Arthur ingredient weight chart;
@@ -50,7 +50,7 @@ export const friendly = (id, grams) => core.friendly(ING, id, grams);
 
 const waterFrac = (id, yt) => (id === 'yeast' ? YEAST[yt].water : ING[id].water);
 const defaultPct = (id, yt) => (id === 'yeast' ? YEAST[yt].pct : ING[id].pct);
-const fail = (field, message) => ({ error: { field, message } });
+const fail = core.fail;
 const g1 = (n) => (n < 20 ? n.toFixed(1) : Math.round(n)); // display rounding
 
 // input: { amounts: { flour, water, salt, yeast, ...enrichers }, hydration (percent|null), yeastType }
@@ -63,16 +63,9 @@ export function solve(input) {
   if (!YEAST[yt]) return fail('yeastType', 'Pick a yeast type.');
   const amounts = { flour: null, water: null, salt: null, yeast: null, ...(input.amounts || {}) };
 
-  for (const [id, raw] of Object.entries(amounts)) {
-    if (!ING[id]) return fail(id, `Unknown ingredient "${id}".`);
-    const v = raw === undefined ? null : raw;
-    amounts[id] = v;
-    if (v === null) continue;
-    const name = ING[id].label;
-    if (typeof v !== 'number' || Number.isNaN(v)) return fail(id, `${name}: enter a number.`);
-    if (!Number.isFinite(v) || v > MAX_GRAMS) return fail(id, `${name}: that's more than ${MAX_GRAMS / 1000} kg. Check the units.`);
-    if (v < 0) return fail(id, `${name} can't be negative.`);
-  }
+  for (const id of Object.keys(amounts)) if (amounts[id] === undefined) amounts[id] = null;
+  const bad = core.checkAmounts(ING, amounts);
+  if (bad) return bad;
   if (amounts.flour === 0) return fail('flour', 'Flour must be more than 0 g.');
 
   let H = input.hydration ?? null;

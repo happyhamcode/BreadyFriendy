@@ -4,6 +4,22 @@
 export const CUP_ML = 236.588;
 export const MAX_GRAMS = 50000;
 export const WEIGHT_UNITS = { g: 1, oz: 28.3495 };
+export const SALT_UNITS = { tsp: 6, tbsp: 18, 'tsp-diamond': 8 / 3, 'tsp-morton': 16 / 3 };
+
+export const fail = (field, message) => ({ error: { field, message } });
+
+// First problem in an amounts map (null = blank, NaN = unparseable), as { error: {field, message} }, or null if all fine.
+export function checkAmounts(table, amounts) {
+  for (const [id, v] of Object.entries(amounts)) {
+    if (!table[id]) return fail(id, `Unknown ingredient "${id}".`);
+    if (v === null) continue;
+    const name = table[id].label;
+    if (typeof v !== 'number' || Number.isNaN(v)) return fail(id, `${name}: enter a number.`);
+    if (!Number.isFinite(v) || v > MAX_GRAMS) return fail(id, `${name}: that's more than ${MAX_GRAMS / 1000} kg. Check the units.`);
+    if (v < 0) return fail(id, `${name} can't be negative.`);
+  }
+  return null;
+}
 
 // Units available for an ingredient: { unit: gramsPerUnit }
 export function unitsFor(table, id) {

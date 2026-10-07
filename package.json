@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test test/calc.test.js",
+    "test": "node --test test/calc.test.js test/cake.test.js",
     "e2e": "playwright test"
   },
   "devDependencies": {
